@@ -3,6 +3,7 @@
 #include "spg/subtarget/angle/AngleUtils.hpp"
 #include "spg/subtarget/CheckCollisionFree.hpp"
 #include "spg/subtarget/replan/ReplanUtils.hpp"
+#include <iostream>
 
 namespace spg {
 namespace subtarget {

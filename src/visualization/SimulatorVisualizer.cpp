@@ -12,7 +12,8 @@ static void glfw_error_callback(int error, const char* description) {
 }
 
 SimulatorVisualizer::SimulatorVisualizer(const FieldParams& params) 
-    : params(params), window(nullptr), initialized(false) {}
+    : params(params), window(nullptr), initialized(false), simulation_speed_(1.0f), 
+      reset_requested_(false), step_mode_(false), step_requested_(false) {}
 
 SimulatorVisualizer::~SimulatorVisualizer() {
     cleanup();
@@ -135,20 +136,39 @@ void SimulatorVisualizer::drawRobot(const RobotState& robot) {
     double x = robot.pose.x(), y = robot.pose.y(), theta = robot.pose.z();
     double r = 0.25; // robot radius
     double rx[4], ry[4];
-    rx[0] = x + r * cos(theta);
-    ry[0] = y + r * sin(theta);
-    rx[1] = x + r * cos(theta + 2.5);
-    ry[1] = y + r * sin(theta + 2.5);
-    rx[2] = x + r * cos(theta - 2.5);
-    ry[2] = y + r * sin(theta - 2.5);
+    
+    // Adjust theta so 0 degrees points towards positive Y (opposition goal)
+    double adjusted_theta = theta - M_PI/2;
+    
+    rx[0] = x + r * cos(adjusted_theta);
+    ry[0] = y + r * sin(adjusted_theta);
+    rx[1] = x + r * cos(adjusted_theta + 2.5);
+    ry[1] = y + r * sin(adjusted_theta + 2.5);
+    rx[2] = x + r * cos(adjusted_theta - 2.5);
+    ry[2] = y + r * sin(adjusted_theta - 2.5);
     rx[3] = rx[0]; ry[3] = ry[0];
     ImPlot::PlotLine("Robot", rx, ry, 4);
 }
 
 void SimulatorVisualizer::drawObstacles(const std::vector<ObstacleState>& obstacles) {
-    for (const auto& obs : obstacles) {
+    for (size_t i = 0; i < obstacles.size(); ++i) {
+        const auto& obs = obstacles[i];
         if (obs.active) {
-            ImPlot::PlotScatter("Obstacles", &obs.pos.x(), &obs.pos.y(), 1);
+            // Draw obstacle as a circle with its radius
+            std::vector<double> circle_x, circle_y;
+            int n_points = 16; // Number of points to approximate circle
+            for (int j = 0; j <= n_points; ++j) {
+                double angle = 2.0 * M_PI * j / n_points;
+                circle_x.push_back(obs.pos.x() + obs.radius * cos(angle));
+                circle_y.push_back(obs.pos.y() + obs.radius * sin(angle));
+            }
+            
+            // Create unique label for each obstacle
+            std::string label = "Obstacle" + std::to_string(i);
+            ImPlot::PlotLine(label.c_str(), circle_x.data(), circle_y.data(), circle_x.size());
+            
+            // Also draw center point
+            ImPlot::PlotScatter(("ObstacleCenter" + std::to_string(i)).c_str(), &obs.pos.x(), &obs.pos.y(), 1);
         }
     }
 }
@@ -162,7 +182,12 @@ void SimulatorVisualizer::drawTrajectories(const std::vector<Eigen::Vector2d>& r
     if (!robot_traj.empty()) {
         std::vector<double> x, y;
         for (const auto& p : robot_traj) { x.push_back(p.x()); y.push_back(p.y()); }
-        ImPlot::PlotLine("Robot Traj", x.data(), y.data(), x.size());
+        
+        // Draw trajectory as a line
+        ImPlot::PlotLine("Robot Traj Line", x.data(), y.data(), x.size());
+        
+        // Draw trajectory points as individual markers
+        ImPlot::PlotScatter("Robot Traj Points", x.data(), y.data(), x.size());
     }
     for (const auto& traj : obs_traj) {
         if (!traj.empty()) {
@@ -190,12 +215,30 @@ void SimulatorVisualizer::drawTarget(const Eigen::Vector3d& target_pos) {
     ImPlot::PlotScatter("Target", &x, &y, 1);
 }
 
+void SimulatorVisualizer::drawSubtarget(const Eigen::Vector3d& subtarget_pos) {
+    double x = subtarget_pos.x(), y = subtarget_pos.y();
+    
+    // Draw subtarget as a diamond shape
+    double size = 0.2;
+    double diamond_x[5] = {x, x + size, x, x - size, x};
+    double diamond_y[5] = {y + size, y, y - size, y, y + size};
+    
+    ImPlot::PlotLine("Subtarget Diamond", diamond_x, diamond_y, 5);
+    
+    // Draw subtarget center point
+    ImPlot::PlotScatter("Subtarget", &x, &y, 1);
+}
+
 void SimulatorVisualizer::render(const RobotState& robot,
                                  const std::vector<ObstacleState>& obstacles,
                                  const BallState& ball,
                                  const std::vector<Eigen::Vector2d>& robot_traj,
                                  const std::vector<std::vector<Eigen::Vector2d>>& obs_traj,
-                                 const Eigen::Vector3d& target_pos) {
+                                 const Eigen::Vector3d& target_pos,
+                                 const Eigen::Vector3d& subtarget_pos,
+                                 double simulation_time,
+                                 int step_count,
+                                 bool simulation_completed) {
     if (!initialized) return;
     
     // Get window size
@@ -213,18 +256,66 @@ void SimulatorVisualizer::render(const RobotState& robot,
                  ImGuiWindowFlags_NoCollapse);
     
     // Add some status information at the top
+    ImGui::Text("Simulation Time: %.3f seconds", simulation_time);
+    ImGui::Text("Step Count: %d", step_count);
+    if (simulation_completed) {
+        ImGui::TextColored(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), "✓ SIMULATION COMPLETED - Robot reached target!");
+    }
+    ImGui::Separator();
     ImGui::Text("Robot Position: (%.3f, %.3f, %.3f)", robot.pose.x(), robot.pose.y(), robot.pose.z());
     ImGui::Text("Robot Velocity: (%.3f, %.3f, %.3f)", robot.vel.x(), robot.vel.y(), robot.vel.z());
     ImGui::Text("Target Position: (%.3f, %.3f, %.3f)", target_pos.x(), target_pos.y(), target_pos.z());
+    ImGui::Text("Subtarget Position: (%.3f, %.3f, %.3f)", subtarget_pos.x(), subtarget_pos.y(), subtarget_pos.z());
     ImGui::Text("Ball Position: (%.3f, %.3f)", ball.pos.x(), ball.pos.y());
     
-    // Calculate distance to target
+    // Count active obstacles
+    int active_obstacles = 0;
+    for (const auto& obs : obstacles) {
+        if (obs.active) active_obstacles++;
+    }
+    ImGui::Text("Active Obstacles: %d / %d", active_obstacles, (int)obstacles.size());
+    
+    // Calculate distances
     double distance_to_target = (robot.pose.head<2>() - target_pos.head<2>()).norm();
+    double distance_to_subtarget = (robot.pose.head<2>() - subtarget_pos.head<2>()).norm();
     ImGui::Text("Distance to Target: %.3f", distance_to_target);
+    ImGui::Text("Distance to Subtarget: %.3f", distance_to_subtarget);
+    
+    // Simulation speed control
+    ImGui::Text("Simulation Speed Control:");
+    ImGui::SliderFloat("Speed", &simulation_speed_, 0.01f, 5.0f, "%.2fx");
+    ImGui::SameLine();
+    if (ImGui::Button("Reset to Real-time")) {
+        simulation_speed_ = 1.0f;
+    }
+    ImGui::Text("(1.0x = real-time, <1.0x = slower, >1.0x = faster)");
+    
+    // Simulation control buttons
+    ImGui::Text("Simulation Control:");
+    if (ImGui::Button("🔄 Reset Simulation")) {
+        reset_requested_ = true;
+    }
+    ImGui::SameLine();
+    if (ImGui::Checkbox("Step Mode", &step_mode_)) {
+        // When enabling step mode, clear any pending step request
+        if (step_mode_) {
+            step_requested_ = false;
+        }
+    }
+    
+    // Step button (only show when in step mode)
+    if (step_mode_) {
+        ImGui::SameLine();
+        if (ImGui::Button("➤ Next Step")) {
+            step_requested_ = true;
+        }
+        ImGui::Text("Step Mode: Simulation paused. Click 'Next Step' to advance.");
+    }
+    
     ImGui::Separator();
     
     // Make the plot take up most of the remaining window space
-    ImVec2 plot_size = ImVec2(window_w - 20, window_h - 140); // More space for the additional info text
+    ImVec2 plot_size = ImVec2(window_w - 20, window_h - 180); // More space for obstacle and other status info
     
     if (ImPlot::BeginPlot("SPG Robot Field View", plot_size, ImPlotFlags_Equal)) {
         drawField();
@@ -232,6 +323,7 @@ void SimulatorVisualizer::render(const RobotState& robot,
         drawObstacles(obstacles);
         drawBall(ball);
         drawTarget(target_pos);
+        drawSubtarget(subtarget_pos);
         drawTrajectories(robot_traj, obs_traj);
         ImPlot::EndPlot();
     }

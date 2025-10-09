@@ -27,8 +27,6 @@ file(REMOVE_RECURSE
   "CMakeFiles/spg.dir/src/spg/setpoint/TrajPredict.cpp.o.d"
   "CMakeFiles/spg.dir/src/spg/setpoint/TrajSegment.cpp.o"
   "CMakeFiles/spg.dir/src/spg/setpoint/TrajSegment.cpp.o.d"
-  "CMakeFiles/spg.dir/src/spg/setpoint/TrajectoryUtils.cpp.o"
-  "CMakeFiles/spg.dir/src/spg/setpoint/TrajectoryUtils.cpp.o.d"
   "CMakeFiles/spg.dir/src/spg/setpoint/Wrap.cpp.o"
   "CMakeFiles/spg.dir/src/spg/setpoint/Wrap.cpp.o.d"
   "CMakeFiles/spg.dir/src/spg/subtarget/CheckCollisionFree.cpp.o"

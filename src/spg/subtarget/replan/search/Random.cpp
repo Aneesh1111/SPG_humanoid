@@ -10,7 +10,8 @@ namespace subtarget {
 namespace replan {
 namespace search {
 
-Subtarget random(const SPGState& d, const Subtarget& best, const Eigen::Vector3d& search_point, double search_distance, int defending_opp_with_or_without_ball) {
+Subtarget random(SPGState& d, const Subtarget& best, const Eigen::Vector3d& search_point, double search_distance, int defending_opp_with_or_without_ball) {
+    Subtarget best_so_far = best;
     Subtarget subtarget_candidate = best;
     double vmax_random = d.par.vmax_move * 0.5;
     std::mt19937 gen(std::random_device{}());
@@ -53,12 +54,12 @@ Subtarget random(const SPGState& d, const Subtarget& best, const Eigen::Vector3d
                     subtarget_candidate = spg::subtarget::replan::determineSetpointLimits(d, subtarget_candidate);
                     subtarget_candidate = spg::subtarget::checkCollisionFree(d, subtarget_candidate, d.par.margin_replan);
                     // Optionally update best
-                    // best = spg::subtarget::replan::updateBest(best, subtarget_candidate, d.target.p);
+                    best_so_far = spg::subtarget::replan::updateBest(best_so_far, subtarget_candidate, d.target.p);
                 }
             }
         }
     }
-    return subtarget_candidate;
+    return best_so_far;
 }
 
 } // namespace search

@@ -8,8 +8,8 @@ namespace subtarget {
 namespace replan {
 namespace search {
 
-Subtarget besideObstacle(const SPGState& d, const Subtarget& best) {
-    Subtarget subtarget_candidate = best;
+Subtarget besideObstacle(SPGState& d, const Subtarget& best) {
+    Subtarget current_best = best;
     double additional_obstacle_margin = 0.2; // [m]
     for (size_t i = 0; i < d.input.obstacles.active.size(); ++i) {
         if (d.input.obstacles.active[i]) {
@@ -25,6 +25,7 @@ Subtarget besideObstacle(const SPGState& d, const Subtarget& best) {
                 for (int side : {-1, 1}) {
                     Eigen::Vector2d new_pos = pos + side * displacement;
                     double angle = std::atan2(-v1(0), v1(1));
+                    Subtarget subtarget_candidate = current_best;
                     subtarget_candidate.p = Eigen::Vector3d(new_pos(0), new_pos(1), angle);
                     // Convert obstacle positions to Eigen::MatrixXd
                     Eigen::MatrixXd obstacles_mat(d.input.obstacles.p.size(), 2);
@@ -35,13 +36,13 @@ Subtarget besideObstacle(const SPGState& d, const Subtarget& best) {
                         subtarget_candidate = spg::subtarget::replan::determineSetpointLimits(d, subtarget_candidate);
                         subtarget_candidate = spg::subtarget::checkCollisionFree(d, subtarget_candidate, d.par.margin_replan);
                         // Update best
-                        subtarget_candidate = spg::subtarget::replan::updateBest(best, subtarget_candidate, d.target.p);
+                        current_best = spg::subtarget::replan::updateBest(current_best, subtarget_candidate, d.target.p);
                     }
                 }
             }
         }
     }
-    return subtarget_candidate;
+    return current_best;
 }
 
 } // namespace search

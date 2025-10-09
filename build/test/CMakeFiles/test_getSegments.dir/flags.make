@@ -6,5 +6,5 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -I/home/robocup/Downloads/spg_cmake/include -I/usr/include/eigen3 -I/home/robocup/Downloads/spg_cmake/external/imgui -I/home/robocup/Downloads/spg_cmake/external/imgui/backends -I/home/robocup/Downloads/spg_cmake/external/implot -isystem /home/robocup/Downloads/spg_cmake/build/_deps/googletest-src/googletest/include -isystem /home/robocup/Downloads/spg_cmake/build/_deps/googletest-src/googletest
 
-CXX_FLAGS = -g -std=gnu++17
+CXX_FLAGS = -std=gnu++17
 

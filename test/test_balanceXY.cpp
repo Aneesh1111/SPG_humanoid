@@ -238,6 +238,111 @@ TEST_F(BalanceXYTest, SegmentsAreModified) {
     EXPECT_TRUE(segments_modified);
 }
 
+TEST_F(BalanceXYTest, MatlabValidationCase) {
+    // Test with specific MATLAB inputs and expected outputs
+    // Inputs: p0 = [4 -6 0], v0 = [0 0 0], pe = [0 0 0], ve = [0 0 0]
+    //         vm = [3 3 3], am = [2 2 2], dm = [2 2 2]
+    Eigen::Vector3d p0(4, -6, 0), v0(0, 0, 0), pe(0, 0, 0), ve(0, 0, 0);
+    Eigen::Vector3d vm(3, 3, 3), am(2, 2, 2), dm(2, 2, 2);
+    Eigen::Vector3d vmax, amax, dmax;
+
+    // Initialize 4 segments with all zero vectors
+    std::vector<spg::setpoint::Segment> segments(4, spg::setpoint::Segment{
+        Eigen::Vector3d::Zero(), // dt
+        Eigen::Vector3d::Zero(), // t
+        Eigen::Vector3d::Zero(), // p
+        Eigen::Vector3d::Zero(), // v
+        Eigen::Vector3d::Zero()  // a
+    });
+
+    spg::setpoint::balanceXY(segments, p0, v0, pe, ve, vm, am, dm, vmax, amax, dmax);
+
+    // Expected output values from MATLAB
+    // vmax = [2.3530 3.5303 3.0000]
+    EXPECT_NEAR(vmax[0], 2.3530, 1e-4);
+    EXPECT_NEAR(vmax[1], 3.5303, 1e-4);
+    EXPECT_NEAR(vmax[2], 3.0000, 1e-4);
+    
+    // amax = [1.5687 2.3536 2.0000]
+    EXPECT_NEAR(amax[0], 1.5687, 1e-4);
+    EXPECT_NEAR(amax[1], 2.3536, 1e-4);
+    EXPECT_NEAR(amax[2], 2.0000, 1e-4);
+    
+    // dmax = [1.5687 2.3536 2.0000]
+    EXPECT_NEAR(dmax[0], 1.5687, 1e-4);
+    EXPECT_NEAR(dmax[1], 2.3536, 1e-4);
+    EXPECT_NEAR(dmax[2], 2.0000, 1e-4);
+
+    // Expected segment values from MATLAB
+    // Segment 0: dt=[1.5000 1.5000 0], t=[1.5000 1.5000 0], p=[2.2352 -3.3522 0], v=[-2.3530 3.5303 0], a=[-1.5687 2.3536 2.0000]
+    EXPECT_NEAR(segments[0].dt[0], 1.5000, 1e-4);
+    EXPECT_NEAR(segments[0].dt[1], 1.5000, 1e-4);
+    EXPECT_NEAR(segments[0].dt[2], 0, 1e-6);
+    EXPECT_NEAR(segments[0].t[0], 1.5000, 1e-4);
+    EXPECT_NEAR(segments[0].t[1], 1.5000, 1e-4);
+    EXPECT_NEAR(segments[0].t[2], 0, 1e-6);
+    EXPECT_NEAR(segments[0].p[0], 2.2352, 1e-4);
+    EXPECT_NEAR(segments[0].p[1], -3.3522, 1e-4);
+    EXPECT_NEAR(segments[0].p[2], 0, 1e-6);
+    EXPECT_NEAR(segments[0].v[0], -2.3530, 1e-4);
+    EXPECT_NEAR(segments[0].v[1], 3.5303, 1e-4);
+    EXPECT_NEAR(segments[0].v[2], 0, 1e-6);
+    EXPECT_NEAR(segments[0].a[0], -1.5687, 1e-4);
+    EXPECT_NEAR(segments[0].a[1], 2.3536, 1e-4);
+    EXPECT_NEAR(segments[0].a[2], 2.0000, 1e-4);
+
+    // Segment 1: dt=[0.1999 0.1996 0], t=[1.6999 1.6996 0], p=[1.7648 -2.6478 0], v=[-2.3530 3.5303 0], a=[0 0 0]
+    EXPECT_NEAR(segments[1].dt[0], 0.1999, 1e-4);
+    EXPECT_NEAR(segments[1].dt[1], 0.1996, 1e-4);
+    EXPECT_NEAR(segments[1].dt[2], 0, 1e-6);
+    EXPECT_NEAR(segments[1].t[0], 1.6999, 1e-4);
+    EXPECT_NEAR(segments[1].t[1], 1.6996, 1e-4);
+    EXPECT_NEAR(segments[1].t[2], 0, 1e-6);
+    EXPECT_NEAR(segments[1].p[0], 1.7648, 1e-4);
+    EXPECT_NEAR(segments[1].p[1], -2.6478, 1e-4);
+    EXPECT_NEAR(segments[1].p[2], 0, 1e-6);
+    EXPECT_NEAR(segments[1].v[0], -2.3530, 1e-4);
+    EXPECT_NEAR(segments[1].v[1], 3.5303, 1e-4);
+    EXPECT_NEAR(segments[1].v[2], 0, 1e-6);
+    EXPECT_NEAR(segments[1].a[0], 0, 1e-6);
+    EXPECT_NEAR(segments[1].a[1], 0, 1e-6);
+    EXPECT_NEAR(segments[1].a[2], 0, 1e-6);
+
+    // Segment 2: dt=[1.5000 1.5000 0], t=[3.1999 3.1996 0], p=[0 0.4441e-15 0], v=[0 0 0], a=[1.5687 -2.3536 2.0000]
+    EXPECT_NEAR(segments[2].dt[0], 1.5000, 1e-4);
+    EXPECT_NEAR(segments[2].dt[1], 1.5000, 1e-4);
+    EXPECT_NEAR(segments[2].dt[2], 0, 1e-6);
+    EXPECT_NEAR(segments[2].t[0], 3.1999, 1e-4);
+    EXPECT_NEAR(segments[2].t[1], 3.1996, 1e-4);
+    EXPECT_NEAR(segments[2].t[2], 0, 1e-6);
+    EXPECT_NEAR(segments[2].p[0], 0, 1e-12);
+    EXPECT_NEAR(segments[2].p[1], 0.4441e-15, 1e-12);
+    EXPECT_NEAR(segments[2].p[2], 0, 1e-6);
+    EXPECT_NEAR(segments[2].v[0], 0, 1e-6);
+    EXPECT_NEAR(segments[2].v[1], 0, 1e-6);
+    EXPECT_NEAR(segments[2].v[2], 0, 1e-6);
+    EXPECT_NEAR(segments[2].a[0], 1.5687, 1e-4);
+    EXPECT_NEAR(segments[2].a[1], -2.3536, 1e-4);
+    EXPECT_NEAR(segments[2].a[2], 2.0000, 1e-4);
+
+    // Segment 3: dt=[1e10 1e10 1e10], t=[1e10 1e10 1e10], p=[0 0.4441e-15 0], v=[0 0 0], a=[0 0 0]
+    EXPECT_NEAR(segments[3].dt[0], 1.0000e+10, 1e6);
+    EXPECT_NEAR(segments[3].dt[1], 1.0000e+10, 1e6);
+    EXPECT_NEAR(segments[3].dt[2], 1.0000e+10, 1e6);
+    EXPECT_NEAR(segments[3].t[0], 1.0000e+10, 1e6);
+    EXPECT_NEAR(segments[3].t[1], 1.0000e+10, 1e6);
+    EXPECT_NEAR(segments[3].t[2], 1.0000e+10, 1e6);
+    EXPECT_NEAR(segments[3].p[0], 0, 1e-12);
+    EXPECT_NEAR(segments[3].p[1], 0.4441e-15, 1e-12);
+    EXPECT_NEAR(segments[3].p[2], 0, 1e-6);
+    EXPECT_NEAR(segments[3].v[0], 0, 1e-6);
+    EXPECT_NEAR(segments[3].v[1], 0, 1e-6);
+    EXPECT_NEAR(segments[3].v[2], 0, 1e-6);
+    EXPECT_NEAR(segments[3].a[0], 0, 1e-6);
+    EXPECT_NEAR(segments[3].a[1], 0, 1e-6);
+    EXPECT_NEAR(segments[3].a[2], 0, 1e-6);
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

@@ -405,4 +405,4 @@ CMakeFiles/spg.dir/src/spg/setpoint/TrajPredict.cpp.o: \
  /home/robocup/Downloads/spg_cmake/include/spg/setpoint/TrajPredict.hpp \
  /home/robocup/Downloads/spg_cmake/include/spg/setpoint/Segment.hpp \
  /home/robocup/Downloads/spg_cmake/include/spg/Init.hpp \
- /home/robocup/Downloads/spg_cmake/include/spg/setpoint/TrajSegment.hpp
+ /home/robocup/Downloads/spg_cmake/include/spg/setpoint/Traj1.hpp

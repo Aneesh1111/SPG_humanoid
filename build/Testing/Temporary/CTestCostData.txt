@@ -1,1 +1,11 @@
+BalanceXYTest 7 0.000548348
+GetSegmentsTest 7 0.000357733
+GetSegmentsFunctionsTest 7 0.000328379
+Traj1Test 7 0.00037355
+StaticObstaclesIntegrationTest 7 0.256521
+MoveStraightLineTest 7 0.00744554
+SetpointSetTest 1 0.00424202
+TrajPredictTest 1 0.00315277
+DetermineSetpointLimitsTest 0 0
 ---
+DetermineSetpointLimitsTest

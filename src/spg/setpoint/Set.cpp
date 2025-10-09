@@ -2,9 +2,11 @@
 #include "spg/setpoint/Set.hpp"
 #include "spg/setpoint/GetSegments.hpp"
 #include "spg/setpoint/Traj1.hpp"
+#include "spg/setpoint/TrajPredict.hpp"
 #include "spg/setpoint/ConvertSegment.hpp"
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 
 namespace spg {
 namespace setpoint {
@@ -30,14 +32,20 @@ SPGState Set(SPGState& d) {
         // Convert segment type before calling getSegments
         auto setpointSegments = spg::setpoint::convertSegmentVector(d.aux.segment);
         setpointSegments = getSegments(setpointSegments, d.setpoint.p, d.setpoint.v, d.subtarget.p, d.subtarget.v, d.subtarget.vmax, d.subtarget.amax, dmax);
-        d.aux.segment = spg::setpoint::convertBackSegmentVector(setpointSegments); // convert back if needed
-        // Propagate 1 sample
-        // Convert segment type before calling Traj1
-        auto trajSegments = spg::setpoint::convertSegmentVector(d.aux.segment);
-        Traj1(d.traj, trajSegments, d.par.Ts);
+        // d.aux.segment = spg::setpoint::convertBackSegmentVector(setpointSegments); // convert back if needed
+        // // Propagate 1 sample
+        // // Convert segment type before calling Traj1
+        // auto trajSegments = spg::setpoint::convertSegmentVector(d.aux.segment);
+        // Traj1(d.traj, trajSegments, d.par.Ts);
+        Traj1(d.traj, setpointSegments, d.par.Ts);
+        
         d.setpoint.p = d.traj.p[0];
         d.setpoint.v = d.traj.v[0];
         d.setpoint.a = d.traj.a[0];
+
+        // Generate full predicted trajectory for visualization (all npredict timesteps)
+        TrajPredict(d, setpointSegments);
+
         // Field margin logic
         double field_width_half = d.par.field_size[0] * 0.5 + d.par.field_border_margin + (d.subtarget.automatic_substitution_flag == 1 ? d.par.technical_area_width : 0.0);
         double field_length_half = d.par.field_size[1] * 0.5 + d.par.field_border_margin;
@@ -64,6 +72,7 @@ SPGState Set(SPGState& d) {
         d.setpoint.p = d.input.robot.p;
         d.setpoint.v = Eigen::Vector3d::Zero();
         d.setpoint.a = Eigen::Vector3d::Zero();
+        std::cout << "Set: Robot outside field and no automatic substitution, holding position." << std::endl;
     }
     return d;
 }

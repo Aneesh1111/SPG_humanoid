@@ -3,6 +3,9 @@ project(spg_cmake)
 
 set(CMAKE_CXX_STANDARD 17)
 
+# Enable testing
+enable_testing()
+
 include_directories(include)
 
 find_package(Eigen3 QUIET)

@@ -3,15 +3,15 @@
 #include <cmath>
 #include "spg/subtarget/CheckCollisionFree.hpp"
 #include "spg/setpoint/GetSegments.hpp"
-#include "spg/setpoint/TrajectoryUtils.hpp"
 #include "spg/subtarget/CheckViolation.hpp"
 #include "spg/setpoint/ConvertSegment.hpp"
 #include "spg/setpoint/TrajPredict.hpp"
+#include <iostream>
 
 namespace spg {
 namespace subtarget {
 
-Subtarget checkCollisionFree(const SPGState& d, Subtarget subtarget, double obstacle_margin, std::vector<Eigen::Vector2d>* p_robot_out, std::vector<std::vector<Eigen::Vector2d>>* p_obstacles_traj_out) {
+Subtarget checkCollisionFree(SPGState& d, Subtarget subtarget, double obstacle_margin, std::vector<Eigen::Vector2d>* p_robot_out, std::vector<std::vector<Eigen::Vector2d>>* p_obstacles_traj_out) {
     // Update subtarget.segment, subtarget.collisionfree, subtarget.eta
     // Convert segment type if needed
     // Use conversion functions from spg::setpoint namespace
@@ -22,11 +22,11 @@ Subtarget checkCollisionFree(const SPGState& d, Subtarget subtarget, double obst
     SPGState d2 = d;
     auto setpointSegmentsForTraj = spg::setpoint::convertSegmentVector(subtarget.segment);
     spg::setpoint::TrajPredict(d2, setpointSegmentsForTraj);
-    if (d2.traj.segment_id.size() >= 3) {
+    if (d2.traj.segment_id.size() >= 1 && d2.traj.segment_id[0].size() >= 3) {
         subtarget.segment_id = Eigen::Vector3i(
             d2.traj.segment_id[0][0],
-            d2.traj.segment_id[1][1],
-            d2.traj.segment_id[2][2]
+            d2.traj.segment_id[0][1],
+            d2.traj.segment_id[0][2]
         );
     }
     if (p_robot_out) {
@@ -50,28 +50,34 @@ Subtarget checkCollisionFree(const SPGState& d, Subtarget subtarget, double obst
     Violation violation;
     violation.collisionfree = true;
     violation.count = 0;
-    violation.values["SubtargetAvoidPolygon"] = 0;
+    violation.values["SubtargetAvoidPolygon"] = 1e10;
     violation.values["obstacle"] = 1e10;
     violation.values["field"] = 1e10;
     size_t npropagate = d2.traj.p.size();
     if (p_obstacles_traj_out) p_obstacles_traj_out->resize(npropagate);
+    
+    // Create copies for obstacle trajectory prediction (don't modify original arrays)
+    std::vector<Eigen::Vector2d> p_obstacles_current = p_obstacles;
+    std::vector<Eigen::Vector2d> v_obstacles_current = v_obstacles;
+    
     // Propagate to assess trajectory feasibility
     for (size_t i = 0; i < npropagate; ++i) {
-        // Obstacle path (constant/declining velocity model)
-        for (auto& v : v_obstacles) v *= d.par.obstacle_vel_gain;
-        for (size_t j = 0; j < p_obstacles.size(); ++j) p_obstacles[j] += v_obstacles[j] * d.par.Ts_predict;
-        if (p_obstacles_traj_out) (*p_obstacles_traj_out)[i] = p_obstacles;
-        // Check collision
-        if (p_obstacles.empty()) {
+        // Store obstacle trajectory for output if requested (BEFORE updating for next timestep)
+        if (p_obstacles_traj_out) (*p_obstacles_traj_out)[i] = p_obstacles_current;
+        
+        // Check collision - comparing robot and obstacles at SAME TIME STEP i
+        if (p_obstacles_current.empty()) {
             updateViolation(violation, "obstacle", 0);
         } else {
-            std::vector<double> p_diff_norm(p_obstacles.size());
-            for (size_t j = 0; j < p_obstacles.size(); ++j) {
-                p_diff_norm[j] = (p_obstacles[j] - d2.traj.p[i].head<2>()).norm();
+            // Calculate p_diff_norm properly: distance between robot[i] and obstacles[i]
+            std::vector<double> p_diff_norm(p_obstacles_current.size());
+            for (size_t j = 0; j < p_obstacles_current.size(); ++j) {
+                Eigen::Vector2d p_diff = p_obstacles_current[j] - d2.traj.p[i].head<2>();
+                p_diff_norm[j] = p_diff.norm();  // This is now the correct MATLAB equivalent
             }
-            // Intercept logic
+            // Intercept logic - using CURRENT obstacle positions at time i
             double p_diff_obst2Target = 1e10;
-            for (const auto& obs : p_obstacles) {
+            for (const auto& obs : p_obstacles_current) {
                 double dist = (obs - d.target.p.head<2>()).norm();
                 if (dist < p_diff_obst2Target) p_diff_obst2Target = dist;
             }
@@ -79,7 +85,7 @@ Subtarget checkCollisionFree(const SPGState& d, Subtarget subtarget, double obst
             double target2ball_distance = (d.target.p.head<2>() - d.input.ball.p.head<2>()).norm();
             double margin = d.input.robot.dist2ball_vs_opp;
             std::vector<Eigen::Vector2d> ball2obstacle, robot2ball;
-            for (const auto& obs : p_obstacles) ball2obstacle.push_back(obs - d.input.ball.p.head<2>());
+            for (const auto& obs : p_obstacles_current) ball2obstacle.push_back(obs - d.input.ball.p.head<2>());
             Eigen::Vector2d robot2ball_v = d2.traj.p[i].head<2>() - d.input.ball.p.head<2>();
             std::vector<double> angle(ball2obstacle.size());
             for (size_t j = 0; j < ball2obstacle.size(); ++j) {
@@ -93,8 +99,8 @@ Subtarget checkCollisionFree(const SPGState& d, Subtarget subtarget, double obst
             double violation_value = 0;
             if (((d.input.robot.skillID == 5) || (d.input.robot.skillID == 0)) && (p_diff_obst2Target + margin > p_diff_robot2Target.norm()) && (target2ball_distance < 0.5) && no_obstacle_between_me_and_ball) {
                 violation_value = 0;
-            } else if ((d.input.robot.skillID == 5) && (p_diff_obst2Target > p_diff_robot2Target.norm())) {
-                violation_value = 0;
+            // } else if ((d.input.robot.skillID == 5) && (p_diff_obst2Target > p_diff_robot2Target.norm())) {
+            //     violation_value = 0;
             } else {
                 std::vector<double> obs_violation(p_diff_norm.size());
                 for (size_t j = 0; j < p_diff_norm.size(); ++j) {
@@ -117,7 +123,7 @@ Subtarget checkCollisionFree(const SPGState& d, Subtarget subtarget, double obst
             if (d.input.robot.skillID >= 1 && d.input.robot.skillID <= 4) {
                 double robot_ball_distance = d.par.robot_radius + d.par.ball_radius;
                 Eigen::Vector2d ball_pos = d2.traj.p[i].head<2>() + robot_ball_distance * Eigen::Vector2d(-std::sin(d2.traj.p[i](2)), std::cos(d2.traj.p[i](2)));
-                double violation_value = std::max(0.0, std::abs(ball_pos.norm()) - d.par.field_size[0] * 0.5);
+                double violation_value = std::max({0.0, std::abs(ball_pos(0)) - d.par.field_size[0] * 0.5, std::abs(ball_pos(1)) - d.par.field_size[1] * 0.5});
                 updateViolation(violation, "field", violation_value);
             } else {
                 updateViolation(violation, "field", 0);
@@ -147,6 +153,15 @@ Subtarget checkCollisionFree(const SPGState& d, Subtarget subtarget, double obst
         // Check if close to arrival
         if ((d2.traj.p[i].head<2>() - subtarget.p.head<2>()).norm() < 1e-2) {
             break;
+        }
+        
+        // Update obstacles for NEXT timestep (AFTER collision check for current timestep)
+        // Obstacle path (constant/declining velocity model) - EXACTLY like MATLAB
+        for (auto& v : v_obstacles_current) {
+            v *= d.par.obstacle_vel_gain;  // Apply velocity decay
+        }
+        for (size_t j = 0; j < p_obstacles_current.size(); ++j) {
+            p_obstacles_current[j] += v_obstacles_current[j] * d.par.Ts_predict;  // Update positions
         }
     }
     // Clip subtarget x-velocity such that robot stays in field (can brake in time)

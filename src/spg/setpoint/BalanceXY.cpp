@@ -16,10 +16,11 @@ void balanceXY(std::vector<Segment>& segment,
     double amax_move = am.head<2>().norm();
     double dmax_move = dm.head<2>().norm();
     Eigen::Vector3d amax, vmax, dmax;
-    // Check if trajectory requires X-Y balancing
+    // Check if trajectory requires X-Y balancing (matches MATLAB exactly)
+    Eigen::Vector2d pos_diff = (pe.head<2>() - p0.head<2>()).cwiseAbs();
+    Eigen::Vector2d vel_diff = (ve.head<2>() - v0.head<2>()).cwiseAbs();
     bool needs_xy_balancing = 
-        (pe.head<2>() - p0.head<2>()).norm() > 1e-8 ||  // Position change
-        (ve.head<2>() - v0.head<2>()).norm() > 1e-8;    // Velocity change
+        (pos_diff.array() > 1e-8).all() || (vel_diff.array() > 1e-2).all();
 
     if (needs_xy_balancing) {
         // Run balancing algorithm

@@ -1,1 +1,1 @@
-/usr/bin/c++ -g CMakeFiles/demo.dir/demo/main.cpp.o -o demo  libspg.a libimgui.a -lglfw -lGL -lGLU 
+/usr/bin/c++ CMakeFiles/demo.dir/demo/main.cpp.o -o demo  libspg.a libimgui.a -lglfw -lGL -lGLU 

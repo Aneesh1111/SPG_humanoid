@@ -65,6 +65,16 @@ CMAKE_BINARY_DIR = /home/robocup/Downloads/spg_cmake/build
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running tests..."
+	/usr/bin/ctest --force-new-ctest-process $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+.PHONY : test/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "No interactive CMake dialog available..."
@@ -203,6 +213,90 @@ test_getSegments_functions/fast:
 	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_getSegments_functions.dir/build.make test/CMakeFiles/test_getSegments_functions.dir/build
 .PHONY : test_getSegments_functions/fast
 
+# Convenience name for target.
+test/CMakeFiles/test_traj1.dir/rule:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_traj1.dir/rule
+.PHONY : test/CMakeFiles/test_traj1.dir/rule
+
+# Convenience name for target.
+test_traj1: test/CMakeFiles/test_traj1.dir/rule
+.PHONY : test_traj1
+
+# fast build rule for target.
+test_traj1/fast:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_traj1.dir/build.make test/CMakeFiles/test_traj1.dir/build
+.PHONY : test_traj1/fast
+
+# Convenience name for target.
+test/CMakeFiles/test_static_obstacles_integration.dir/rule:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_static_obstacles_integration.dir/rule
+.PHONY : test/CMakeFiles/test_static_obstacles_integration.dir/rule
+
+# Convenience name for target.
+test_static_obstacles_integration: test/CMakeFiles/test_static_obstacles_integration.dir/rule
+.PHONY : test_static_obstacles_integration
+
+# fast build rule for target.
+test_static_obstacles_integration/fast:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_static_obstacles_integration.dir/build.make test/CMakeFiles/test_static_obstacles_integration.dir/build
+.PHONY : test_static_obstacles_integration/fast
+
+# Convenience name for target.
+test/CMakeFiles/test_move_straight_line.dir/rule:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_move_straight_line.dir/rule
+.PHONY : test/CMakeFiles/test_move_straight_line.dir/rule
+
+# Convenience name for target.
+test_move_straight_line: test/CMakeFiles/test_move_straight_line.dir/rule
+.PHONY : test_move_straight_line
+
+# fast build rule for target.
+test_move_straight_line/fast:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_move_straight_line.dir/build.make test/CMakeFiles/test_move_straight_line.dir/build
+.PHONY : test_move_straight_line/fast
+
+# Convenience name for target.
+test/CMakeFiles/test_setpoint_set.dir/rule:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_setpoint_set.dir/rule
+.PHONY : test/CMakeFiles/test_setpoint_set.dir/rule
+
+# Convenience name for target.
+test_setpoint_set: test/CMakeFiles/test_setpoint_set.dir/rule
+.PHONY : test_setpoint_set
+
+# fast build rule for target.
+test_setpoint_set/fast:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_setpoint_set.dir/build.make test/CMakeFiles/test_setpoint_set.dir/build
+.PHONY : test_setpoint_set/fast
+
+# Convenience name for target.
+test/CMakeFiles/test_trajpredict.dir/rule:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_trajpredict.dir/rule
+.PHONY : test/CMakeFiles/test_trajpredict.dir/rule
+
+# Convenience name for target.
+test_trajpredict: test/CMakeFiles/test_trajpredict.dir/rule
+.PHONY : test_trajpredict
+
+# fast build rule for target.
+test_trajpredict/fast:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_trajpredict.dir/build.make test/CMakeFiles/test_trajpredict.dir/build
+.PHONY : test_trajpredict/fast
+
+# Convenience name for target.
+test/CMakeFiles/test_determine_setpoint_limits.dir/rule:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_determine_setpoint_limits.dir/rule
+.PHONY : test/CMakeFiles/test_determine_setpoint_limits.dir/rule
+
+# Convenience name for target.
+test_determine_setpoint_limits: test/CMakeFiles/test_determine_setpoint_limits.dir/rule
+.PHONY : test_determine_setpoint_limits
+
+# fast build rule for target.
+test_determine_setpoint_limits/fast:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_determine_setpoint_limits.dir/build.make test/CMakeFiles/test_determine_setpoint_limits.dir/build
+.PHONY : test_determine_setpoint_limits/fast
+
 test_balanceXY.o: test_balanceXY.cpp.o
 .PHONY : test_balanceXY.o
 
@@ -226,6 +320,30 @@ test_balanceXY.s: test_balanceXY.cpp.s
 test_balanceXY.cpp.s:
 	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_balanceXY.dir/build.make test/CMakeFiles/test_balanceXY.dir/test_balanceXY.cpp.s
 .PHONY : test_balanceXY.cpp.s
+
+test_determine_setpoint_limits.o: test_determine_setpoint_limits.cpp.o
+.PHONY : test_determine_setpoint_limits.o
+
+# target to build an object file
+test_determine_setpoint_limits.cpp.o:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_determine_setpoint_limits.dir/build.make test/CMakeFiles/test_determine_setpoint_limits.dir/test_determine_setpoint_limits.cpp.o
+.PHONY : test_determine_setpoint_limits.cpp.o
+
+test_determine_setpoint_limits.i: test_determine_setpoint_limits.cpp.i
+.PHONY : test_determine_setpoint_limits.i
+
+# target to preprocess a source file
+test_determine_setpoint_limits.cpp.i:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_determine_setpoint_limits.dir/build.make test/CMakeFiles/test_determine_setpoint_limits.dir/test_determine_setpoint_limits.cpp.i
+.PHONY : test_determine_setpoint_limits.cpp.i
+
+test_determine_setpoint_limits.s: test_determine_setpoint_limits.cpp.s
+.PHONY : test_determine_setpoint_limits.s
+
+# target to generate assembly for a file
+test_determine_setpoint_limits.cpp.s:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_determine_setpoint_limits.dir/build.make test/CMakeFiles/test_determine_setpoint_limits.dir/test_determine_setpoint_limits.cpp.s
+.PHONY : test_determine_setpoint_limits.cpp.s
 
 test_getSegments.o: test_getSegments.cpp.o
 .PHONY : test_getSegments.o
@@ -275,6 +393,126 @@ test_getSegments_functions.cpp.s:
 	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_getSegments_functions.dir/build.make test/CMakeFiles/test_getSegments_functions.dir/test_getSegments_functions.cpp.s
 .PHONY : test_getSegments_functions.cpp.s
 
+test_move_straight_line.o: test_move_straight_line.cpp.o
+.PHONY : test_move_straight_line.o
+
+# target to build an object file
+test_move_straight_line.cpp.o:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_move_straight_line.dir/build.make test/CMakeFiles/test_move_straight_line.dir/test_move_straight_line.cpp.o
+.PHONY : test_move_straight_line.cpp.o
+
+test_move_straight_line.i: test_move_straight_line.cpp.i
+.PHONY : test_move_straight_line.i
+
+# target to preprocess a source file
+test_move_straight_line.cpp.i:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_move_straight_line.dir/build.make test/CMakeFiles/test_move_straight_line.dir/test_move_straight_line.cpp.i
+.PHONY : test_move_straight_line.cpp.i
+
+test_move_straight_line.s: test_move_straight_line.cpp.s
+.PHONY : test_move_straight_line.s
+
+# target to generate assembly for a file
+test_move_straight_line.cpp.s:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_move_straight_line.dir/build.make test/CMakeFiles/test_move_straight_line.dir/test_move_straight_line.cpp.s
+.PHONY : test_move_straight_line.cpp.s
+
+test_setpoint_set.o: test_setpoint_set.cpp.o
+.PHONY : test_setpoint_set.o
+
+# target to build an object file
+test_setpoint_set.cpp.o:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_setpoint_set.dir/build.make test/CMakeFiles/test_setpoint_set.dir/test_setpoint_set.cpp.o
+.PHONY : test_setpoint_set.cpp.o
+
+test_setpoint_set.i: test_setpoint_set.cpp.i
+.PHONY : test_setpoint_set.i
+
+# target to preprocess a source file
+test_setpoint_set.cpp.i:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_setpoint_set.dir/build.make test/CMakeFiles/test_setpoint_set.dir/test_setpoint_set.cpp.i
+.PHONY : test_setpoint_set.cpp.i
+
+test_setpoint_set.s: test_setpoint_set.cpp.s
+.PHONY : test_setpoint_set.s
+
+# target to generate assembly for a file
+test_setpoint_set.cpp.s:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_setpoint_set.dir/build.make test/CMakeFiles/test_setpoint_set.dir/test_setpoint_set.cpp.s
+.PHONY : test_setpoint_set.cpp.s
+
+test_static_obstacles_integration.o: test_static_obstacles_integration.cpp.o
+.PHONY : test_static_obstacles_integration.o
+
+# target to build an object file
+test_static_obstacles_integration.cpp.o:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_static_obstacles_integration.dir/build.make test/CMakeFiles/test_static_obstacles_integration.dir/test_static_obstacles_integration.cpp.o
+.PHONY : test_static_obstacles_integration.cpp.o
+
+test_static_obstacles_integration.i: test_static_obstacles_integration.cpp.i
+.PHONY : test_static_obstacles_integration.i
+
+# target to preprocess a source file
+test_static_obstacles_integration.cpp.i:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_static_obstacles_integration.dir/build.make test/CMakeFiles/test_static_obstacles_integration.dir/test_static_obstacles_integration.cpp.i
+.PHONY : test_static_obstacles_integration.cpp.i
+
+test_static_obstacles_integration.s: test_static_obstacles_integration.cpp.s
+.PHONY : test_static_obstacles_integration.s
+
+# target to generate assembly for a file
+test_static_obstacles_integration.cpp.s:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_static_obstacles_integration.dir/build.make test/CMakeFiles/test_static_obstacles_integration.dir/test_static_obstacles_integration.cpp.s
+.PHONY : test_static_obstacles_integration.cpp.s
+
+test_traj1.o: test_traj1.cpp.o
+.PHONY : test_traj1.o
+
+# target to build an object file
+test_traj1.cpp.o:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_traj1.dir/build.make test/CMakeFiles/test_traj1.dir/test_traj1.cpp.o
+.PHONY : test_traj1.cpp.o
+
+test_traj1.i: test_traj1.cpp.i
+.PHONY : test_traj1.i
+
+# target to preprocess a source file
+test_traj1.cpp.i:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_traj1.dir/build.make test/CMakeFiles/test_traj1.dir/test_traj1.cpp.i
+.PHONY : test_traj1.cpp.i
+
+test_traj1.s: test_traj1.cpp.s
+.PHONY : test_traj1.s
+
+# target to generate assembly for a file
+test_traj1.cpp.s:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_traj1.dir/build.make test/CMakeFiles/test_traj1.dir/test_traj1.cpp.s
+.PHONY : test_traj1.cpp.s
+
+test_trajpredict.o: test_trajpredict.cpp.o
+.PHONY : test_trajpredict.o
+
+# target to build an object file
+test_trajpredict.cpp.o:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_trajpredict.dir/build.make test/CMakeFiles/test_trajpredict.dir/test_trajpredict.cpp.o
+.PHONY : test_trajpredict.cpp.o
+
+test_trajpredict.i: test_trajpredict.cpp.i
+.PHONY : test_trajpredict.i
+
+# target to preprocess a source file
+test_trajpredict.cpp.i:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_trajpredict.dir/build.make test/CMakeFiles/test_trajpredict.dir/test_trajpredict.cpp.i
+.PHONY : test_trajpredict.cpp.i
+
+test_trajpredict.s: test_trajpredict.cpp.s
+.PHONY : test_trajpredict.s
+
+# target to generate assembly for a file
+test_trajpredict.cpp.s:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_trajpredict.dir/build.make test/CMakeFiles/test_trajpredict.dir/test_trajpredict.cpp.s
+.PHONY : test_trajpredict.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -287,18 +525,43 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
+	@echo "... test"
 	@echo "... test_balanceXY"
+	@echo "... test_determine_setpoint_limits"
 	@echo "... test_getSegments"
 	@echo "... test_getSegments_functions"
+	@echo "... test_move_straight_line"
+	@echo "... test_setpoint_set"
+	@echo "... test_static_obstacles_integration"
+	@echo "... test_traj1"
+	@echo "... test_trajpredict"
 	@echo "... test_balanceXY.o"
 	@echo "... test_balanceXY.i"
 	@echo "... test_balanceXY.s"
+	@echo "... test_determine_setpoint_limits.o"
+	@echo "... test_determine_setpoint_limits.i"
+	@echo "... test_determine_setpoint_limits.s"
 	@echo "... test_getSegments.o"
 	@echo "... test_getSegments.i"
 	@echo "... test_getSegments.s"
 	@echo "... test_getSegments_functions.o"
 	@echo "... test_getSegments_functions.i"
 	@echo "... test_getSegments_functions.s"
+	@echo "... test_move_straight_line.o"
+	@echo "... test_move_straight_line.i"
+	@echo "... test_move_straight_line.s"
+	@echo "... test_setpoint_set.o"
+	@echo "... test_setpoint_set.i"
+	@echo "... test_setpoint_set.s"
+	@echo "... test_static_obstacles_integration.o"
+	@echo "... test_static_obstacles_integration.i"
+	@echo "... test_static_obstacles_integration.s"
+	@echo "... test_traj1.o"
+	@echo "... test_traj1.i"
+	@echo "... test_traj1.s"
+	@echo "... test_trajpredict.o"
+	@echo "... test_trajpredict.i"
+	@echo "... test_trajpredict.s"
 .PHONY : help
 
 

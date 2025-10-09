@@ -1,43 +1,54 @@
 #include <vector>
 #include <Eigen/Dense>
 #include "spg/setpoint/TrajPredict.hpp"
-#include "spg/setpoint/TrajSegment.hpp"
+#include "spg/setpoint/Traj1.hpp"
 
 namespace spg {
 namespace setpoint {
 
 void TrajPredict(SPGState& d, const std::vector<Segment>& segment) {
-    size_t n = d.traj.p.size();
-    std::vector<int> nvec(n);
-    for (size_t i = 0; i < n; ++i) nvec[i] = i + 1;
-    double Ts = d.par.Ts_predict;
-    std::vector<double> t(n);
-    for (size_t i = 0; i < n; ++i) t[i] = nvec[i] * Ts;
-    size_t ndim = segment[0].p.size();
-    std::vector<double> P, V, A;
-    std::vector<bool> tseg;
-    TrajSegment(segment, t, P, V, A, tseg);
-    // Assign trajectory data
-    d.traj.t = t;
-    d.traj.p.clear();
-    d.traj.v.clear();
-    d.traj.a.clear();
-    d.traj.segment_id.clear();
-    for (size_t i = 0; i < n; ++i) {
-        d.traj.p.push_back(Eigen::Vector3d(P[i * ndim], P[i * ndim + 1], P[i * ndim + 2]));
-        d.traj.v.push_back(Eigen::Vector3d(V[i * ndim], V[i * ndim + 1], V[i * ndim + 2]));
-        d.traj.a.push_back(Eigen::Vector3d(A[i * ndim], A[i * ndim + 1], A[i * ndim + 2]));
-        Eigen::Vector3i seg_id;
-        for (size_t j = 0; j < ndim; ++j) {
-            size_t idx = j + i * ndim;
-            seg_id[j] = tseg[idx] ? 1 : 0;
+    // Get the number of prediction steps from the parameter
+    size_t npredict = static_cast<size_t>(d.par.npredict);
+    double Ts = d.par.Ts_predict;  // Use main sampling time for consistency with Traj1
+    
+    // Ensure trajectory vectors are properly sized
+    d.traj.p.resize(npredict);
+    d.traj.v.resize(npredict);
+    d.traj.a.resize(npredict);
+    d.traj.t.resize(npredict);
+    d.traj.segment_id.resize(npredict);
+    
+    // Call Traj1 multiple times for different time steps: Ts, 2*Ts, 3*Ts, ..., npredict*Ts
+    for (size_t i = 0; i < npredict; ++i) {
+        double time_step = (i + 1) * Ts;
+        
+        // Create a temporary trajectory structure for this time step
+        Traject temp_traj;
+        
+        // Call Traj1 to get the predicted state at this time step
+        Traj1(temp_traj, segment, time_step);
+        
+        // Store the results in the main trajectory
+        if (!temp_traj.p.empty()) {
+            d.traj.p[i] = temp_traj.p[0];
+            d.traj.v[i] = temp_traj.v[0];
+            d.traj.a[i] = temp_traj.a[0];
+            d.traj.t[i] = time_step;
+            d.traj.segment_id[i] = temp_traj.segment_id[0];
+        } else {
+            // Fallback: use zeros if Traj1 fails
+            d.traj.p[i] = Eigen::Vector3d::Zero();
+            d.traj.v[i] = Eigen::Vector3d::Zero();
+            d.traj.a[i] = Eigen::Vector3d::Zero();
+            d.traj.t[i] = time_step;
+            d.traj.segment_id[i] = Eigen::Vector3i::Zero();
         }
-        d.traj.segment_id.push_back(seg_id);
     }
+    
     // Dribble orientation update if needed
     if (d.input.robot.skillID == 1) {
-        for (size_t i = 0; i < n; ++i) {
-            double vnorm = d.traj.v[i].head(ndim - 1).squaredNorm();
+        for (size_t i = 0; i < d.traj.p.size(); ++i) {
+            double vnorm = d.traj.v[i].head(2).squaredNorm();
             if (vnorm > 1e-12) {
                 d.traj.p[i][2] = std::atan2(-d.traj.v[i][0], d.traj.v[i][1]);
             }

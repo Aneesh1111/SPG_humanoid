@@ -1,6 +1,7 @@
 /home/robocup/Downloads/spg_cmake/build/CMakeFiles/spg.dir
 /home/robocup/Downloads/spg_cmake/build/CMakeFiles/imgui.dir
 /home/robocup/Downloads/spg_cmake/build/CMakeFiles/demo.dir
+/home/robocup/Downloads/spg_cmake/build/CMakeFiles/test.dir
 /home/robocup/Downloads/spg_cmake/build/CMakeFiles/edit_cache.dir
 /home/robocup/Downloads/spg_cmake/build/CMakeFiles/rebuild_cache.dir
 /home/robocup/Downloads/spg_cmake/build/CMakeFiles/list_install_components.dir
@@ -10,12 +11,20 @@
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/test_balanceXY.dir
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/test_getSegments.dir
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/test_getSegments_functions.dir
+/home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/test_traj1.dir
+/home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/test_static_obstacles_integration.dir
+/home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/test_move_straight_line.dir
+/home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/test_setpoint_set.dir
+/home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/test_trajpredict.dir
+/home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/test_determine_setpoint_limits.dir
+/home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/test.dir
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/edit_cache.dir
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/rebuild_cache.dir
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/list_install_components.dir
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/install.dir
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/install/local.dir
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/install/strip.dir
+/home/robocup/Downloads/spg_cmake/build/_deps/googletest-build/CMakeFiles/test.dir
 /home/robocup/Downloads/spg_cmake/build/_deps/googletest-build/CMakeFiles/edit_cache.dir
 /home/robocup/Downloads/spg_cmake/build/_deps/googletest-build/CMakeFiles/rebuild_cache.dir
 /home/robocup/Downloads/spg_cmake/build/_deps/googletest-build/CMakeFiles/list_install_components.dir
@@ -24,6 +33,7 @@
 /home/robocup/Downloads/spg_cmake/build/_deps/googletest-build/CMakeFiles/install/strip.dir
 /home/robocup/Downloads/spg_cmake/build/_deps/googletest-build/googlemock/CMakeFiles/gmock.dir
 /home/robocup/Downloads/spg_cmake/build/_deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir
+/home/robocup/Downloads/spg_cmake/build/_deps/googletest-build/googlemock/CMakeFiles/test.dir
 /home/robocup/Downloads/spg_cmake/build/_deps/googletest-build/googlemock/CMakeFiles/edit_cache.dir
 /home/robocup/Downloads/spg_cmake/build/_deps/googletest-build/googlemock/CMakeFiles/rebuild_cache.dir
 /home/robocup/Downloads/spg_cmake/build/_deps/googletest-build/googlemock/CMakeFiles/list_install_components.dir
@@ -32,6 +42,7 @@
 /home/robocup/Downloads/spg_cmake/build/_deps/googletest-build/googlemock/CMakeFiles/install/strip.dir
 /home/robocup/Downloads/spg_cmake/build/_deps/googletest-build/googletest/CMakeFiles/gtest.dir
 /home/robocup/Downloads/spg_cmake/build/_deps/googletest-build/googletest/CMakeFiles/gtest_main.dir
+/home/robocup/Downloads/spg_cmake/build/_deps/googletest-build/googletest/CMakeFiles/test.dir
 /home/robocup/Downloads/spg_cmake/build/_deps/googletest-build/googletest/CMakeFiles/edit_cache.dir
 /home/robocup/Downloads/spg_cmake/build/_deps/googletest-build/googletest/CMakeFiles/rebuild_cache.dir
 /home/robocup/Downloads/spg_cmake/build/_deps/googletest-build/googletest/CMakeFiles/list_install_components.dir

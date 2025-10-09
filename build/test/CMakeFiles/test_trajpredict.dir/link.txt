@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/test_trajpredict.dir/test_trajpredict.cpp.o -o test_trajpredict  ../libspg.a ../lib/libgtest_main.a ../lib/libgtest.a 

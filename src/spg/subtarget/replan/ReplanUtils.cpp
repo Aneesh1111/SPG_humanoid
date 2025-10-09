@@ -3,12 +3,14 @@
 #include <vector>
 #include <cmath>
 #include <algorithm>
+#include <limits>
 #include "spg/setpoint/BalanceXY.hpp"
 #include "spg/setpoint/Wrap.hpp"
 #include "spg/subtarget/CheckCollisionFree.hpp"
 #include "spg/setpoint/ConvertSegment.hpp"
 #include "spg/subtarget/replan/search/BesideObstacle.hpp"
 #include "spg/subtarget/replan/search/Random.hpp"
+#include <iostream>
 
 namespace spg {
 namespace subtarget {
@@ -54,9 +56,9 @@ Subtarget determineSetpointLimits(const SPGState& d, const Subtarget& subtarget)
     // Convert back if needed
     balanced_segments = spg::setpoint::convertBackSegmentVector(balanced_segments_setpoint);
     subtarget_copy.segment = balanced_segments;
-    subtarget_copy.vmax = vmax;
-    subtarget_copy.amax = amax;
-    subtarget_copy.dmax = dmax;
+    subtarget_copy.vmax = vmax_vec;
+    subtarget_copy.amax = amax_vec;
+    subtarget_copy.dmax = dmax_vec;
     subtarget_copy.eta = std::max(subtarget_copy.segment[2].t[0], subtarget_copy.segment[2].t[1]);
     return subtarget_copy;
 }
@@ -67,29 +69,79 @@ double getDistanceInsidePenaltyArea(const SPGState& d, const Eigen::Vector3d& po
     return std::max(0.0, std::min(x, y));
 }
 
-bool newSubtargetDesired(const SPGState& d) {
-    // ...implement logic based on get_checks in MATLAB...
-    // For brevity, only a simplified version is shown here. Full logic should be ported as needed.
-    double arrival_margin = 1.5;
-    double eta_margin = 0.5;
+CheckResults getChecks(const SPGState& d) {
+    CheckResults chk;
+    
+    double arrival_margin = 1.5; // [m]
+    double eta_margin = 0.5; // [s]
     double thr_vrotate = d.par.vmax_rotate * 0.1;
     double thr_vmove = d.par.vmax_move * 0.1;
     double age_threshold = 3.0 / d.par.Ts;
+    
     double angle_diff = std::abs(std::fmod(d.setpoint.p(2) - d.subtarget.p(2) + M_PI, 2 * M_PI) - M_PI);
     bool small_angle_diff = angle_diff < d.par.scale_angle && std::abs(d.setpoint.v(2)) < thr_vrotate;
-    bool is_colliding = !d.subtarget.collisionfree;
-    bool is_at_subtarget_soon = d.subtarget.eta < eta_margin;
-    bool age_threshold_reached = d.subtarget.age >= age_threshold;
-    bool starts_with_violation = d.subtarget.violation_count > 0;
-    bool hasball = (d.input.robot.skillID >= 1 && d.input.robot.skillID <= 4);
-    if (hasball) {
-        return is_colliding || is_at_subtarget_soon || age_threshold_reached || starts_with_violation;
+    
+    chk.age_threshold_reached = d.subtarget.age >= age_threshold;
+    chk.hasball = (d.input.robot.skillID >= 1 && d.input.robot.skillID <= 4);
+    chk.is_colliding = !d.subtarget.collisionfree;
+    chk.start_braking = (d.subtarget.segment_id(0) >= 2) && (d.subtarget.segment_id(1) >= 2);
+    chk.small_angle_diff = small_angle_diff;
+    chk.rotate_slow_with_large_angle_diff = !small_angle_diff && d.subtarget.amax(2) < d.par.amax_rotate && d.setpoint.v.head<2>().norm() < thr_vmove;
+    chk.rotate_fast_with_small_angle_diff = small_angle_diff && d.subtarget.amax(2) == d.par.amax_rotate && std::abs(d.setpoint.v(2)) < thr_vrotate;
+    chk.is_close_to_subtarget = (d.subtarget.p.head<2>() - d.setpoint.p.head<2>()).norm() < arrival_margin;
+    chk.is_at_subtarget_soon = d.subtarget.eta < eta_margin;
+    chk.subtarget_at_target = (d.subtarget.p.head<2>() - d.target.p.head<2>()).norm() < arrival_margin;
+    chk.finished_fast_rotation = small_angle_diff && d.subtarget.amax(2) == d.par.amax_rotate;
+    chk.fast_rotation_needed = !small_angle_diff && d.subtarget.amax(2) < d.par.amax_rotate && d.setpoint.v.head<2>().norm() < 0.3;
+    chk.move_to_worse_position = (d.setpoint.p.head<2>() - d.target.p.head<2>()).norm() + 1.0 < (d.subtarget.p.head<2>() - d.target.p.head<2>()).norm();
+    chk.move_slowly_to_better_position = (d.setpoint.p.head<2>() - d.target.p.head<2>()).norm() - 2.0 > (d.subtarget.p.head<2>() - d.target.p.head<2>()).norm() && 
+                                         d.subtarget.vmax.head<2>().norm() < 0.99 * d.par.vmax_move && small_angle_diff;
+    chk.large_angle_diff_with_ball = !small_angle_diff && d.input.robot.skillID && d.subtarget.amax(2) < d.par.amax_rotate;
+    chk.starts_with_violation = d.subtarget.violation_count > 0;
+    chk.target_outside_penalty_area_while_subtarget_inside = getDistanceInsidePenaltyArea(d, d.subtarget.p) > 0 && 
+                                                             getDistanceInsidePenaltyArea(d, d.target.p) < std::numeric_limits<double>::epsilon();
+    
+    return chk;
+}
+
+bool newSubtargetDesired(const SPGState& d) {
+    CheckResults chk = getChecks(d);
+    
+    if (chk.hasball) {
+        std::vector<bool> checks = {
+            chk.is_colliding,
+            chk.is_at_subtarget_soon,
+            chk.age_threshold_reached,
+            chk.starts_with_violation
+            // Note: Some checks are commented out in MATLAB:
+            // chk.target_outside_penalty_area_while_subtarget_inside
+            // chk.start_braking
+            // chk.rotate_slow_with_large_angle_diff
+            // chk.rotate_fast_with_small_angle_diff
+            // chk.move_to_worse_position
+            // chk.move_slowly_to_better_position
+            // chk.large_angle_diff_with_ball
+        };
+        
+        return std::any_of(checks.begin(), checks.end(), [](bool check) { return check; });
     } else {
-        return is_colliding || age_threshold_reached || is_at_subtarget_soon;
+        // Moving without ball
+        std::vector<bool> checks = {
+            chk.is_colliding,
+            chk.age_threshold_reached,
+            chk.is_at_subtarget_soon
+            // Note: Some checks are commented out in MATLAB:
+            // chk.start_braking
+            // chk.starts_with_violation
+            // chk.target_outside_penalty_area_while_subtarget_inside
+            // chk.is_close_to_subtarget
+        };
+        
+        return std::any_of(checks.begin(), checks.end(), [](bool check) { return check; });
     }
 }
 
-Subtarget newSubtarget(const SPGState& d, const Subtarget& subtarget) {
+Subtarget newSubtarget(SPGState& d, const Subtarget& subtarget) {
     Subtarget best = d.subtarget;
     double phi = subtarget.p(2);
     // TODO: Implement defending logic if needed
@@ -144,7 +196,7 @@ Subtarget quickstop(const SPGState& d, const Subtarget& subtarget) {
     return subtarget_copy;
 }
 
-Subtarget toTarget(const SPGState& d) {
+Subtarget toTarget(SPGState& d) {
     Subtarget subtarget_target = d.subtarget;
     subtarget_target.p = {d.target.p(0), d.target.p(1), d.subtarget.p(2)};
     subtarget_target.v = d.target.v;

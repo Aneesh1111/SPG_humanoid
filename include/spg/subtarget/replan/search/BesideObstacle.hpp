@@ -6,7 +6,7 @@ namespace subtarget {
 namespace replan {
 namespace search {
 
-Subtarget besideObstacle(const SPGState& d, const Subtarget& best);
+Subtarget besideObstacle(SPGState& d, const Subtarget& best);
 
 } // namespace search
 } // namespace replan

@@ -65,6 +65,16 @@ CMAKE_BINARY_DIR = /home/robocup/Downloads/spg_cmake/build
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running tests..."
+	/usr/bin/ctest --force-new-ctest-process $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+.PHONY : test/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "No interactive CMake dialog available..."
@@ -238,6 +248,84 @@ test_getSegments_functions: cmake_check_build_system
 test_getSegments_functions/fast:
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_getSegments_functions.dir/build.make test/CMakeFiles/test_getSegments_functions.dir/build
 .PHONY : test_getSegments_functions/fast
+
+#=============================================================================
+# Target rules for targets named test_traj1
+
+# Build rule for target.
+test_traj1: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_traj1
+.PHONY : test_traj1
+
+# fast build rule for target.
+test_traj1/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_traj1.dir/build.make test/CMakeFiles/test_traj1.dir/build
+.PHONY : test_traj1/fast
+
+#=============================================================================
+# Target rules for targets named test_static_obstacles_integration
+
+# Build rule for target.
+test_static_obstacles_integration: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_static_obstacles_integration
+.PHONY : test_static_obstacles_integration
+
+# fast build rule for target.
+test_static_obstacles_integration/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_static_obstacles_integration.dir/build.make test/CMakeFiles/test_static_obstacles_integration.dir/build
+.PHONY : test_static_obstacles_integration/fast
+
+#=============================================================================
+# Target rules for targets named test_move_straight_line
+
+# Build rule for target.
+test_move_straight_line: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_move_straight_line
+.PHONY : test_move_straight_line
+
+# fast build rule for target.
+test_move_straight_line/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_move_straight_line.dir/build.make test/CMakeFiles/test_move_straight_line.dir/build
+.PHONY : test_move_straight_line/fast
+
+#=============================================================================
+# Target rules for targets named test_setpoint_set
+
+# Build rule for target.
+test_setpoint_set: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_setpoint_set
+.PHONY : test_setpoint_set
+
+# fast build rule for target.
+test_setpoint_set/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_setpoint_set.dir/build.make test/CMakeFiles/test_setpoint_set.dir/build
+.PHONY : test_setpoint_set/fast
+
+#=============================================================================
+# Target rules for targets named test_trajpredict
+
+# Build rule for target.
+test_trajpredict: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_trajpredict
+.PHONY : test_trajpredict
+
+# fast build rule for target.
+test_trajpredict/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_trajpredict.dir/build.make test/CMakeFiles/test_trajpredict.dir/build
+.PHONY : test_trajpredict/fast
+
+#=============================================================================
+# Target rules for targets named test_determine_setpoint_limits
+
+# Build rule for target.
+test_determine_setpoint_limits: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_determine_setpoint_limits
+.PHONY : test_determine_setpoint_limits
+
+# fast build rule for target.
+test_determine_setpoint_limits/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_determine_setpoint_limits.dir/build.make test/CMakeFiles/test_determine_setpoint_limits.dir/build
+.PHONY : test_determine_setpoint_limits/fast
 
 #=============================================================================
 # Target rules for targets named gmock
@@ -891,30 +979,6 @@ src/spg/setpoint/TrajSegment.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/setpoint/TrajSegment.cpp.s
 .PHONY : src/spg/setpoint/TrajSegment.cpp.s
 
-src/spg/setpoint/TrajectoryUtils.o: src/spg/setpoint/TrajectoryUtils.cpp.o
-.PHONY : src/spg/setpoint/TrajectoryUtils.o
-
-# target to build an object file
-src/spg/setpoint/TrajectoryUtils.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/setpoint/TrajectoryUtils.cpp.o
-.PHONY : src/spg/setpoint/TrajectoryUtils.cpp.o
-
-src/spg/setpoint/TrajectoryUtils.i: src/spg/setpoint/TrajectoryUtils.cpp.i
-.PHONY : src/spg/setpoint/TrajectoryUtils.i
-
-# target to preprocess a source file
-src/spg/setpoint/TrajectoryUtils.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/setpoint/TrajectoryUtils.cpp.i
-.PHONY : src/spg/setpoint/TrajectoryUtils.cpp.i
-
-src/spg/setpoint/TrajectoryUtils.s: src/spg/setpoint/TrajectoryUtils.cpp.s
-.PHONY : src/spg/setpoint/TrajectoryUtils.s
-
-# target to generate assembly for a file
-src/spg/setpoint/TrajectoryUtils.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/setpoint/TrajectoryUtils.cpp.s
-.PHONY : src/spg/setpoint/TrajectoryUtils.cpp.s
-
 src/spg/setpoint/Wrap.o: src/spg/setpoint/Wrap.cpp.o
 .PHONY : src/spg/setpoint/Wrap.o
 
@@ -1335,6 +1399,7 @@ help:
 	@echo "... install/strip"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
+	@echo "... test"
 	@echo "... demo"
 	@echo "... gmock"
 	@echo "... gmock_main"
@@ -1343,8 +1408,14 @@ help:
 	@echo "... imgui"
 	@echo "... spg"
 	@echo "... test_balanceXY"
+	@echo "... test_determine_setpoint_limits"
 	@echo "... test_getSegments"
 	@echo "... test_getSegments_functions"
+	@echo "... test_move_straight_line"
+	@echo "... test_setpoint_set"
+	@echo "... test_static_obstacles_integration"
+	@echo "... test_traj1"
+	@echo "... test_trajpredict"
 	@echo "... demo/main.o"
 	@echo "... demo/main.i"
 	@echo "... demo/main.s"
@@ -1420,9 +1491,6 @@ help:
 	@echo "... src/spg/setpoint/TrajSegment.o"
 	@echo "... src/spg/setpoint/TrajSegment.i"
 	@echo "... src/spg/setpoint/TrajSegment.s"
-	@echo "... src/spg/setpoint/TrajectoryUtils.o"
-	@echo "... src/spg/setpoint/TrajectoryUtils.i"
-	@echo "... src/spg/setpoint/TrajectoryUtils.s"
 	@echo "... src/spg/setpoint/Wrap.o"
 	@echo "... src/spg/setpoint/Wrap.i"
 	@echo "... src/spg/setpoint/Wrap.s"

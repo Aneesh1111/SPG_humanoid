@@ -32,7 +32,7 @@ Subtarget besideObstacle(SPGState& d, const Subtarget& best) {
                     for (size_t k = 0; k < d.input.obstacles.p.size(); ++k) obstacles_mat.row(k) = d.input.obstacles.p[k];
                     if (spg::subtarget::replan::notTouchingObstacle(subtarget_candidate.p.head<2>(), obstacles_mat, obstacle_margin)) {
                         Eigen::Vector2d v_xy = v1.normalized() * speed;
-                        subtarget_candidate.v = Eigen::Vector3d(v_xy(0), v_xy(1), 0);
+                        subtarget_candidate.v = Eigen::Vector3d(0,0,0);//Eigen::Vector3d(v_xy(0), v_xy(1), 0);
                         subtarget_candidate = spg::subtarget::replan::determineSetpointLimits(d, subtarget_candidate);
                         subtarget_candidate = spg::subtarget::checkCollisionFree(d, subtarget_candidate, d.par.margin_replan);
                         // Update best

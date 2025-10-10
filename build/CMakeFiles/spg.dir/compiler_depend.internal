@@ -5,17 +5,9 @@ CMakeFiles/spg.dir/src/SPGSimulator.cpp.o
  /home/robocup/Downloads/spg_cmake/src/SPGSimulator.cpp
  /home/robocup/Downloads/spg_cmake/include/SPGSimulator.hpp
  /home/robocup/Downloads/spg_cmake/include/spg/Init.hpp
- /home/robocup/Downloads/spg_cmake/include/spg/setpoint/ConvertSegment.hpp
- /home/robocup/Downloads/spg_cmake/include/spg/setpoint/GetSegments.hpp
- /home/robocup/Downloads/spg_cmake/include/spg/setpoint/Segment.hpp
  /home/robocup/Downloads/spg_cmake/include/spg/setpoint/Setpoint.hpp
  /home/robocup/Downloads/spg_cmake/include/spg/setpoint/StateCorrection.hpp
- /home/robocup/Downloads/spg_cmake/include/spg/setpoint/Traj1.hpp
- /home/robocup/Downloads/spg_cmake/include/spg/setpoint/TrajPredict.hpp
- /home/robocup/Downloads/spg_cmake/include/spg/setpoint/Wrap.hpp
- /home/robocup/Downloads/spg_cmake/include/spg/subtarget/CheckCollisionFree.hpp
  /home/robocup/Downloads/spg_cmake/include/spg/subtarget/SubtargetSet.hpp
- /home/robocup/Downloads/spg_cmake/include/spg/subtarget/replan/ReplanUtils.hpp
  /home/robocup/Downloads/spg_cmake/include/spg/target/Target.hpp
  /home/robocup/Downloads/spg_cmake/include/visualization/SimulatorVisualizer.hpp
  /usr/include/alloca.h

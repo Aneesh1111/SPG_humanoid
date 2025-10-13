@@ -144,6 +144,7 @@ test/all: test/CMakeFiles/test_move_straight_line.dir/all
 test/all: test/CMakeFiles/test_setpoint_set.dir/all
 test/all: test/CMakeFiles/test_trajpredict.dir/all
 test/all: test/CMakeFiles/test_determine_setpoint_limits.dir/all
+test/all: test/CMakeFiles/test_bouncing_obstacles_integration.dir/all
 test/all: _deps/googletest-build/all
 .PHONY : test/all
 
@@ -161,6 +162,7 @@ test/clean: test/CMakeFiles/test_move_straight_line.dir/clean
 test/clean: test/CMakeFiles/test_setpoint_set.dir/clean
 test/clean: test/CMakeFiles/test_trajpredict.dir/clean
 test/clean: test/CMakeFiles/test_determine_setpoint_limits.dir/clean
+test/clean: test/CMakeFiles/test_bouncing_obstacles_integration.dir/clean
 test/clean: _deps/googletest-build/clean
 .PHONY : test/clean
 
@@ -280,7 +282,7 @@ test/CMakeFiles/test_getSegments.dir/all: _deps/googletest-build/googletest/CMak
 test/CMakeFiles/test_getSegments.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_getSegments.dir/build.make test/CMakeFiles/test_getSegments.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_getSegments.dir/build.make test/CMakeFiles/test_getSegments.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=58,59 "Built target test_getSegments"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=60,61 "Built target test_getSegments"
 .PHONY : test/CMakeFiles/test_getSegments.dir/all
 
 # Build rule for subdir invocation for target.
@@ -308,7 +310,7 @@ test/CMakeFiles/test_getSegments_functions.dir/all: _deps/googletest-build/googl
 test/CMakeFiles/test_getSegments_functions.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_getSegments_functions.dir/build.make test/CMakeFiles/test_getSegments_functions.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_getSegments_functions.dir/build.make test/CMakeFiles/test_getSegments_functions.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=60,61 "Built target test_getSegments_functions"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=62,63 "Built target test_getSegments_functions"
 .PHONY : test/CMakeFiles/test_getSegments_functions.dir/all
 
 # Build rule for subdir invocation for target.
@@ -336,7 +338,7 @@ test/CMakeFiles/test_traj1.dir/all: _deps/googletest-build/googletest/CMakeFiles
 test/CMakeFiles/test_traj1.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_traj1.dir/build.make test/CMakeFiles/test_traj1.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_traj1.dir/build.make test/CMakeFiles/test_traj1.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=68,69 "Built target test_traj1"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=70,71 "Built target test_traj1"
 .PHONY : test/CMakeFiles/test_traj1.dir/all
 
 # Build rule for subdir invocation for target.
@@ -365,7 +367,7 @@ test/CMakeFiles/test_static_obstacles_integration.dir/all: _deps/googletest-buil
 test/CMakeFiles/test_static_obstacles_integration.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_static_obstacles_integration.dir/build.make test/CMakeFiles/test_static_obstacles_integration.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_static_obstacles_integration.dir/build.make test/CMakeFiles/test_static_obstacles_integration.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=66,67 "Built target test_static_obstacles_integration"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=68,69 "Built target test_static_obstacles_integration"
 .PHONY : test/CMakeFiles/test_static_obstacles_integration.dir/all
 
 # Build rule for subdir invocation for target.
@@ -394,7 +396,7 @@ test/CMakeFiles/test_move_straight_line.dir/all: _deps/googletest-build/googlete
 test/CMakeFiles/test_move_straight_line.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_move_straight_line.dir/build.make test/CMakeFiles/test_move_straight_line.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_move_straight_line.dir/build.make test/CMakeFiles/test_move_straight_line.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=62,63 "Built target test_move_straight_line"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=64,65 "Built target test_move_straight_line"
 .PHONY : test/CMakeFiles/test_move_straight_line.dir/all
 
 # Build rule for subdir invocation for target.
@@ -422,7 +424,7 @@ test/CMakeFiles/test_setpoint_set.dir/all: _deps/googletest-build/googletest/CMa
 test/CMakeFiles/test_setpoint_set.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_setpoint_set.dir/build.make test/CMakeFiles/test_setpoint_set.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_setpoint_set.dir/build.make test/CMakeFiles/test_setpoint_set.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=64,65 "Built target test_setpoint_set"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=66,67 "Built target test_setpoint_set"
 .PHONY : test/CMakeFiles/test_setpoint_set.dir/all
 
 # Build rule for subdir invocation for target.
@@ -450,7 +452,7 @@ test/CMakeFiles/test_trajpredict.dir/all: _deps/googletest-build/googletest/CMak
 test/CMakeFiles/test_trajpredict.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_trajpredict.dir/build.make test/CMakeFiles/test_trajpredict.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_trajpredict.dir/build.make test/CMakeFiles/test_trajpredict.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=70,71 "Built target test_trajpredict"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=72,73 "Built target test_trajpredict"
 .PHONY : test/CMakeFiles/test_trajpredict.dir/all
 
 # Build rule for subdir invocation for target.
@@ -478,7 +480,7 @@ test/CMakeFiles/test_determine_setpoint_limits.dir/all: _deps/googletest-build/g
 test/CMakeFiles/test_determine_setpoint_limits.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_determine_setpoint_limits.dir/build.make test/CMakeFiles/test_determine_setpoint_limits.dir/depend
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_determine_setpoint_limits.dir/build.make test/CMakeFiles/test_determine_setpoint_limits.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=56,57 "Built target test_determine_setpoint_limits"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=58,59 "Built target test_determine_setpoint_limits"
 .PHONY : test/CMakeFiles/test_determine_setpoint_limits.dir/all
 
 # Build rule for subdir invocation for target.
@@ -496,6 +498,35 @@ test_determine_setpoint_limits: test/CMakeFiles/test_determine_setpoint_limits.d
 test/CMakeFiles/test_determine_setpoint_limits.dir/clean:
 	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_determine_setpoint_limits.dir/build.make test/CMakeFiles/test_determine_setpoint_limits.dir/clean
 .PHONY : test/CMakeFiles/test_determine_setpoint_limits.dir/clean
+
+#=============================================================================
+# Target rules for target test/CMakeFiles/test_bouncing_obstacles_integration.dir
+
+# All Build rule for target.
+test/CMakeFiles/test_bouncing_obstacles_integration.dir/all: CMakeFiles/spg.dir/all
+test/CMakeFiles/test_bouncing_obstacles_integration.dir/all: CMakeFiles/imgui.dir/all
+test/CMakeFiles/test_bouncing_obstacles_integration.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest.dir/all
+test/CMakeFiles/test_bouncing_obstacles_integration.dir/all: _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/all
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_bouncing_obstacles_integration.dir/build.make test/CMakeFiles/test_bouncing_obstacles_integration.dir/depend
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_bouncing_obstacles_integration.dir/build.make test/CMakeFiles/test_bouncing_obstacles_integration.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=56,57 "Built target test_bouncing_obstacles_integration"
+.PHONY : test/CMakeFiles/test_bouncing_obstacles_integration.dir/all
+
+# Build rule for subdir invocation for target.
+test/CMakeFiles/test_bouncing_obstacles_integration.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/robocup/Downloads/spg_cmake/build/CMakeFiles 49
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_bouncing_obstacles_integration.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/robocup/Downloads/spg_cmake/build/CMakeFiles 0
+.PHONY : test/CMakeFiles/test_bouncing_obstacles_integration.dir/rule
+
+# Convenience name for target.
+test_bouncing_obstacles_integration: test/CMakeFiles/test_bouncing_obstacles_integration.dir/rule
+.PHONY : test_bouncing_obstacles_integration
+
+# clean rule for target.
+test/CMakeFiles/test_bouncing_obstacles_integration.dir/clean:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_bouncing_obstacles_integration.dir/build.make test/CMakeFiles/test_bouncing_obstacles_integration.dir/clean
+.PHONY : test/CMakeFiles/test_bouncing_obstacles_integration.dir/clean
 
 #=============================================================================
 # Target rules for target _deps/googletest-build/googlemock/CMakeFiles/gmock.dir

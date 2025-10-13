@@ -111,9 +111,11 @@ void SPGSimulator::run() {
                     state_.input.obstacles.p[i] += state_.input.obstacles.v[i] * dt;
                     
                     // Bounce off field boundaries
-                    // Field dimensions: -4.5 to 4.5 in X, -3 to 3 in Y (typical soccer field)
-                    const double field_x_min = -4.5, field_x_max = 4.5;
-                    const double field_y_min = -3.0, field_y_max = 3.0;
+                    // Use field dimensions from SPG parameters for proper field size
+                    const double field_x_half = state_.par.field_size[0] / 2.0;  // field_width / 2
+                    const double field_y_half = state_.par.field_size[1] / 2.0;  // field_height / 2
+                    const double field_x_min = -field_x_half, field_x_max = field_x_half;
+                    const double field_y_min = -field_y_half, field_y_max = field_y_half;
                     const double radius = state_.input.obstacles.r[i];
                     
                     // Bounce off X boundaries

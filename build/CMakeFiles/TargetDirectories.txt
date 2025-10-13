@@ -17,6 +17,7 @@
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/test_setpoint_set.dir
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/test_trajpredict.dir
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/test_determine_setpoint_limits.dir
+/home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/test_bouncing_obstacles_integration.dir
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/test.dir
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/edit_cache.dir
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/rebuild_cache.dir

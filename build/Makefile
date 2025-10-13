@@ -328,6 +328,19 @@ test_determine_setpoint_limits/fast:
 .PHONY : test_determine_setpoint_limits/fast
 
 #=============================================================================
+# Target rules for targets named test_bouncing_obstacles_integration
+
+# Build rule for target.
+test_bouncing_obstacles_integration: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_bouncing_obstacles_integration
+.PHONY : test_bouncing_obstacles_integration
+
+# fast build rule for target.
+test_bouncing_obstacles_integration/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_bouncing_obstacles_integration.dir/build.make test/CMakeFiles/test_bouncing_obstacles_integration.dir/build
+.PHONY : test_bouncing_obstacles_integration/fast
+
+#=============================================================================
 # Target rules for targets named gmock
 
 # Build rule for target.
@@ -1408,6 +1421,7 @@ help:
 	@echo "... imgui"
 	@echo "... spg"
 	@echo "... test_balanceXY"
+	@echo "... test_bouncing_obstacles_integration"
 	@echo "... test_determine_setpoint_limits"
 	@echo "... test_getSegments"
 	@echo "... test_getSegments_functions"

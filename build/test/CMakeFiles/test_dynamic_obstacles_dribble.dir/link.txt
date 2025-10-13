@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/test_dynamic_obstacles_dribble.dir/test_dynamic_obstacles_dribble.cpp.o -o test_dynamic_obstacles_dribble  ../libspg.a ../lib/libgtest_main.a ../libimgui.a -lglfw -lGL -lGLU ../lib/libgtest.a 

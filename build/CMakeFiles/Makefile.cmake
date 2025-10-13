@@ -95,6 +95,7 @@ set(CMAKE_DEPEND_INFO_FILES
   "test/CMakeFiles/test_setpoint_set.dir/DependInfo.cmake"
   "test/CMakeFiles/test_trajpredict.dir/DependInfo.cmake"
   "test/CMakeFiles/test_determine_setpoint_limits.dir/DependInfo.cmake"
+  "test/CMakeFiles/test_bouncing_obstacles_integration.dir/DependInfo.cmake"
   "_deps/googletest-build/googlemock/CMakeFiles/gmock.dir/DependInfo.cmake"
   "_deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/DependInfo.cmake"
   "_deps/googletest-build/googletest/CMakeFiles/gtest.dir/DependInfo.cmake"

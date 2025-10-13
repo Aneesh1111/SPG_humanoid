@@ -297,6 +297,20 @@ test_determine_setpoint_limits/fast:
 	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_determine_setpoint_limits.dir/build.make test/CMakeFiles/test_determine_setpoint_limits.dir/build
 .PHONY : test_determine_setpoint_limits/fast
 
+# Convenience name for target.
+test/CMakeFiles/test_bouncing_obstacles_integration.dir/rule:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_bouncing_obstacles_integration.dir/rule
+.PHONY : test/CMakeFiles/test_bouncing_obstacles_integration.dir/rule
+
+# Convenience name for target.
+test_bouncing_obstacles_integration: test/CMakeFiles/test_bouncing_obstacles_integration.dir/rule
+.PHONY : test_bouncing_obstacles_integration
+
+# fast build rule for target.
+test_bouncing_obstacles_integration/fast:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_bouncing_obstacles_integration.dir/build.make test/CMakeFiles/test_bouncing_obstacles_integration.dir/build
+.PHONY : test_bouncing_obstacles_integration/fast
+
 test_balanceXY.o: test_balanceXY.cpp.o
 .PHONY : test_balanceXY.o
 
@@ -320,6 +334,30 @@ test_balanceXY.s: test_balanceXY.cpp.s
 test_balanceXY.cpp.s:
 	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_balanceXY.dir/build.make test/CMakeFiles/test_balanceXY.dir/test_balanceXY.cpp.s
 .PHONY : test_balanceXY.cpp.s
+
+test_bouncing_obstacles_integration.o: test_bouncing_obstacles_integration.cpp.o
+.PHONY : test_bouncing_obstacles_integration.o
+
+# target to build an object file
+test_bouncing_obstacles_integration.cpp.o:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_bouncing_obstacles_integration.dir/build.make test/CMakeFiles/test_bouncing_obstacles_integration.dir/test_bouncing_obstacles_integration.cpp.o
+.PHONY : test_bouncing_obstacles_integration.cpp.o
+
+test_bouncing_obstacles_integration.i: test_bouncing_obstacles_integration.cpp.i
+.PHONY : test_bouncing_obstacles_integration.i
+
+# target to preprocess a source file
+test_bouncing_obstacles_integration.cpp.i:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_bouncing_obstacles_integration.dir/build.make test/CMakeFiles/test_bouncing_obstacles_integration.dir/test_bouncing_obstacles_integration.cpp.i
+.PHONY : test_bouncing_obstacles_integration.cpp.i
+
+test_bouncing_obstacles_integration.s: test_bouncing_obstacles_integration.cpp.s
+.PHONY : test_bouncing_obstacles_integration.s
+
+# target to generate assembly for a file
+test_bouncing_obstacles_integration.cpp.s:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_bouncing_obstacles_integration.dir/build.make test/CMakeFiles/test_bouncing_obstacles_integration.dir/test_bouncing_obstacles_integration.cpp.s
+.PHONY : test_bouncing_obstacles_integration.cpp.s
 
 test_determine_setpoint_limits.o: test_determine_setpoint_limits.cpp.o
 .PHONY : test_determine_setpoint_limits.o
@@ -527,6 +565,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... test"
 	@echo "... test_balanceXY"
+	@echo "... test_bouncing_obstacles_integration"
 	@echo "... test_determine_setpoint_limits"
 	@echo "... test_getSegments"
 	@echo "... test_getSegments_functions"
@@ -538,6 +577,9 @@ help:
 	@echo "... test_balanceXY.o"
 	@echo "... test_balanceXY.i"
 	@echo "... test_balanceXY.s"
+	@echo "... test_bouncing_obstacles_integration.o"
+	@echo "... test_bouncing_obstacles_integration.i"
+	@echo "... test_bouncing_obstacles_integration.s"
 	@echo "... test_determine_setpoint_limits.o"
 	@echo "... test_determine_setpoint_limits.i"
 	@echo "... test_determine_setpoint_limits.s"

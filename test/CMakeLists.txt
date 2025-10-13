@@ -58,6 +58,11 @@ add_executable(test_determine_setpoint_limits test_determine_setpoint_limits.cpp
 target_link_libraries(test_determine_setpoint_limits PRIVATE spg gtest_main)
 target_include_directories(test_determine_setpoint_limits PRIVATE ${CMAKE_SOURCE_DIR}/include)
 
+# Add Bouncing Obstacles Integration test
+add_executable(test_bouncing_obstacles_integration test_bouncing_obstacles_integration.cpp)
+target_link_libraries(test_bouncing_obstacles_integration PRIVATE spg gtest_main imgui glfw GL GLU)
+target_include_directories(test_bouncing_obstacles_integration PRIVATE ${CMAKE_SOURCE_DIR}/include)
+
 add_test(NAME BalanceXYTest COMMAND test_balanceXY)
 add_test(NAME GetSegmentsTest COMMAND test_getSegments)
 add_test(NAME GetSegmentsFunctionsTest COMMAND test_getSegments_functions)
@@ -67,3 +72,4 @@ add_test(NAME StaticObstaclesIntegrationTest COMMAND test_static_obstacles_integ
 add_test(NAME MoveStraightLineTest COMMAND test_move_straight_line)
 add_test(NAME SetpointSetTest COMMAND test_setpoint_set)
 add_test(NAME DetermineSetpointLimitsTest COMMAND test_determine_setpoint_limits)
+add_test(NAME BouncingObstaclesIntegrationTest COMMAND test_bouncing_obstacles_integration)

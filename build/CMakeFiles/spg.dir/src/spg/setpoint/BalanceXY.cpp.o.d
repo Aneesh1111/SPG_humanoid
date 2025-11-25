@@ -404,4 +404,6 @@ CMakeFiles/spg.dir/src/spg/setpoint/BalanceXY.cpp.o: \
  /home/robocup/Downloads/spg_cmake/include/spg/setpoint/BalanceXY.hpp \
  /home/robocup/Downloads/spg_cmake/include/spg/setpoint/Segment.hpp \
  /home/robocup/Downloads/spg_cmake/include/spg/setpoint/GetSegments.hpp \
- /home/robocup/Downloads/spg_cmake/include/spg/setpoint/Wrap.hpp
+ /home/robocup/Downloads/spg_cmake/include/spg/setpoint/Wrap.hpp \
+ /home/robocup/Downloads/spg_cmake/include/spg/HumanoidUtils.hpp \
+ /home/robocup/Downloads/spg_cmake/include/spg/Init.hpp

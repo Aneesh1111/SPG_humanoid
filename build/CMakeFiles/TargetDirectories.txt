@@ -1,6 +1,7 @@
 /home/robocup/Downloads/spg_cmake/build/CMakeFiles/spg.dir
 /home/robocup/Downloads/spg_cmake/build/CMakeFiles/imgui.dir
 /home/robocup/Downloads/spg_cmake/build/CMakeFiles/demo.dir
+/home/robocup/Downloads/spg_cmake/build/CMakeFiles/humanoid_simulator_demo.dir
 /home/robocup/Downloads/spg_cmake/build/CMakeFiles/test.dir
 /home/robocup/Downloads/spg_cmake/build/CMakeFiles/edit_cache.dir
 /home/robocup/Downloads/spg_cmake/build/CMakeFiles/rebuild_cache.dir
@@ -18,6 +19,8 @@
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/test_trajpredict.dir
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/test_determine_setpoint_limits.dir
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/test_bouncing_obstacles_integration.dir
+/home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/test_humanoid_constraints.dir
+/home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/humanoid_demo.dir
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/test.dir
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/edit_cache.dir
 /home/robocup/Downloads/spg_cmake/build/test/CMakeFiles/rebuild_cache.dir

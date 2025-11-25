@@ -49,4 +49,9 @@ add_executable(demo demo/main.cpp)
 target_link_libraries(demo spg imgui glfw GL GLU)
 target_include_directories(demo PUBLIC external/imgui external/imgui/backends external/implot)
 
+# Humanoid simulator demo
+add_executable(humanoid_simulator_demo demo/humanoid_simulator_demo.cpp)
+target_link_libraries(humanoid_simulator_demo spg imgui glfw GL GLU)
+target_include_directories(humanoid_simulator_demo PUBLIC external/imgui external/imgui/backends external/implot)
+
 add_subdirectory(test)

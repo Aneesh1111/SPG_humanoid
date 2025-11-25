@@ -6,6 +6,7 @@ class SPGSimulator {
 public:
     SPGSimulator(const spg::SPGState& initial_state);
     void run();
+    void runHumanoid();  // Run simulation with humanoid constraints
     void step();
     void runWithoutVisualization();
     void runWithoutVisualization(int max_steps, double dt);

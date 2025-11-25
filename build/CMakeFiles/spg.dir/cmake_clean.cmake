@@ -17,6 +17,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/spg.dir/src/spg/setpoint/GetSegments.cpp.o.d"
   "CMakeFiles/spg.dir/src/spg/setpoint/Set.cpp.o"
   "CMakeFiles/spg.dir/src/spg/setpoint/Set.cpp.o.d"
+  "CMakeFiles/spg.dir/src/spg/setpoint/SetHumanoid.cpp.o"
+  "CMakeFiles/spg.dir/src/spg/setpoint/SetHumanoid.cpp.o.d"
   "CMakeFiles/spg.dir/src/spg/setpoint/Setpoint.cpp.o"
   "CMakeFiles/spg.dir/src/spg/setpoint/Setpoint.cpp.o.d"
   "CMakeFiles/spg.dir/src/spg/setpoint/StateCorrection.cpp.o"

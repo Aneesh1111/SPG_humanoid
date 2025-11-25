@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/humanoid_simulator_demo.dir/demo/humanoid_simulator_demo.cpp.o -o humanoid_simulator_demo  libspg.a libimgui.a -lglfw -lGL -lGLU 

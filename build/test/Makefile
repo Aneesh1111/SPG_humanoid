@@ -311,6 +311,58 @@ test_bouncing_obstacles_integration/fast:
 	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_bouncing_obstacles_integration.dir/build.make test/CMakeFiles/test_bouncing_obstacles_integration.dir/build
 .PHONY : test_bouncing_obstacles_integration/fast
 
+# Convenience name for target.
+test/CMakeFiles/test_humanoid_constraints.dir/rule:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_humanoid_constraints.dir/rule
+.PHONY : test/CMakeFiles/test_humanoid_constraints.dir/rule
+
+# Convenience name for target.
+test_humanoid_constraints: test/CMakeFiles/test_humanoid_constraints.dir/rule
+.PHONY : test_humanoid_constraints
+
+# fast build rule for target.
+test_humanoid_constraints/fast:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_humanoid_constraints.dir/build.make test/CMakeFiles/test_humanoid_constraints.dir/build
+.PHONY : test_humanoid_constraints/fast
+
+# Convenience name for target.
+test/CMakeFiles/humanoid_demo.dir/rule:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/humanoid_demo.dir/rule
+.PHONY : test/CMakeFiles/humanoid_demo.dir/rule
+
+# Convenience name for target.
+humanoid_demo: test/CMakeFiles/humanoid_demo.dir/rule
+.PHONY : humanoid_demo
+
+# fast build rule for target.
+humanoid_demo/fast:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/humanoid_demo.dir/build.make test/CMakeFiles/humanoid_demo.dir/build
+.PHONY : humanoid_demo/fast
+
+humanoid_demo.o: humanoid_demo.cpp.o
+.PHONY : humanoid_demo.o
+
+# target to build an object file
+humanoid_demo.cpp.o:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/humanoid_demo.dir/build.make test/CMakeFiles/humanoid_demo.dir/humanoid_demo.cpp.o
+.PHONY : humanoid_demo.cpp.o
+
+humanoid_demo.i: humanoid_demo.cpp.i
+.PHONY : humanoid_demo.i
+
+# target to preprocess a source file
+humanoid_demo.cpp.i:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/humanoid_demo.dir/build.make test/CMakeFiles/humanoid_demo.dir/humanoid_demo.cpp.i
+.PHONY : humanoid_demo.cpp.i
+
+humanoid_demo.s: humanoid_demo.cpp.s
+.PHONY : humanoid_demo.s
+
+# target to generate assembly for a file
+humanoid_demo.cpp.s:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/humanoid_demo.dir/build.make test/CMakeFiles/humanoid_demo.dir/humanoid_demo.cpp.s
+.PHONY : humanoid_demo.cpp.s
+
 test_balanceXY.o: test_balanceXY.cpp.o
 .PHONY : test_balanceXY.o
 
@@ -430,6 +482,30 @@ test_getSegments_functions.s: test_getSegments_functions.cpp.s
 test_getSegments_functions.cpp.s:
 	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_getSegments_functions.dir/build.make test/CMakeFiles/test_getSegments_functions.dir/test_getSegments_functions.cpp.s
 .PHONY : test_getSegments_functions.cpp.s
+
+test_humanoid_constraints.o: test_humanoid_constraints.cpp.o
+.PHONY : test_humanoid_constraints.o
+
+# target to build an object file
+test_humanoid_constraints.cpp.o:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_humanoid_constraints.dir/build.make test/CMakeFiles/test_humanoid_constraints.dir/test_humanoid_constraints.cpp.o
+.PHONY : test_humanoid_constraints.cpp.o
+
+test_humanoid_constraints.i: test_humanoid_constraints.cpp.i
+.PHONY : test_humanoid_constraints.i
+
+# target to preprocess a source file
+test_humanoid_constraints.cpp.i:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_humanoid_constraints.dir/build.make test/CMakeFiles/test_humanoid_constraints.dir/test_humanoid_constraints.cpp.i
+.PHONY : test_humanoid_constraints.cpp.i
+
+test_humanoid_constraints.s: test_humanoid_constraints.cpp.s
+.PHONY : test_humanoid_constraints.s
+
+# target to generate assembly for a file
+test_humanoid_constraints.cpp.s:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_humanoid_constraints.dir/build.make test/CMakeFiles/test_humanoid_constraints.dir/test_humanoid_constraints.cpp.s
+.PHONY : test_humanoid_constraints.cpp.s
 
 test_move_straight_line.o: test_move_straight_line.cpp.o
 .PHONY : test_move_straight_line.o
@@ -564,16 +640,21 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... test"
+	@echo "... humanoid_demo"
 	@echo "... test_balanceXY"
 	@echo "... test_bouncing_obstacles_integration"
 	@echo "... test_determine_setpoint_limits"
 	@echo "... test_getSegments"
 	@echo "... test_getSegments_functions"
+	@echo "... test_humanoid_constraints"
 	@echo "... test_move_straight_line"
 	@echo "... test_setpoint_set"
 	@echo "... test_static_obstacles_integration"
 	@echo "... test_traj1"
 	@echo "... test_trajpredict"
+	@echo "... humanoid_demo.o"
+	@echo "... humanoid_demo.i"
+	@echo "... humanoid_demo.s"
 	@echo "... test_balanceXY.o"
 	@echo "... test_balanceXY.i"
 	@echo "... test_balanceXY.s"
@@ -589,6 +670,9 @@ help:
 	@echo "... test_getSegments_functions.o"
 	@echo "... test_getSegments_functions.i"
 	@echo "... test_getSegments_functions.s"
+	@echo "... test_humanoid_constraints.o"
+	@echo "... test_humanoid_constraints.i"
+	@echo "... test_humanoid_constraints.s"
 	@echo "... test_move_straight_line.o"
 	@echo "... test_move_straight_line.i"
 	@echo "... test_move_straight_line.s"

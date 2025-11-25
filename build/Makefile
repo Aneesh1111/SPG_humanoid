@@ -211,6 +211,19 @@ demo/fast:
 .PHONY : demo/fast
 
 #=============================================================================
+# Target rules for targets named humanoid_simulator_demo
+
+# Build rule for target.
+humanoid_simulator_demo: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 humanoid_simulator_demo
+.PHONY : humanoid_simulator_demo
+
+# fast build rule for target.
+humanoid_simulator_demo/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/humanoid_simulator_demo.dir/build.make CMakeFiles/humanoid_simulator_demo.dir/build
+.PHONY : humanoid_simulator_demo/fast
+
+#=============================================================================
 # Target rules for targets named test_balanceXY
 
 # Build rule for target.
@@ -341,6 +354,32 @@ test_bouncing_obstacles_integration/fast:
 .PHONY : test_bouncing_obstacles_integration/fast
 
 #=============================================================================
+# Target rules for targets named test_humanoid_constraints
+
+# Build rule for target.
+test_humanoid_constraints: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_humanoid_constraints
+.PHONY : test_humanoid_constraints
+
+# fast build rule for target.
+test_humanoid_constraints/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_humanoid_constraints.dir/build.make test/CMakeFiles/test_humanoid_constraints.dir/build
+.PHONY : test_humanoid_constraints/fast
+
+#=============================================================================
+# Target rules for targets named humanoid_demo
+
+# Build rule for target.
+humanoid_demo: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 humanoid_demo
+.PHONY : humanoid_demo
+
+# fast build rule for target.
+humanoid_demo/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/humanoid_demo.dir/build.make test/CMakeFiles/humanoid_demo.dir/build
+.PHONY : humanoid_demo/fast
+
+#=============================================================================
 # Target rules for targets named gmock
 
 # Build rule for target.
@@ -391,6 +430,30 @@ gtest_main: cmake_check_build_system
 gtest_main/fast:
 	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build
 .PHONY : gtest_main/fast
+
+demo/humanoid_simulator_demo.o: demo/humanoid_simulator_demo.cpp.o
+.PHONY : demo/humanoid_simulator_demo.o
+
+# target to build an object file
+demo/humanoid_simulator_demo.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/humanoid_simulator_demo.dir/build.make CMakeFiles/humanoid_simulator_demo.dir/demo/humanoid_simulator_demo.cpp.o
+.PHONY : demo/humanoid_simulator_demo.cpp.o
+
+demo/humanoid_simulator_demo.i: demo/humanoid_simulator_demo.cpp.i
+.PHONY : demo/humanoid_simulator_demo.i
+
+# target to preprocess a source file
+demo/humanoid_simulator_demo.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/humanoid_simulator_demo.dir/build.make CMakeFiles/humanoid_simulator_demo.dir/demo/humanoid_simulator_demo.cpp.i
+.PHONY : demo/humanoid_simulator_demo.cpp.i
+
+demo/humanoid_simulator_demo.s: demo/humanoid_simulator_demo.cpp.s
+.PHONY : demo/humanoid_simulator_demo.s
+
+# target to generate assembly for a file
+demo/humanoid_simulator_demo.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/humanoid_simulator_demo.dir/build.make CMakeFiles/humanoid_simulator_demo.dir/demo/humanoid_simulator_demo.cpp.s
+.PHONY : demo/humanoid_simulator_demo.cpp.s
 
 demo/main.o: demo/main.cpp.o
 .PHONY : demo/main.o
@@ -871,6 +934,30 @@ src/spg/setpoint/Set.s: src/spg/setpoint/Set.cpp.s
 src/spg/setpoint/Set.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/setpoint/Set.cpp.s
 .PHONY : src/spg/setpoint/Set.cpp.s
+
+src/spg/setpoint/SetHumanoid.o: src/spg/setpoint/SetHumanoid.cpp.o
+.PHONY : src/spg/setpoint/SetHumanoid.o
+
+# target to build an object file
+src/spg/setpoint/SetHumanoid.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/setpoint/SetHumanoid.cpp.o
+.PHONY : src/spg/setpoint/SetHumanoid.cpp.o
+
+src/spg/setpoint/SetHumanoid.i: src/spg/setpoint/SetHumanoid.cpp.i
+.PHONY : src/spg/setpoint/SetHumanoid.i
+
+# target to preprocess a source file
+src/spg/setpoint/SetHumanoid.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/setpoint/SetHumanoid.cpp.i
+.PHONY : src/spg/setpoint/SetHumanoid.cpp.i
+
+src/spg/setpoint/SetHumanoid.s: src/spg/setpoint/SetHumanoid.cpp.s
+.PHONY : src/spg/setpoint/SetHumanoid.s
+
+# target to generate assembly for a file
+src/spg/setpoint/SetHumanoid.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/setpoint/SetHumanoid.cpp.s
+.PHONY : src/spg/setpoint/SetHumanoid.cpp.s
 
 src/spg/setpoint/Setpoint.o: src/spg/setpoint/Setpoint.cpp.o
 .PHONY : src/spg/setpoint/Setpoint.o
@@ -1418,6 +1505,8 @@ help:
 	@echo "... gmock_main"
 	@echo "... gtest"
 	@echo "... gtest_main"
+	@echo "... humanoid_demo"
+	@echo "... humanoid_simulator_demo"
 	@echo "... imgui"
 	@echo "... spg"
 	@echo "... test_balanceXY"
@@ -1425,11 +1514,15 @@ help:
 	@echo "... test_determine_setpoint_limits"
 	@echo "... test_getSegments"
 	@echo "... test_getSegments_functions"
+	@echo "... test_humanoid_constraints"
 	@echo "... test_move_straight_line"
 	@echo "... test_setpoint_set"
 	@echo "... test_static_obstacles_integration"
 	@echo "... test_traj1"
 	@echo "... test_trajpredict"
+	@echo "... demo/humanoid_simulator_demo.o"
+	@echo "... demo/humanoid_simulator_demo.i"
+	@echo "... demo/humanoid_simulator_demo.s"
 	@echo "... demo/main.o"
 	@echo "... demo/main.i"
 	@echo "... demo/main.s"
@@ -1490,6 +1583,9 @@ help:
 	@echo "... src/spg/setpoint/Set.o"
 	@echo "... src/spg/setpoint/Set.i"
 	@echo "... src/spg/setpoint/Set.s"
+	@echo "... src/spg/setpoint/SetHumanoid.o"
+	@echo "... src/spg/setpoint/SetHumanoid.i"
+	@echo "... src/spg/setpoint/SetHumanoid.s"
 	@echo "... src/spg/setpoint/Setpoint.o"
 	@echo "... src/spg/setpoint/Setpoint.i"
 	@echo "... src/spg/setpoint/Setpoint.s"

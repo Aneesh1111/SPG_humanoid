@@ -24,11 +24,23 @@ struct FieldParams {
     double search_distance;
     double replan_uphill_distance;
     double margin_replan;
+    // Legacy single velocity limit (for backwards compatibility)
     double vmax_move;
     double vmax_rotate;
     double amax_move;
     double amax_quickstop;
     double amax_rotate;
+    
+    // Humanoid-specific directional velocity limits
+    double vmax_move_x;        // max sideways velocity [m/s] (left/right)
+    double vmax_move_y;        // max forward/backward velocity [m/s] (front/back)  
+    double amax_move_x;        // max sideways acceleration [m/s²] (left/right)
+    double amax_move_y;        // max forward/backward acceleration [m/s²] (front/back)
+    
+    // Orientation-dependent efficiency factors
+    double forward_efficiency;  // efficiency when moving in facing direction (1.0 = 100%)
+    double sideways_efficiency; // efficiency when moving sideways (typically 0.6-0.8)
+    double rotation_while_moving_penalty; // penalty for rotating while moving (0.0-1.0)
     double scale_rotate;
     double scale_angle;
     double dmax_move;

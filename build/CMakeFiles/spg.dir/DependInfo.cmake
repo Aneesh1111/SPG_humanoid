@@ -17,6 +17,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/robocup/Downloads/spg_cmake/src/spg/setpoint/ConvertSegment.cpp" "CMakeFiles/spg.dir/src/spg/setpoint/ConvertSegment.cpp.o" "gcc" "CMakeFiles/spg.dir/src/spg/setpoint/ConvertSegment.cpp.o.d"
   "/home/robocup/Downloads/spg_cmake/src/spg/setpoint/GetSegments.cpp" "CMakeFiles/spg.dir/src/spg/setpoint/GetSegments.cpp.o" "gcc" "CMakeFiles/spg.dir/src/spg/setpoint/GetSegments.cpp.o.d"
   "/home/robocup/Downloads/spg_cmake/src/spg/setpoint/Set.cpp" "CMakeFiles/spg.dir/src/spg/setpoint/Set.cpp.o" "gcc" "CMakeFiles/spg.dir/src/spg/setpoint/Set.cpp.o.d"
+  "/home/robocup/Downloads/spg_cmake/src/spg/setpoint/SetHumanoid.cpp" "CMakeFiles/spg.dir/src/spg/setpoint/SetHumanoid.cpp.o" "gcc" "CMakeFiles/spg.dir/src/spg/setpoint/SetHumanoid.cpp.o.d"
   "/home/robocup/Downloads/spg_cmake/src/spg/setpoint/Setpoint.cpp" "CMakeFiles/spg.dir/src/spg/setpoint/Setpoint.cpp.o" "gcc" "CMakeFiles/spg.dir/src/spg/setpoint/Setpoint.cpp.o.d"
   "/home/robocup/Downloads/spg_cmake/src/spg/setpoint/StateCorrection.cpp" "CMakeFiles/spg.dir/src/spg/setpoint/StateCorrection.cpp.o" "gcc" "CMakeFiles/spg.dir/src/spg/setpoint/StateCorrection.cpp.o.d"
   "/home/robocup/Downloads/spg_cmake/src/spg/setpoint/Traj1.cpp" "CMakeFiles/spg.dir/src/spg/setpoint/Traj1.cpp.o" "gcc" "CMakeFiles/spg.dir/src/spg/setpoint/Traj1.cpp.o.d"

@@ -32,15 +32,26 @@ SPGState Init(const Eigen::Vector3d& p_initial,
         6,                            // search_distance [m]
         2,                            // replan_uphill_distance [m]
         0.1,                          // margin_replan [m]
-        4,                            // vmax_move: max translational velocity [m/s]
-        13,                           // vmax_rotate: max rotational velocity [rad/s]
-        1.8,                          // amax_move: max translational acceleration [m/s²]
+        4,                            // vmax_move: max translational velocity [m/s] (legacy)
+        3,                            // vmax_rotate: max rotational velocity [rad/s]
+        1.8,                          // amax_move: max translational acceleration [m/s²] (legacy)
         3.5,                          // amax_quickstop: max quickstop acceleration [m/s²]
-        13,                           // amax_rotate: max rotational acceleration [rad/s²]
+        2,                            // amax_rotate: max rotational acceleration [rad/s²]
+        
+        // Humanoid-specific directional parameters
+        1.5,                          // vmax_move_x: max sideways velocity [m/s] (left/right)
+        4.0,                          // vmax_move_y: max forward/backward velocity [m/s] (front/back)
+        1.2,                          // amax_move_x: max sideways acceleration [m/s²] (left/right)
+        2.8,                          // amax_move_y: max forward/backward acceleration [m/s²] (front/back)
+        
+        // Orientation-dependent efficiency factors
+        1.0,                          // forward_efficiency: 100% when moving forward/backward
+        0.3,                          // sideways_efficiency: 30% when moving sideways
+        0.0,                          // rotation_while_moving_penalty: 0% penalty for rotating while moving
         0.3,                          // scale_rotate: rotation scaling factor
         40.0/180.0*M_PI,             // scale_angle: angle scaling factor [rad]
         1.8,                          // dmax_move: max translational deceleration [m/s²]
-        13,                           // dmax_rotate: max rotational deceleration [rad/s²]
+        2.0,                          // dmax_rotate: max rotational deceleration [rad/s²]
         nintercept_positions          // number of intercept positions
     };
     // Initialize obstacle input arrays

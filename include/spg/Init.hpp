@@ -34,6 +34,9 @@ struct FieldParams {
     double dmax_move;
     double dmax_rotate;
     int nintercept_positions;
+    
+    // Controller selection
+    bool use_humanoid_mpc;  // true = use HumanoidMPC, false = use traditional MSL setpoint generation
 };
 
 struct ObstacleInput {

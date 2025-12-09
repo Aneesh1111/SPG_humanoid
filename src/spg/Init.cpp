@@ -41,7 +41,8 @@ SPGState Init(const Eigen::Vector3d& p_initial,
         40.0/180.0*M_PI,             // scale_angle: angle scaling factor [rad]
         1.8,                          // dmax_move: max translational deceleration [m/s²]
         13,                           // dmax_rotate: max rotational deceleration [rad/s²]
-        nintercept_positions          // number of intercept positions
+        nintercept_positions,         // number of intercept positions
+        true                         // use_humanoid_mpc: default to traditional MSL controller
     };
     // Initialize obstacle input arrays
     d.input.obstacles.p = std::vector<Eigen::Vector2d>(nobstacles, Eigen::Vector2d::Zero());      // positions [m]

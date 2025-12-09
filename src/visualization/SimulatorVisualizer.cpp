@@ -135,19 +135,54 @@ void SimulatorVisualizer::drawField() {
 void SimulatorVisualizer::drawRobot(const RobotState& robot) {
     double x = robot.pose.x(), y = robot.pose.y(), theta = robot.pose.z();
     double r = 0.25; // robot radius
-    double rx[4], ry[4];
     
     // Adjust theta so 0 degrees points towards positive Y (opposition goal)
     double adjusted_theta = theta - M_PI/2;
     
-    rx[0] = x + r * cos(adjusted_theta);
+    // Draw robot body as a triangle
+    double rx[4], ry[4];
+    rx[0] = x + r * cos(adjusted_theta);           // Front point (heading direction)
     ry[0] = y + r * sin(adjusted_theta);
-    rx[1] = x + r * cos(adjusted_theta + 2.5);
+    rx[1] = x + r * cos(adjusted_theta + 2.5);     // Back-left
     ry[1] = y + r * sin(adjusted_theta + 2.5);
-    rx[2] = x + r * cos(adjusted_theta - 2.5);
+    rx[2] = x + r * cos(adjusted_theta - 2.5);     // Back-right
     ry[2] = y + r * sin(adjusted_theta - 2.5);
-    rx[3] = rx[0]; ry[3] = ry[0];
+    rx[3] = rx[0]; ry[3] = ry[0];                  // Close the triangle
     ImPlot::PlotLine("Robot", rx, ry, 4);
+    
+    // Draw heading arrow (extends further to make rotation very visible)
+    double arrow_length = 0.4;
+    double arrow_x[2] = {x, x + arrow_length * cos(adjusted_theta)};
+    double arrow_y[2] = {y, y + arrow_length * sin(adjusted_theta)};
+    ImPlot::PlotLine("Robot Heading", arrow_x, arrow_y, 2);
+    
+    // Draw arrowhead at the tip
+    double arrowhead_size = 0.1;
+    double arrowhead_angle = M_PI / 6; // 30 degrees
+    double arrow_tip_x = arrow_x[1];
+    double arrow_tip_y = arrow_y[1];
+    
+    double left_x[2] = {arrow_tip_x, 
+                        arrow_tip_x - arrowhead_size * cos(adjusted_theta - arrowhead_angle)};
+    double left_y[2] = {arrow_tip_y, 
+                        arrow_tip_y - arrowhead_size * sin(adjusted_theta - arrowhead_angle)};
+    ImPlot::PlotLine("Arrow Left", left_x, left_y, 2);
+    
+    double right_x[2] = {arrow_tip_x, 
+                         arrow_tip_x - arrowhead_size * cos(adjusted_theta + arrowhead_angle)};
+    double right_y[2] = {arrow_tip_y, 
+                         arrow_tip_y - arrowhead_size * sin(adjusted_theta + arrowhead_angle)};
+    ImPlot::PlotLine("Arrow Right", right_x, right_y, 2);
+    
+    // Draw a circle around the robot to show its footprint
+    std::vector<double> circle_x, circle_y;
+    int n_points = 16;
+    for (int j = 0; j <= n_points; ++j) {
+        double angle = 2.0 * M_PI * j / n_points;
+        circle_x.push_back(x + r * cos(angle));
+        circle_y.push_back(y + r * sin(angle));
+    }
+    ImPlot::PlotLine("Robot Circle", circle_x.data(), circle_y.data(), circle_x.size());
 }
 
 void SimulatorVisualizer::drawObstacles(const std::vector<ObstacleState>& obstacles) {
@@ -199,7 +234,7 @@ void SimulatorVisualizer::drawTrajectories(const std::vector<Eigen::Vector2d>& r
 }
 
 void SimulatorVisualizer::drawTarget(const Eigen::Vector3d& target_pos) {
-    double x = target_pos.x(), y = target_pos.y();
+    double x = target_pos.x(), y = target_pos.y(), theta = target_pos.z();
     
     // Draw target as a large X
     double size = 0.3;
@@ -213,10 +248,37 @@ void SimulatorVisualizer::drawTarget(const Eigen::Vector3d& target_pos) {
     
     // Draw target center point
     ImPlot::PlotScatter("Target", &x, &y, 1);
+    
+    // Draw target orientation arrow (if theta is non-zero)
+    if (std::abs(theta) > 0.01) {
+        double adjusted_theta = theta - M_PI/2;
+        double arrow_length = 0.5;
+        double arrow_x[2] = {x, x + arrow_length * cos(adjusted_theta)};
+        double arrow_y[2] = {y, y + arrow_length * sin(adjusted_theta)};
+        ImPlot::PlotLine("Target Heading", arrow_x, arrow_y, 2);
+        
+        // Add arrowhead
+        double arrowhead_size = 0.15;
+        double arrowhead_angle = M_PI / 6;
+        double arrow_tip_x = arrow_x[1];
+        double arrow_tip_y = arrow_y[1];
+        
+        double left_x[2] = {arrow_tip_x, 
+                            arrow_tip_x - arrowhead_size * cos(adjusted_theta - arrowhead_angle)};
+        double left_y[2] = {arrow_tip_y, 
+                            arrow_tip_y - arrowhead_size * sin(adjusted_theta - arrowhead_angle)};
+        ImPlot::PlotLine("Target Arrow L", left_x, left_y, 2);
+        
+        double right_x[2] = {arrow_tip_x, 
+                             arrow_tip_x - arrowhead_size * cos(adjusted_theta + arrowhead_angle)};
+        double right_y[2] = {arrow_tip_y, 
+                             arrow_tip_y - arrowhead_size * sin(adjusted_theta + arrowhead_angle)};
+        ImPlot::PlotLine("Target Arrow R", right_x, right_y, 2);
+    }
 }
 
 void SimulatorVisualizer::drawSubtarget(const Eigen::Vector3d& subtarget_pos) {
-    double x = subtarget_pos.x(), y = subtarget_pos.y();
+    double x = subtarget_pos.x(), y = subtarget_pos.y(), theta = subtarget_pos.z();
     
     // Draw subtarget as a diamond shape
     double size = 0.2;
@@ -227,6 +289,33 @@ void SimulatorVisualizer::drawSubtarget(const Eigen::Vector3d& subtarget_pos) {
     
     // Draw subtarget center point
     ImPlot::PlotScatter("Subtarget", &x, &y, 1);
+    
+    // Draw subtarget orientation arrow (if theta is non-zero)
+    if (std::abs(theta) > 0.01) {
+        double adjusted_theta = theta - M_PI/2;
+        double arrow_length = 0.35;
+        double arrow_x[2] = {x, x + arrow_length * cos(adjusted_theta)};
+        double arrow_y[2] = {y, y + arrow_length * sin(adjusted_theta)};
+        ImPlot::PlotLine("Subtarget Heading", arrow_x, arrow_y, 2);
+        
+        // Add arrowhead
+        double arrowhead_size = 0.1;
+        double arrowhead_angle = M_PI / 6;
+        double arrow_tip_x = arrow_x[1];
+        double arrow_tip_y = arrow_y[1];
+        
+        double left_x[2] = {arrow_tip_x, 
+                            arrow_tip_x - arrowhead_size * cos(adjusted_theta - arrowhead_angle)};
+        double left_y[2] = {arrow_tip_y, 
+                            arrow_tip_y - arrowhead_size * sin(adjusted_theta - arrowhead_angle)};
+        ImPlot::PlotLine("Subtarget Arrow L", left_x, left_y, 2);
+        
+        double right_x[2] = {arrow_tip_x, 
+                             arrow_tip_x - arrowhead_size * cos(adjusted_theta + arrowhead_angle)};
+        double right_y[2] = {arrow_tip_y, 
+                             arrow_tip_y - arrowhead_size * sin(adjusted_theta + arrowhead_angle)};
+        ImPlot::PlotLine("Subtarget Arrow R", right_x, right_y, 2);
+    }
 }
 
 void SimulatorVisualizer::render(const RobotState& robot,
@@ -264,7 +353,16 @@ void SimulatorVisualizer::render(const RobotState& robot,
     ImGui::Separator();
     ImGui::Text("Robot Position: (%.3f, %.3f, %.3f)", robot.pose.x(), robot.pose.y(), robot.pose.z());
     ImGui::Text("Robot Velocity: (%.3f, %.3f, %.3f)", robot.vel.x(), robot.vel.y(), robot.vel.z());
+    
+    // Display rotation in both radians and degrees for clarity
+    double theta_rad = robot.pose.z();
+    double theta_deg = theta_rad * 180.0 / M_PI;
+    ImGui::Text("Robot Orientation: %.3f rad (%.1f°)", theta_rad, theta_deg);
+    
     ImGui::Text("Target Position: (%.3f, %.3f, %.3f)", target_pos.x(), target_pos.y(), target_pos.z());
+    double target_theta_deg = target_pos.z() * 180.0 / M_PI;
+    ImGui::Text("Target Orientation: %.3f rad (%.1f°)", target_pos.z(), target_theta_deg);
+    
     ImGui::Text("Subtarget Position: (%.3f, %.3f, %.3f)", subtarget_pos.x(), subtarget_pos.y(), subtarget_pos.z());
     ImGui::Text("Ball Position: (%.3f, %.3f)", ball.pos.x(), ball.pos.y());
     

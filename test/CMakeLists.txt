@@ -63,6 +63,16 @@ add_executable(test_bouncing_obstacles_integration test_bouncing_obstacles_integ
 target_link_libraries(test_bouncing_obstacles_integration PRIVATE spg gtest_main imgui glfw GL GLU)
 target_include_directories(test_bouncing_obstacles_integration PRIVATE ${CMAKE_SOURCE_DIR}/include)
 
+# Add Humanoid MPC test (only if qpOASES is available)
+if(QPOASES_FOUND)
+    add_executable(test_humanoid_mpc test_humanoid_mpc.cpp)
+    target_link_libraries(test_humanoid_mpc PRIVATE spg gtest_main)
+    target_include_directories(test_humanoid_mpc PRIVATE ${CMAKE_SOURCE_DIR}/include)
+    add_test(NAME HumanoidMPCTest COMMAND test_humanoid_mpc)
+else()
+    message(STATUS "Skipping test_humanoid_mpc (qpOASES not found)")
+endif()
+
 add_test(NAME BalanceXYTest COMMAND test_balanceXY)
 add_test(NAME GetSegmentsTest COMMAND test_getSegments)
 add_test(NAME GetSegmentsFunctionsTest COMMAND test_getSegments_functions)

@@ -1,0 +1,350 @@
+// HumanoidMPC.cpp
+// Minimal MPC framework for a humanoid with qpOASES QP solver.
+//
+// Dependencies:
+//   - Eigen (https://eigen.tuxfamily.org/)
+//   - qpOASES (https://github.com/coin-or/qpOASES)
+//
+// Compile example (adjust include/lib paths):
+// g++ -std=c++17 HumanoidMPC.cpp -I/path/to/eigen -I/path/to/qpOASES/include \
+//     -L/path/to/qpOASES/lib -lqpOASES -DHUMANOID_MPC_MAIN -O2
+
+#include "spg/setpoint/HumanoidMPC.hpp"
+#include <Eigen/Dense>
+#include <vector>
+#include <iostream>
+#include <cmath>
+#include <stdexcept>
+
+// qpOASES
+#include <qpOASES.hpp>
+
+USING_NAMESPACE_QPOASES
+
+namespace spg {
+namespace setpoint {
+namespace humanoidmpc {
+
+// ===================== MPCParams Constructor =====================
+
+MPCParams::MPCParams()
+    : dt(0.1),
+      horizon(10),
+      vf_max(1.0),
+      vs_max(0.3),
+      omega_max(1.0),
+      Q_diag(1.0, 1.0, 0.1),
+      Qf_diag(3.0, 3.0, 0.5),
+      R_diag(1.0, 4.0, 2.0) {}
+
+// ===================== qpOASES-based QP Solver Implementation =====================
+
+// Implementation details hidden in Impl class to avoid exposing qpOASES in header
+class QPOasesSolver::Impl {
+public:
+    QProblem qp_;
+    bool initialized_;
+    int nV_;
+    returnValue returnCode_;
+
+    Impl() : initialized_(false), nV_(0) {
+        Options options;
+        options.setToReliable();
+        qp_.setOptions(options);
+    }
+};
+
+QPOasesSolver::QPOasesSolver() : pImpl_(std::make_unique<Impl>()) {}
+
+bool QPOasesSolver::solve(const Eigen::MatrixXd& H,
+               const Eigen::VectorXd& f,
+               const Eigen::VectorXd& lb,
+               const Eigen::VectorXd& ub,
+               Eigen::VectorXd& z) override
+    {
+        const int nV = static_cast<int>(H.rows());
+        if (H.cols() != nV) {
+            std::cerr << "QPOasesSolver: H must be square." << std::endl;
+            return false;
+        }
+        if (f.size() != nV || lb.size() != nV || ub.size() != nV) {
+            std::cerr << "QPOasesSolver: dimension mismatch." << std::endl;
+            return false;
+        }
+
+        // qpOASES only supports double* (real_t*) in column-major.
+        // Eigen is column-major by default, so H.data() is fine.
+        real_t* H_qp   = const_cast<real_t*>(H.data());
+        real_t* g_qp   = const_cast<real_t*>(f.data());
+        real_t* lb_qp  = const_cast<real_t*>(lb.data());
+        real_t* ub_qp  = const_cast<real_t*>(ub.data());
+
+        // No general constraints: nC = 0, A = nullptr, lbA = ubA = nullptr.
+        const int nC = 0;
+        real_t* A_qp   = nullptr;
+        real_t* lbA_qp = nullptr;
+        real_t* ubA_qp = nullptr;
+
+        // Initialize or hotstart
+        if (!initialized_ || nV_ != nV) {
+            // First-time or size changed: re-init QProblem
+            nV_ = nV;
+            qp_ = QProblem(nV_, nC);
+
+            // Allowed iterations; tune as needed
+            int_t nWSR = 50;
+            returnCode_ = qp_.init(H_qp, g_qp, A_qp, lb_qp, ub_qp, lbA_qp, ubA_qp, nWSR);
+
+            if (returnCode_ != SUCCESSFUL_RETURN) {
+                std::cerr << "qpOASES init failed with code " << returnCode_ << std::endl;
+                initialized_ = false;
+                return false;
+            }
+            initialized_ = true;
+        } else {
+            // Hotstart with previous solution
+            int_t nWSR = 20;
+            returnCode_ = qp_.hotstart(H_qp, g_qp, A_qp, lb_qp, ub_qp, lbA_qp, ubA_qp, nWSR);
+
+            if (returnCode_ != SUCCESSFUL_RETURN) {
+                // If hotstart fails, try a fresh init
+                std::cerr << "qpOASES hotstart failed with code " << returnCode_
+                          << ", retrying with init." << std::endl;
+                qp_ = QProblem(nV_, nC);
+                int_t nWSR2 = 50;
+                returnCode_ = qp_.init(H_qp, g_qp, A_qp, lb_qp, ub_qp, lbA_qp, ubA_qp, nWSR2);
+                if (returnCode_ != SUCCESSFUL_RETURN) {
+                    std::cerr << "qpOASES init failed with code " << returnCode_ << std::endl;
+                    initialized_ = false;
+                    return false;
+                }
+            }
+        }
+
+        // Extract primal solution
+        z.resize(nV);
+        real_t* z_qp = z.data();
+        returnCode_ = qp_.getPrimalSolution(z_qp);
+
+        if (returnCode_ != SUCCESSFUL_RETURN) {
+            std::cerr << "qpOASES getPrimalSolution failed with code " << returnCode_ << std::endl;
+            return false;
+        }
+
+        return true;
+    }
+
+private:
+    QProblem qp_;
+    bool initialized_;
+    int nV_;
+    returnValue returnCode_;
+};
+
+// ===================== Humanoid MPC Class =====================
+
+class HumanoidMPC {
+public:
+    explicit HumanoidMPC(const MPCParams& params, QPSolver* solver)
+        : params_(params), solver_(solver) {
+        if (!solver_) {
+            throw std::runtime_error("QPSolver pointer is null.");
+        }
+    }
+
+    // Compute the optimal first control for current state and reference traj.
+    // Returns false if QP fails.
+    bool computeControl(const State& x0,
+                        const RefTrajectory& ref,
+                        Control& u_out) {
+
+        const int N = params_.horizon;
+        if (static_cast<int>(ref.states.size()) != N + 1) {
+            std::cerr << "RefTrajectory must have N+1 states." << std::endl;
+            return false;
+        }
+
+        // Dimensions
+        constexpr int nx = 3;  // [x, y, phi]
+        constexpr int nu = 3;  // [vf, vs, omega]
+        const int Nu = N * nu; // total control variables
+
+        // Build block matrices for condensed MPC:
+        // X_stack (size 3N) = Sx * x0_vec + Su * U_vec
+        Eigen::MatrixXd Su = Eigen::MatrixXd::Zero(nx * N, Nu);
+        Eigen::MatrixXd Sx = Eigen::MatrixXd::Zero(nx * N, nx);
+
+        // x0 as vector
+        Eigen::Vector3d x0_vec(x0.x, x0.y, x0.phi);
+
+        // Precompute B_k for each stage using reference heading phi_ref[k]
+        std::vector<Eigen::Matrix<double, nx, nu>> B_list(N);
+        for (int k = 0; k < N; ++k) {
+            double phi_ref = ref.states[k].phi;
+            double c = std::cos(phi_ref);
+            double s = std::sin(phi_ref);
+
+            Eigen::Matrix<double, nx, nu> Bk = Eigen::Matrix<double, nx, nu>::Zero();
+            // x_{k+1} = x_k + dt * (vf*c - vs*s)
+            // y_{k+1} = y_k + dt * (vf*s + vs*c)
+            // phi_{k+1} = phi_k + dt * omega
+            Bk(0, 0) = params_.dt * c;   // derivative wrt vf
+            Bk(0, 1) = -params_.dt * s;  // wrt vs
+            Bk(1, 0) = params_.dt * s;
+            Bk(1, 1) = params_.dt * c;
+            Bk(2, 2) = params_.dt;       // wrt omega
+
+            B_list[k] = Bk;
+        }
+
+        // Build Sx, Su for x_{k+1} = x_k + B_k u_k (A_k = I)
+        //
+        // x1 = x0 + B0 u0
+        // x2 = x1 + B1 u1 = x0 + B0 u0 + B1 u1
+        // ...
+        // xk = x0 + sum_{j=0}^{k-1} B_j u_j
+
+        for (int k = 0; k < N; ++k) {
+            int row_start = k * nx;
+
+            // Contribution of x0:
+            Sx.block(row_start, 0, nx, nx) = Eigen::Matrix3d::Identity();
+
+            // Contribution of controls:
+            for (int j = 0; j <= k; ++j) {
+                int col_start = j * nu;
+                Su.block(row_start, col_start, nx, nu) += B_list[j];
+            }
+        }
+
+        // Build reference state stack: xr_stack = [x_ref1; x_ref2; ...; x_refN]
+        Eigen::VectorXd xr_stack(nx * N);
+        for (int k = 0; k < N; ++k) {
+            xr_stack(k * nx + 0) = ref.states[k + 1].x;
+            xr_stack(k * nx + 1) = ref.states[k + 1].y;
+            xr_stack(k * nx + 2) = ref.states[k + 1].phi;
+        }
+
+        // Cost matrices
+        Eigen::Matrix3d Q = params_.Q_diag.asDiagonal();
+        Eigen::Matrix3d Qf = params_.Qf_diag.asDiagonal();
+        Eigen::Matrix3d R = params_.R_diag.asDiagonal();
+
+        // Build big Qbar (for states 1..N, last one uses Qf)
+        Eigen::MatrixXd Qbar = Eigen::MatrixXd::Zero(nx * N, nx * N);
+        for (int k = 0; k < N; ++k) {
+            Eigen::Matrix3d Qk = (k == N - 1) ? Qf : Q;
+            Qbar.block(k * nx, k * nx, nx, nx) = Qk;
+        }
+
+        // Build big Rbar (block-diagonal)
+        Eigen::MatrixXd Rbar = Eigen::MatrixXd::Zero(Nu, Nu);
+        for (int k = 0; k < N; ++k) {
+            int idx = k * nu;
+            Rbar.block(idx, idx, nu, nu) = R;
+        }
+
+        // Predicted states as function of U:
+        // X_stack = Sx x0 + Su U
+        // Cost:
+        // J(U) = (Sx x0 + Su U - xr)^T Qbar (Sx x0 + Su U - xr) + U^T Rbar U
+        //
+        // In condensed form:
+        // J(U) = (Su^T Qbar Su + Rbar) U^T U
+        //        + 2 (Sx x0 - xr)^T Qbar Su U
+        //        + const
+        //
+        // So:
+        // H = 2 (Su^T Qbar Su + Rbar)
+        // f = 2 Su^T Qbar (Sx x0 - xr)
+
+        Eigen::VectorXd X0_stack = Sx * x0_vec;
+        Eigen::VectorXd diff = X0_stack - xr_stack; // size 3N
+
+        Eigen::MatrixXd H = 2.0 * (Su.transpose() * Qbar * Su + Rbar);
+        Eigen::VectorXd f = 2.0 * (Su.transpose() * Qbar * diff);
+
+        // Box constraints on controls:
+        // vf in [-vf_max, vf_max], similarly for vs, omega
+        Eigen::VectorXd lb = Eigen::VectorXd::Constant(Nu, -1e9);
+        Eigen::VectorXd ub = Eigen::VectorXd::Constant(Nu,  1e9);
+
+        for (int k = 0; k < N; ++k) {
+            int idx = k * nu;
+
+            lb(idx + 0) = -params_.vf_max;
+            ub(idx + 0) =  params_.vf_max;
+
+            lb(idx + 1) = -params_.vs_max;
+            ub(idx + 1) =  params_.vs_max;
+
+            lb(idx + 2) = -params_.omega_max;
+            ub(idx + 2) =  params_.omega_max;
+        }
+
+        // Solve QP: min 0.5 U^T H U + f^T U, s.t. lb <= U <= ub
+        Eigen::VectorXd U(Nu);
+        bool ok = solver_->solve(H, f, lb, ub, U);
+        if (!ok) {
+            std::cerr << "QP solve failed." << std::endl;
+            return false;
+        }
+
+        // Extract first control
+        u_out.vf    = U(0);
+        u_out.vs    = U(1);
+        u_out.omega = U(2);
+        return true;
+    }
+
+private:
+    MPCParams params_;
+    QPSolver* solver_;
+};
+
+// ===================== Example Usage =====================
+
+#ifdef HUMANOID_MPC_MAIN
+int main() {
+    MPCParams params;
+    params.dt = 0.1;
+    params.horizon = 10;
+    params.vf_max = 1.0;
+    params.vs_max = 0.3;
+    params.omega_max = 1.0;
+
+    // Elliptical "preference":
+    // Make sideways and rotation more expensive than forward
+    params.R_diag << 1.0, 4.0, 2.0;
+
+    QPOasesSolver solver;
+    HumanoidMPC mpc(params, &solver);
+
+    State x0{0.0, 0.0, 0.0};
+
+    // Simple straight-line reference to (1.0, 0.0) with zero final yaw
+    RefTrajectory ref;
+    ref.states.resize(params.horizon + 1);
+    for (int k = 0; k <= params.horizon; ++k) {
+        double alpha = static_cast<double>(k) / params.horizon;
+        ref.states[k].x   = alpha * 1.0;
+        ref.states[k].y   = 0.0;
+        ref.states[k].phi = 0.0;
+    }
+
+    Control u;
+    if (mpc.computeControl(x0, ref, u)) {
+        std::cout << "MPC control: vf=" << u.vf
+                  << " vs=" << u.vs
+                  << " omega=" << u.omega << std::endl;
+    } else {
+        std::cout << "MPC failed." << std::endl;
+    }
+
+    return 0;
+}
+#endif
+
+} // namespace humanoidmpc
+} // namespace setpoint
+} // namespace spg

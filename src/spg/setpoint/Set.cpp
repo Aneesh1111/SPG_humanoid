@@ -19,16 +19,8 @@ SPGState Set(SPGState& d) {
         (-field_x_half < d.input.robot.p[0] && d.input.robot.p[0] < field_x_half) &&
         (-field_y_half < d.input.robot.p[1] && d.input.robot.p[1] < field_y_half);
     if (inside_field || d.subtarget.automatic_substitution_flag == 1) {
-        // Tipping check
-        double tipping_degrees = 5.0;
-        double robot_tipping_degrees = d.input.robot.IMU_orientation[0] * d.input.robot.IMU_orientation[0] +
-                                       d.input.robot.IMU_orientation[1] * d.input.robot.IMU_orientation[1];
         Eigen::Vector3d dmax;
-        if (std::sqrt(robot_tipping_degrees) > tipping_degrees) {
-            dmax = 0.5 * Eigen::Vector3d(d.par.dmax_move, d.par.dmax_move, d.par.dmax_rotate);
-        } else {
-            dmax = Eigen::Vector3d(d.par.dmax_move, d.par.dmax_move, d.par.dmax_rotate);
-        }
+        dmax = Eigen::Vector3d(d.par.dmax_move, d.par.dmax_move, d.par.dmax_rotate);
         // Convert segment type before calling getSegments
         auto setpointSegments = spg::setpoint::convertSegmentVector(d.aux.segment);
         setpointSegments = getSegments(setpointSegments, d.setpoint.p, d.setpoint.v, d.subtarget.p, d.subtarget.v, d.subtarget.vmax, d.subtarget.amax, dmax);

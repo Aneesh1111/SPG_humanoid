@@ -25,7 +25,7 @@
 // Simple JSON parser for config (very basic, just for our needs)
 struct Config {
     Eigen::Vector3d start_pos = Eigen::Vector3d(0, 3, 0);
-    Eigen::Vector3d target_pos = Eigen::Vector3d(0, -3, 0);
+    Eigen::Vector3d target_pos = Eigen::Vector3d(3, 0, 0);
     int prediction_horizon = 20;
     bool has_mpc_weights = false;
     double q_pos = 1.0, q_phi = 0.1, qf_pos = 8.0, qf_phi = 1.0;

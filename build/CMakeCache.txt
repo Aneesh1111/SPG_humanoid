@@ -14,6 +14,12 @@
 # EXTERNAL cache entries
 ########################
 
+//Path to a file.
+ACADOS_INCLUDE_DIR:PATH=/home/robocup/Downloads/spg_cmake/acados/include
+
+//Path to a library.
+ACADOS_LIBRARY:FILEPATH=/home/robocup/Downloads/spg_cmake/acados/lib/libacados.so
+
 //Builds the googlemock subproject
 BUILD_GMOCK:BOOL=ON
 
@@ -365,7 +371,7 @@ gtest_force_shared_crt:BOOL=ON
 gtest_hide_internal_symbols:BOOL=OFF
 
 //Dependencies for the target
-spg_LIB_DEPENDS:STATIC=general;/usr/local/lib/libqpOASES.a;
+spg_LIB_DEPENDS:STATIC=general;/usr/local/lib/libqpOASES.a;general;/home/robocup/Downloads/spg_cmake/acados/lib/libacados.so;general;/home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_mpc.so;
 
 //Value Computed by CMake
 spg_cmake_BINARY_DIR:STATIC=/home/robocup/Downloads/spg_cmake/build

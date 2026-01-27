@@ -142,8 +142,8 @@ void SimulatorVisualizer::drawRobot(const RobotState& robot) {
     double x = robot.pose.x(), y = robot.pose.y(), theta = robot.pose.z();
     double r = 0.25; // robot radius
     
-    // Adjust theta so 0 degrees points towards positive Y (opposition goal)
-    double adjusted_theta = theta - M_PI/2;
+    // theta = 0 points to the right (positive X direction)
+    double adjusted_theta = theta;
     
     // Draw robot body as a triangle
     double rx[4], ry[4];

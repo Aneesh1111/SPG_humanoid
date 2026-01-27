@@ -95,6 +95,8 @@ test/test_trajpredict: test/CMakeFiles/test_trajpredict.dir/build.make
 test/test_trajpredict: libspg.a
 test/test_trajpredict: lib/libgtest_main.a
 test/test_trajpredict: /usr/local/lib/libqpOASES.a
+test/test_trajpredict: /home/robocup/Downloads/spg_cmake/acados/lib/libacados.so
+test/test_trajpredict: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_mpc.so
 test/test_trajpredict: lib/libgtest.a
 test/test_trajpredict: test/CMakeFiles/test_trajpredict.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable test_trajpredict"

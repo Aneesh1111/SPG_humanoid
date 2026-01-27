@@ -959,6 +959,30 @@ src/spg/setpoint/HumanoidMPC.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/setpoint/HumanoidMPC.cpp.s
 .PHONY : src/spg/setpoint/HumanoidMPC.cpp.s
 
+src/spg/setpoint/HumanoidReferenceMPC.o: src/spg/setpoint/HumanoidReferenceMPC.cpp.o
+.PHONY : src/spg/setpoint/HumanoidReferenceMPC.o
+
+# target to build an object file
+src/spg/setpoint/HumanoidReferenceMPC.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferenceMPC.cpp.o
+.PHONY : src/spg/setpoint/HumanoidReferenceMPC.cpp.o
+
+src/spg/setpoint/HumanoidReferenceMPC.i: src/spg/setpoint/HumanoidReferenceMPC.cpp.i
+.PHONY : src/spg/setpoint/HumanoidReferenceMPC.i
+
+# target to preprocess a source file
+src/spg/setpoint/HumanoidReferenceMPC.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferenceMPC.cpp.i
+.PHONY : src/spg/setpoint/HumanoidReferenceMPC.cpp.i
+
+src/spg/setpoint/HumanoidReferenceMPC.s: src/spg/setpoint/HumanoidReferenceMPC.cpp.s
+.PHONY : src/spg/setpoint/HumanoidReferenceMPC.s
+
+# target to generate assembly for a file
+src/spg/setpoint/HumanoidReferenceMPC.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferenceMPC.cpp.s
+.PHONY : src/spg/setpoint/HumanoidReferenceMPC.cpp.s
+
 src/spg/setpoint/Set.o: src/spg/setpoint/Set.cpp.o
 .PHONY : src/spg/setpoint/Set.o
 
@@ -1610,6 +1634,9 @@ help:
 	@echo "... src/spg/setpoint/HumanoidMPC.o"
 	@echo "... src/spg/setpoint/HumanoidMPC.i"
 	@echo "... src/spg/setpoint/HumanoidMPC.s"
+	@echo "... src/spg/setpoint/HumanoidReferenceMPC.o"
+	@echo "... src/spg/setpoint/HumanoidReferenceMPC.i"
+	@echo "... src/spg/setpoint/HumanoidReferenceMPC.s"
 	@echo "... src/spg/setpoint/Set.o"
 	@echo "... src/spg/setpoint/Set.i"
 	@echo "... src/spg/setpoint/Set.s"

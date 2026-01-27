@@ -311,6 +311,20 @@ test_bouncing_obstacles_integration/fast:
 	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_bouncing_obstacles_integration.dir/build.make test/CMakeFiles/test_bouncing_obstacles_integration.dir/build
 .PHONY : test_bouncing_obstacles_integration/fast
 
+# Convenience name for target.
+test/CMakeFiles/test_humanoid_mpc.dir/rule:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test/CMakeFiles/test_humanoid_mpc.dir/rule
+.PHONY : test/CMakeFiles/test_humanoid_mpc.dir/rule
+
+# Convenience name for target.
+test_humanoid_mpc: test/CMakeFiles/test_humanoid_mpc.dir/rule
+.PHONY : test_humanoid_mpc
+
+# fast build rule for target.
+test_humanoid_mpc/fast:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_humanoid_mpc.dir/build.make test/CMakeFiles/test_humanoid_mpc.dir/build
+.PHONY : test_humanoid_mpc/fast
+
 test_balanceXY.o: test_balanceXY.cpp.o
 .PHONY : test_balanceXY.o
 
@@ -430,6 +444,30 @@ test_getSegments_functions.s: test_getSegments_functions.cpp.s
 test_getSegments_functions.cpp.s:
 	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_getSegments_functions.dir/build.make test/CMakeFiles/test_getSegments_functions.dir/test_getSegments_functions.cpp.s
 .PHONY : test_getSegments_functions.cpp.s
+
+test_humanoid_mpc.o: test_humanoid_mpc.cpp.o
+.PHONY : test_humanoid_mpc.o
+
+# target to build an object file
+test_humanoid_mpc.cpp.o:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_humanoid_mpc.dir/build.make test/CMakeFiles/test_humanoid_mpc.dir/test_humanoid_mpc.cpp.o
+.PHONY : test_humanoid_mpc.cpp.o
+
+test_humanoid_mpc.i: test_humanoid_mpc.cpp.i
+.PHONY : test_humanoid_mpc.i
+
+# target to preprocess a source file
+test_humanoid_mpc.cpp.i:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_humanoid_mpc.dir/build.make test/CMakeFiles/test_humanoid_mpc.dir/test_humanoid_mpc.cpp.i
+.PHONY : test_humanoid_mpc.cpp.i
+
+test_humanoid_mpc.s: test_humanoid_mpc.cpp.s
+.PHONY : test_humanoid_mpc.s
+
+# target to generate assembly for a file
+test_humanoid_mpc.cpp.s:
+	cd /home/robocup/Downloads/spg_cmake/build && $(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_humanoid_mpc.dir/build.make test/CMakeFiles/test_humanoid_mpc.dir/test_humanoid_mpc.cpp.s
+.PHONY : test_humanoid_mpc.cpp.s
 
 test_move_straight_line.o: test_move_straight_line.cpp.o
 .PHONY : test_move_straight_line.o
@@ -569,6 +607,7 @@ help:
 	@echo "... test_determine_setpoint_limits"
 	@echo "... test_getSegments"
 	@echo "... test_getSegments_functions"
+	@echo "... test_humanoid_mpc"
 	@echo "... test_move_straight_line"
 	@echo "... test_setpoint_set"
 	@echo "... test_static_obstacles_integration"
@@ -589,6 +628,9 @@ help:
 	@echo "... test_getSegments_functions.o"
 	@echo "... test_getSegments_functions.i"
 	@echo "... test_getSegments_functions.s"
+	@echo "... test_humanoid_mpc.o"
+	@echo "... test_humanoid_mpc.i"
+	@echo "... test_humanoid_mpc.s"
 	@echo "... test_move_straight_line.o"
 	@echo "... test_move_straight_line.i"
 	@echo "... test_move_straight_line.s"

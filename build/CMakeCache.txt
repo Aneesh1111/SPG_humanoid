@@ -312,6 +312,12 @@ GTEST_HAS_ABSL:BOOL=OFF
 // may want to turn this OFF.)
 INSTALL_GTEST:BOOL=ON
 
+//Path to a file.
+QPOASES_INCLUDE_DIR:PATH=/usr/local/include
+
+//Path to a library.
+QPOASES_LIBRARY:FILEPATH=/usr/local/lib/libqpOASES.a
+
 //Value Computed by CMake
 gmock_BINARY_DIR:STATIC=/home/robocup/Downloads/spg_cmake/build/_deps/googletest-build/googlemock
 
@@ -357,6 +363,9 @@ gtest_force_shared_crt:BOOL=ON
 
 //Build gtest with internal symbols hidden in shared libraries.
 gtest_hide_internal_symbols:BOOL=OFF
+
+//Dependencies for the target
+spg_LIB_DEPENDS:STATIC=general;/usr/local/lib/libqpOASES.a;
 
 //Value Computed by CMake
 spg_cmake_BINARY_DIR:STATIC=/home/robocup/Downloads/spg_cmake/build

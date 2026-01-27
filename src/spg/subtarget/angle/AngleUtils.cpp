@@ -1,5 +1,6 @@
 #include <Eigen/Dense>
 #include <cmath>
+#include <iostream>
 #include "spg/subtarget/angle/AngleUtils.hpp"
 #include "spg/setpoint/Wrap.hpp"
 
@@ -64,8 +65,23 @@ double set(const SPGState& d) {
             angle = d.target.p(2);
             break;
     }
+    
+    // Debug: Print angle calculation
+    static int counter = 0;
+    if (counter++ % 50 == 0) {
+        std::cout << "angle::set - skillID=" << d.input.robot.skillID 
+                  << ", d.target.p(2)=" << d.target.p(2) 
+                  << ", angle before wrap=" << angle << std::endl;
+    }
+    
     // wrap around current setpoint
     angle = setpoint::wrap(angle, d.setpoint.p(2));
+    
+    if ((counter-1) % 50 == 0) {
+        std::cout << "angle::set - after wrap: " << angle 
+                  << " (wrapped around " << d.setpoint.p(2) << ")" << std::endl;
+    }
+    
     return angle;
 }
 

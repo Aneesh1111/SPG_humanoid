@@ -1,0 +1,13 @@
+{
+  "start_pos": {
+    "x": 1.0,
+    "y": 3.0,
+    "theta": 0.0
+  },
+  "target_pos": {
+    "x": 0.0,
+    "y": -3.0,
+    "theta": 0.0
+  },
+  "prediction_horizon": 10
+}

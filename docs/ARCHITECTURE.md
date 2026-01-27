@@ -184,6 +184,390 @@ TrajPredict(d, setpointSegments);
 
 ---
 
+### MSL Mode: Mathematical Formulation
+
+**Files**: `src/spg/setpoint/GetSegments.cpp`, `src/spg/setpoint/BalanceXY.cpp`, `src/spg/setpoint/Traj1.cpp`
+
+This section presents the MSL trajectory generation as a structured control algorithm (not true MPC, but a time-optimal open-loop planner).
+
+---
+
+#### 1. Problem Statement
+
+Given:
+- **Initial state**: $\mathbf{p}_0 = [x_0, y_0, \phi_0]^T$, $\mathbf{v}_0 = [v_{x,0}, v_{y,0}, \omega_0]^T$
+- **Goal state**: $\mathbf{p}_e = [x_e, y_e, \phi_e]^T$, $\mathbf{v}_e = [v_{x,e}, v_{y,e}, \omega_e]^T$
+- **Physical limits**: $\mathbf{v}_{\max}$, $\mathbf{a}_{\max}$, $\mathbf{d}_{\max}$ (velocity, acceleration, deceleration)
+
+**Find**: A feasible trajectory $\mathbf{p}(t)$, $\mathbf{v}(t)$ that reaches the goal while respecting kinematic constraints.
+
+---
+
+#### 2. Four-Segment Trajectory Structure
+
+The MSL planner generates a **fixed structure** with 4 segments per degree of freedom (x, y, φ):
+
+$$\text{Trajectory} = \{\text{Seg}_1, \text{Seg}_2, \text{Seg}_3, \text{Seg}_4\}$$
+
+**Segment types**:
+1. **Acceleration** ($\text{Seg}_1$): Accelerate from $\mathbf{v}_0$ to intermediate velocity $\mathbf{v}_1$
+2. **Cruise** ($\text{Seg}_2$): Maintain constant velocity $\mathbf{v}_1$ for time $t_{\max}$
+3. **Deceleration** ($\text{Seg}_3$): Decelerate from $\mathbf{v}_1$ to final velocity $\mathbf{v}_e$
+4. **Final** ($\text{Seg}_4$): Hold at final velocity $\mathbf{v}_e$ indefinitely
+
+---
+
+#### 3. Segment Dynamics
+
+Each segment $i$ is characterized by:
+$$\text{Segment}_i = \{t_i, \mathbf{p}_i, \mathbf{v}_i, \mathbf{a}_i, \Delta t_i\}$$
+
+where:
+- $t_i$ : segment start time [s]
+- $\mathbf{p}_i$ : position at segment end [m, m, rad]
+- $\mathbf{v}_i$ : velocity at segment end [m/s, m/s, rad/s]
+- $\mathbf{a}_i$ : constant acceleration during segment [m/s², m/s², rad/s²]
+- $\Delta t_i$ : segment duration [s]
+
+**Constant-acceleration kinematics** (per DOF $j \in \{x, y, \phi\}$):
+$$p_{i,j} = p_{i-1,j} + v_{i-1,j} \cdot \Delta t_{i,j} + \frac{1}{2} a_{i,j} \cdot \Delta t_{i,j}^2$$
+$$v_{i,j} = v_{i-1,j} + a_{i,j} \cdot \Delta t_{i,j}$$
+
+---
+
+#### 4. Segment 1: Acceleration to Intermediate Velocity
+
+**Goal**: Reach velocity $\mathbf{v}_1$ that maximizes progress while allowing deceleration to $\mathbf{v}_e$.
+
+**Maximum achievable speed** (per DOF):
+$$v_{1,j} = \min\left(v_{\max,j}, \sqrt{\frac{1}{2}v_{0,j}^2 + \frac{1}{2}v_{e,j}^2 + a_{j} \cdot (p_{e,j} - p_{0,j})}\right)$$
+
+where:
+$$a_j = \text{sign}(p_{e,j} - p_{0,j}) \cdot a_{\max,j}$$
+
+**Duration and end state**:
+$$\Delta t_{1,j} = \frac{|v_{1,j} - v_{0,j}|}{a_{\max,j}}$$
+$$a_{1,j} = \text{sign}(v_{1,j} - v_{0,j}) \cdot a_{\max,j}$$
+$$p_{1,j} = p_{0,j} + v_{0,j} \cdot \Delta t_{1,j} + \frac{1}{2} a_{1,j} \cdot \Delta t_{1,j}^2$$
+
+---
+
+#### 5. Segment 2: Constant Velocity Cruise
+
+**Duration** (per DOF):
+$$t_{\max,j} = \max\left(0, \frac{v_{1,j}^2 - v_{\max,j}^2}{a_{\max,j} \cdot v_{\max,j}}\right)$$
+
+**Special case** if $|v_{0,j}| > v_{\max,j}$ (already over-speed):
+$$t_{\max,j} = \frac{p_{e,j} - p_{1,j}}{v_{\max,j}} \cdot \text{sign}(p_{e,j} - p_{1,j})$$
+
+**End state**:
+$$\Delta t_{2,j} = \max(0, t_{\max,j})$$
+$$a_{2,j} = 0$$
+$$p_{2,j} = p_{1,j} + v_{1,j} \cdot \Delta t_{2,j}$$
+$$v_{2,j} = v_{1,j}$$
+
+---
+
+#### 6. Segment 3: Deceleration to Final Velocity
+
+**Duration and end state**:
+$$\Delta t_{3,j} = \frac{|v_{e,j} - v_{2,j}|}{a_{\max,j}}$$
+$$a_{3,j} = \text{sign}(v_{e,j} - v_{2,j}) \cdot a_{\max,j}$$
+$$p_{3,j} = p_{2,j} + v_{2,j} \cdot \Delta t_{3,j} + \frac{1}{2} a_{3,j} \cdot \Delta t_{3,j}^2$$
+$$v_{3,j} = v_{e,j}$$
+
+---
+
+#### 7. Segment 4: Final Hold
+
+**Purpose**: Extend trajectory indefinitely (for prediction beyond goal).
+
+$$\Delta t_{4,j} = 10^{10} \quad \text{(effectively infinite)}$$
+$$a_{4,j} = 0$$
+$$v_{4,j} = v_{e,j}$$
+$$p_{4,j}(t) = p_{3,j} + v_{e,j} \cdot (t - t_3)$$
+
+---
+
+#### 8. XY-Balancing Algorithm
+
+**Problem**: For 2D motion, x and y segments may complete at different times, causing inefficient paths (e.g., robot moves in x, then separately in y).
+
+**Solution**: Iteratively adjust acceleration/velocity limits to synchronize x and y motion.
+
+**Algorithm** (binary search over direction angle $\alpha$):
+
+$$\text{Initialize: } \alpha = 45°, \; \text{step} = 22.5°$$
+
+**For** $i = 1, \ldots, 12$ **iterations**:
+1. Compute scaling factors:
+   $$A_x = \max(0.01, \cos(\alpha)), \quad A_y = \max(0.01, \sin(\alpha))$$
+
+2. Scale physical limits:
+   $$v_{\max,x} = v_{\text{move}} \cdot A_x, \quad v_{\max,y} = v_{\text{move}} \cdot A_y$$
+   $$a_{\max,x} = a_{\text{move}} \cdot A_x, \quad a_{\max,y} = a_{\text{move}} \cdot A_y$$
+   $$d_{\max,x} = d_{\text{move}} \cdot A_x, \quad d_{\max,y} = d_{\text{move}} \cdot A_y$$
+
+3. Generate segments with scaled limits: $\{\text{Seg}_1, \text{Seg}_2, \text{Seg}_3, \text{Seg}_4\}$
+
+4. **Check balance**: If $\Delta t_{2,y} > 0$ (y-axis has cruise phase), x is too fast:
+   $$\alpha \leftarrow \alpha + \text{step}$$
+   else (y finishes first), x is too slow:
+   $$\alpha \leftarrow \alpha - \text{step}$$
+
+5. Update: $\text{step} \leftarrow \text{step} / 2$
+
+**Output**: Balanced limits $\mathbf{v}_{\max}$, $\mathbf{a}_{\max}$, $\mathbf{d}_{\max}$ such that x and y motions complete simultaneously (within tolerance).
+
+---
+
+#### 9. Trajectory Evaluation at Arbitrary Time
+
+Given segments and query time $t_q$, find state $\mathbf{p}(t_q)$, $\mathbf{v}(t_q)$, $\mathbf{a}(t_q)$:
+
+**For each DOF** $j$:
+1. **Determine active segment**: Find $k$ such that $t_k \leq t_q < t_{k+1}$
+2. **Relative time**: $\tau = t_q - t_k$
+3. **Evaluate kinematics**:
+   $$p_j(t_q) = p_{k,j} + v_{k,j} \cdot \tau + \frac{1}{2} a_{k,j} \cdot \tau^2$$
+   $$v_j(t_q) = v_{k,j} + a_{k,j} \cdot \tau$$
+   $$a_j(t_q) = a_{k,j}$$
+
+**Multi-step prediction**: For visualization, evaluate at $t_1 = T_s$, $t_2 = 2T_s$, ..., $t_N = N \cdot T_s$.
+
+---
+
+#### 10. Receding Horizon Execution
+
+**Discretization**: Sample trajectory at control period $T_s = 0.02$ s (50 Hz).
+
+**Algorithm** at each control cycle:
+1. **Measure** current state $\mathbf{p}_0$, $\mathbf{v}_0$
+2. **Get goal** from subtarget: $\mathbf{p}_e$, $\mathbf{v}_e$
+3. **Generate segments**: 
+   - Call `getSegments()` → produces 4-segment trajectory
+   - Optionally call `balanceXY()` for synchronized 2D motion
+4. **Extract setpoint**: Evaluate trajectory at $t = T_s$ (one step ahead):
+   $$\mathbf{p}_{\text{setpoint}} = \mathbf{p}(T_s), \quad \mathbf{v}_{\text{setpoint}} = \mathbf{v}(T_s), \quad \mathbf{a}_{\text{setpoint}} = \mathbf{a}(T_s)$$
+5. **Predict trajectory**: Evaluate at $t_i = i \cdot T_s$ for $i = 1, \ldots, N_{\text{pred}}$ (e.g., $N_{\text{pred}} = 50$)
+6. **Apply** $\mathbf{v}_{\text{setpoint}}$ to robot actuators
+7. **Repeat** at next cycle with updated state
+
+---
+
+#### 11. Field Boundary Safety Constraints
+
+**Soft constraints** (velocity clamping near boundaries):
+
+$$v_{\max,x}^{\text{safe}} = 2 \cdot d_{\max} \cdot \text{dist}_{\text{sideline}}$$
+$$v_{\max,y}^{\text{safe}} = 2 \cdot d_{\max} \cdot \text{dist}_{\text{goalline}}$$
+
+where:
+$$\text{dist}_{\text{sideline}} = \frac{W_{\text{field}}}{2} - |x|$$
+$$\text{dist}_{\text{goalline}} = \frac{L_{\text{field}}}{2} - |y|$$
+
+**Clamping rule**:
+$$v_x \leftarrow \text{clamp}(v_x, -v_{\max,x}^{\text{safe}}, +v_{\max,x}^{\text{safe}})$$
+$$v_y \leftarrow \text{clamp}(v_y, -v_{\max,y}^{\text{safe}}, +v_{\max,y}^{\text{safe}})$$
+
+**Emergency deceleration**: If approaching boundary too fast:
+$$\text{if } v_x > v_{\max,x}^{\text{safe}} \text{ and } x > 0: \quad a_x \leftarrow -d_{\max}$$
+
+---
+
+#### 12. Key Properties and Limitations
+
+**Advantages**:
+- ✅ **Time-optimal** for single-DOF motion (bang-bang control)
+- ✅ **Exact** trajectory (no linearization errors)
+- ✅ **Fast computation** (~50 μs per cycle)
+- ✅ **Predictable** behavior (fixed segment structure)
+- ✅ **Decoupled** DOFs (x, y, φ independent, except via balanceXY)
+
+**Limitations**:
+- ❌ **Open-loop**: No re-optimization after disturbances within segment
+- ❌ **No coupled costs**: Cannot trade off position error vs. control effort
+- ❌ **Heuristic balancing**: XY-balancing uses iterative search, not optimization
+- ❌ **No obstacle avoidance**: Relies on higher-level subtarget planner
+- ❌ **Assumes holonomic motion**: Ignores nonholonomic constraints (orientation-dependent velocity limits)
+
+---
+
+#### 13. Comparison: MSL vs. HumanoidMPC
+
+| Property | MSL Mode | HumanoidMPC Mode |
+|----------|----------|------------------|
+| **Formulation** | Analytical (closed-form segments) | Optimization (QP) |
+| **Horizon** | Entire trajectory to goal | Fixed $N$ steps (e.g., 10) |
+| **Computation** | ~50 μs | ~1-3 ms |
+| **Replanning** | Every cycle (fast re-compute) | Every cycle (warm-start QP) |
+| **Smoothness** | Bang-bang (max accel/decel) | Tunable via $\mathbf{S}$ matrix |
+| **Optimality** | Time-optimal per DOF | Cost-optimal over horizon |
+| **Dynamics** | Linear per DOF | Nonlinear (coupled x-y-φ) |
+| **Use case** | Wheeled MSL robots | Humanoid robots with drift |
+
+---
+
+#### 14. Hypothetical MPC Reformulation of MSL Mode
+
+**Question**: What if we formulated MSL's analytical planner as an optimization problem?
+
+This section shows how to express the MSL approach as a proper MPC problem that would recover similar behavior.
+
+---
+
+##### A. Time-Optimal MPC Formulation
+
+**Decision variables**: Acceleration sequence over horizon $N$:
+$$\mathbf{A} = \begin{bmatrix} \mathbf{a}_0 \\ \mathbf{a}_1 \\ \vdots \\ \mathbf{a}_{N-1} \end{bmatrix} \in \mathbb{R}^{3N}$$
+
+where $\mathbf{a}_k = [a_{x,k}, a_{y,k}, a_{\phi,k}]^T$ at timestep $k$.
+
+**Dynamics** (decoupled per DOF, e.g., for x-axis):
+$$x_{k+1} = x_k + v_{x,k} \cdot \Delta t$$
+$$v_{x,k+1} = v_{x,k} + a_{x,k} \cdot \Delta t$$
+
+**Cost function** (time-to-goal minimization):
+$$J = \underbrace{w_T \cdot \|\mathbf{x}_N - \mathbf{x}_{\text{goal}}\|^2}_{\text{terminal error}} + \underbrace{w_t \sum_{k=0}^{N-1} \|\mathbf{x}_k - \mathbf{x}_{\text{goal}}\|^2}_{\text{stage error (small weight)}}$$
+
+**Constraints**:
+1. **Acceleration limits** (box constraints):
+   $$-a_{\max,j} \leq a_{j,k} \leq a_{\max,j}, \quad j \in \{x, y, \phi\}, \; k = 0, \ldots, N-1$$
+
+2. **Velocity limits**:
+   $$-v_{\max,j} \leq v_{j,k} \leq v_{\max,j}, \quad j \in \{x, y, \phi\}, \; k = 1, \ldots, N$$
+
+3. **Terminal constraint** (must reach goal):
+   $$\|\mathbf{x}_N - \mathbf{x}_{\text{goal}}\| \leq \epsilon_{\text{tol}}$$
+
+4. **Terminal velocity constraint**:
+   $$\mathbf{v}_N = \mathbf{v}_{\text{goal}}$$
+
+**Key insight**: With large $w_T$ and tight terminal constraints, the optimal solution exhibits **bang-bang control**:
+$$a_{j,k}^* \in \{-a_{\max,j}, 0, +a_{\max,j}\}$$
+
+This recovers the MSL segment structure: max acceleration → cruise → max deceleration.
+
+---
+
+##### B. Minimum-Time MPC (Explicit Time Variable)
+
+**Extended state**: Include time-to-goal as a state variable:
+$$\mathbf{z}_k = [\mathbf{x}_k^T, \mathbf{v}_k^T, \tau_k]^T$$
+
+where $\tau_k$ is remaining time to reach goal.
+
+**Cost function**:
+$$J = \tau_N + \lambda \sum_{k=0}^{N-1} \|\mathbf{a}_k\|^2$$
+
+where $\lambda \ll 1$ is a small regularization term to break ties.
+
+**Dynamics**:
+$$\tau_{k+1} = \tau_k - \Delta t$$
+$$(x, v \text{ as before})$$
+
+**Terminal constraint**:
+$$\mathbf{x}_N = \mathbf{x}_{\text{goal}}, \quad \mathbf{v}_N = \mathbf{v}_{\text{goal}}, \quad \tau_N \geq 0$$
+
+**Result**: Minimizing $\tau_N$ directly optimizes for minimum time, which produces the 4-segment bang-bang structure analytically derived in MSL mode.
+
+---
+
+##### C. Mixed-Integer MPC (Explicit Segment Structure)
+
+**Decision variables**: 
+- Segment switching times $\{t_1, t_2, t_3\}$
+- Binary variables $\delta_k^{(i)} \in \{0, 1\}$ indicating active segment at timestep $k$
+
+**Cost function**:
+$$J = t_3 + \sum_{k=0}^{N-1} \sum_{i=1}^{4} \delta_k^{(i)} \cdot c_i$$
+
+where $c_i$ is cost of being in segment $i$ (e.g., $c_2 = 0$ for cruise, $c_1 = c_3 = \epsilon > 0$ for accel/decel).
+
+**Constraints**:
+1. **Segment logic**:
+   $$\sum_{i=1}^{4} \delta_k^{(i)} = 1, \quad \forall k \quad \text{(exactly one segment active)}$$
+
+2. **Segment order**:
+   $$\delta_k^{(1)} \implies \delta_{k+1}^{(1)} \vee \delta_{k+1}^{(2)}$$
+   $$\delta_k^{(2)} \implies \delta_{k+1}^{(2)} \vee \delta_{k+1}^{(3)}$$
+   (logical implications enforced via big-M constraints)
+
+3. **Acceleration by segment**:
+   $$a_{j,k} = \sum_{i=1}^{4} \delta_k^{(i)} \cdot a_{j}^{(i)}$$
+   where $a_j^{(1)} = +a_{\max,j}$, $a_j^{(2)} = 0$, $a_j^{(3)} = -a_{\max,j}$, $a_j^{(4)} = 0$
+
+**Result**: This explicitly encodes the 4-segment structure and finds optimal switching times $\{t_1, t_2, t_3\}$. Equivalent to MSL's analytical solution but much slower (MILP vs. closed-form).
+
+---
+
+##### D. XY-Coupling via Multi-Objective Cost
+
+To replicate `balanceXY()`, introduce a coupling cost:
+
+**Cost function**:
+$$J = \|\mathbf{x}_N - \mathbf{x}_{\text{goal}}\|^2 + w_{\text{balance}} \cdot (t_{x,\text{done}} - t_{y,\text{done}})^2$$
+
+where $t_{x,\text{done}}$, $t_{y,\text{done}}$ are times when x and y DOFs reach their goals.
+
+**Penalty formulation**:
+$$w_{\text{balance}} \cdot \sum_{k=0}^{N-1} \left(\|\mathbf{x}_{k,x} - x_{\text{goal}}\|^2 - \|\mathbf{x}_{k,y} - y_{\text{goal}}\|^2\right)^2$$
+
+This encourages x and y to converge simultaneously, similar to MSL's iterative angle search.
+
+---
+
+##### E. Acceleration-Level MPC (Matching Current Implementation)
+
+**Decision variables**: Acceleration inputs $\mathbf{a}_k$ (not velocities).
+
+**Dynamics**:
+$$\mathbf{x}_{k+1} = \mathbf{x}_k + \mathbf{v}_k \cdot \Delta t + \frac{1}{2} \mathbf{a}_k \cdot \Delta t^2$$
+$$\mathbf{v}_{k+1} = \mathbf{v}_k + \mathbf{a}_k \cdot \Delta t$$
+
+**Cost function**:
+$$J = \underbrace{\|\mathbf{x}_N - \mathbf{x}_{\text{goal}}\|_{\mathbf{Q}_f}^2}_{\text{terminal position}} + \underbrace{\|\mathbf{v}_N - \mathbf{v}_{\text{goal}}\|_{\mathbf{Q}_v}^2}_{\text{terminal velocity}} + \underbrace{\sum_{k=0}^{N-1} \|\mathbf{a}_k\|_{\mathbf{R}}^2}_{\text{control effort}}$$
+
+**Smoothness** (jerk minimization):
+$$J_{\text{smooth}} = \sum_{k=1}^{N-1} \|\mathbf{a}_k - \mathbf{a}_{k-1}\|_{\mathbf{S}}^2$$
+
+**Complete formulation**:
+$$\begin{aligned}
+\min_{\mathbf{A}} \quad & J = \|\mathbf{x}_N - \mathbf{x}_{\text{goal}}\|_{\mathbf{Q}_f}^2 + \|\mathbf{v}_N - \mathbf{v}_{\text{goal}}\|_{\mathbf{Q}_v}^2 \\
+& \quad + \sum_{k=0}^{N-1} \left( \|\mathbf{x}_k - \mathbf{x}_{\text{goal}}\|_{\mathbf{Q}}^2 + \|\mathbf{a}_k\|_{\mathbf{R}}^2 + \|\Delta\mathbf{a}_k\|_{\mathbf{S}}^2 \right) \\
+\text{s.t.} \quad & \mathbf{x}_{k+1} = \mathbf{x}_k + \mathbf{v}_k \Delta t + \frac{1}{2}\mathbf{a}_k \Delta t^2 \\
+& \mathbf{v}_{k+1} = \mathbf{v}_k + \mathbf{a}_k \Delta t \\
+& -\mathbf{a}_{\max} \leq \mathbf{a}_k \leq \mathbf{a}_{\max} \\
+& -\mathbf{v}_{\max} \leq \mathbf{v}_k \leq \mathbf{v}_{\max} \\
+& \mathbf{x}_0 = \mathbf{x}_{\text{current}}, \quad \mathbf{v}_0 = \mathbf{v}_{\text{current}}
+\end{aligned}$$
+
+**Weight tuning to recover MSL behavior**:
+- **Large** $\mathbf{Q}_f$: Forces terminal accuracy (like MSL's exact goal reaching)
+- **Small** $\mathbf{R}$: Allows aggressive control (like MSL's bang-bang)
+- **Zero** $\mathbf{S}$: No smoothness penalty (MSL uses max accel/decel)
+- **Long horizon** $N \gg 1$: Allows full trajectory to goal (MSL plans entire path)
+
+**Limit case**: As $\mathbf{Q}_f \to \infty$, $\mathbf{R} \to 0$, $\mathbf{S} \to 0$, $N \to \infty$, solution converges to MSL's time-optimal bang-bang control.
+
+---
+
+##### F. Computational Comparison
+
+| Approach | Solver | Variables | Complexity | Time |
+|----------|--------|-----------|------------|------|
+| **MSL Analytical** | Closed-form | 0 (direct computation) | $O(1)$ | ~50 μs |
+| **QP (formulation E)** | qpOASES | $3N$ (e.g., 30) | $O(n^3)$ factorization | ~1-3 ms |
+| **MILP (formulation C)** | Gurobi/CPLEX | $3N + 4N$ binary | Exponential (branch-bound) | ~10-100 ms |
+| **Explicit time (B)** | Nonlinear solver | $3N + N$ | $O(n^3)$ per iteration | ~5-20 ms |
+
+**Conclusion**: MSL's analytical approach is computationally optimal for its assumptions (decoupled DOFs, bang-bang optimal). Converting to MPC only makes sense if:
+1. Coupling between DOFs is critical (like humanoid kinematics)
+2. Smoothness matters more than time-optimality
+3. Online re-optimization under disturbances provides value
+
+---
+
 ### HumanoidMPC Mode (Advanced)
 
 **File**: `src/spg/setpoint/Set.cpp` (lines 35-204)
@@ -234,113 +618,187 @@ mpc_params.weights.s_omega = 0.4;     // rotation smoothness cost
 
 **File**: `src/spg/setpoint/HumanoidMPC.cpp`
 
-#### 1. State Space (Robot Local Frame)
-```
-x = [x, y, φ]ᵀ
-  x: forward displacement from current robot position [m]
-  y: lateral displacement [m]
-  φ: heading relative to current robot orientation [rad]
-```
+This section presents the complete MPC formulation in standard control-theoretic notation.
 
-#### 2. Control Space (Body Frame)
-```
-u = [vf, vs, ω]ᵀ
-  vf: forward velocity [m/s]
-  vs: sideways velocity [m/s]
-  ω: yaw rate [rad/s]
-```
+---
 
-Internally normalized to `ũ = [ũf, ũs, ũω]ᵀ ∈ [-1, 1]³`:
-```
-ũf = vf / vf_max
-ũs = vs / vs_max
-ũω = ω / ω_max
-```
+#### 1. State and Control Spaces
 
-#### 3. Dynamics (Linearized Kinematics)
-
-Discrete-time model with timestep `dt = 0.02s`:
-```
-x_{k+1} = x_k + dt * (vf * cos(φ_k) - vs * sin(φ_k))
-y_{k+1} = y_k + dt * (vf * sin(φ_k) + vs * cos(φ_k))
-φ_{k+1} = φ_k + dt * ω
-```
-
-Linearized about current heading `φ₀` (typically 0 in local frame):
-```
-x_{k+1} ≈ x_k + B * u_k
-
-where B = [dt*cos(φ₀)  -dt*sin(φ₀)   0    ]
-          [dt*sin(φ₀)   dt*cos(φ₀)   0    ]
-          [    0            0       dt    ]
-```
-
-#### 4. Cost Function
-
-**Goal-based MPC**: Minimize distance to goal over horizon N = 10 steps:
-
-```
-J = Σ(k=0 to N-1) [(x_k - x_goal)ᵀ Q (x_k - x_goal)      # state error
-                   + ũ_kᵀ R ũ_k                            # control effort
-                   + Δũ_kᵀ S Δũ_k]                        # control smoothness
-    + (x_N - x_goal)ᵀ Qf (x_N - x_goal)                   # terminal cost
-```
-
-**Key Feature**: Smooth transitions via measured velocity:
-```
-Δũ₀ = ũ₀ - ũ_meas    (uses actual current velocity)
-Δũₖ = ũₖ - ũ_{k-1}   (change between timesteps)
-```
-
-**Cost Matrices**:
-```
-Q = diag(q_pos, q_pos, q_phi)        # stage state cost
-Qf = diag(qf_pos, qf_pos, qf_phi)    # terminal state cost
-R = diag(r_vf, r_vs, r_omega)         # control effort cost
-S = diag(s_vf, s_vs, s_omega)         # smoothness cost
-```
-
-#### 5. QP Formulation
-
-The MPC problem is reformulated as a Quadratic Program:
-
-```
-minimize    ½ Ũᵀ H Ũ + fᵀ Ũ
-subject to  -1 ≤ Ũ ≤ 1
+**State vector** (robot-local frame):
+$$\mathbf{x}_k = \begin{bmatrix} x_k \\ y_k \\ \phi_k \end{bmatrix} \in \mathbb{R}^3$$
 
 where:
-  Ũ = [ũ₀ᵀ, ũ₁ᵀ, ..., ũ_{N-1}ᵀ]ᵀ  (stacked controls, 30×1)
-  
-  H = 2(SuᵀQbarSu + Rbar + LᵀSbarL)
-  f = 2(SuᵀQbar(Sx*x₀ - xgoal_stack) + LᵀSbarl₀)
-  
-  Su: control-to-state mapping (9N × 3N)
-  L: control-to-Δcontrol mapping (3N × 3N)
-  l₀: measured velocity offset vector
-```
+- $x_k$ : forward displacement from robot origin [m]
+- $y_k$ : lateral displacement [m]  
+- $\phi_k$ : heading relative to robot's initial orientation [rad]
 
-**Solver**: Uses **qpOASES** (fast online active-set QP solver)
-- Typical convergence: 20-40 iterations
-- Computation time: 1-3ms on modern CPU
+**Control vector** (body frame):
+$$\mathbf{u}_k = \begin{bmatrix} v_{f,k} \\ v_{s,k} \\ \omega_k \end{bmatrix} \in \mathbb{R}^3$$
 
-#### 6. Forward Simulation
+where:
+- $v_{f,k}$ : forward velocity [m/s]
+- $v_{s,k}$ : sideways velocity [m/s]
+- $\omega_k$ : yaw rate [rad/s]
 
-After solving QP, forward simulate trajectory using full control sequence:
+**Control normalization**:
+$$\tilde{\mathbf{u}}_k = \begin{bmatrix} \tilde{u}_{f,k} \\ \tilde{u}_{s,k} \\ \tilde{u}_{\omega,k} \end{bmatrix} = \begin{bmatrix} v_{f,k} / v_{f}^{\max} \\ v_{s,k} / v_{s}^{\max} \\ \omega_k / \omega^{\max} \end{bmatrix} \in [-1, 1]^3$$
 
-```cpp
-for (k = 0; k < N; ++k) {
-    u_k = extract control k from solution
-    
-    // Propagate dynamics
-    x_{k+1} = x_k + dt * (u_k.vf * cos(φ_k) - u_k.vs * sin(φ_k))
-    y_{k+1} = y_k + dt * (u_k.vf * sin(φ_k) + u_k.vs * cos(φ_k))
-    φ_{k+1} = φ_k + dt * u_k.ω
-    
-    store state and control for visualization
-}
-```
+---
 
-Returns: `N+1` states and `N` controls in **robot local frame**.
+#### 2. System Dynamics
+
+**Nonlinear discrete-time kinematics** (sampling time $\Delta t = 0.02$ s):
+$$\mathbf{x}_{k+1} = \mathbf{f}(\mathbf{x}_k, \mathbf{u}_k) = \mathbf{x}_k + \Delta t \begin{bmatrix} v_{f,k} \cos(\phi_k) - v_{s,k} \sin(\phi_k) \\ v_{f,k} \sin(\phi_k) + v_{s,k} \cos(\phi_k) \\ \omega_k \end{bmatrix}$$
+
+**Linearization** about nominal heading $\phi_0$ (typically 0 in local frame):
+$$\mathbf{x}_{k+1} \approx \mathbf{x}_k + \mathbf{B} \mathbf{u}_k$$
+
+where the input matrix is:
+$$\mathbf{B} = \Delta t \begin{bmatrix} \cos(\phi_0) & -\sin(\phi_0) & 0 \\ \sin(\phi_0) & \cos(\phi_0) & 0 \\ 0 & 0 & 1 \end{bmatrix}$$
+
+---
+
+#### 3. Cost Function
+
+The **goal-tracking MPC** minimizes the following cost over horizon $N$:
+
+$$J(\mathbf{x}_0, \tilde{\mathbf{U}}) = \sum_{k=0}^{N-1} \left[ \ell_k(\mathbf{x}_k, \tilde{\mathbf{u}}_k) + \ell_{\Delta}(\Delta\tilde{\mathbf{u}}_k) \right] + \ell_N(\mathbf{x}_N)$$
+
+**Stage cost** (tracking + control effort):
+$$\ell_k(\mathbf{x}_k, \tilde{\mathbf{u}}_k) = \|\mathbf{x}_k - \mathbf{x}_{\text{goal}}\|_{\mathbf{Q}}^2 + \|\tilde{\mathbf{u}}_k\|_{\mathbf{R}}^2$$
+
+**Smoothness cost** (penalize control rate changes):
+$$\ell_{\Delta}(\Delta\tilde{\mathbf{u}}_k) = \|\Delta\tilde{\mathbf{u}}_k\|_{\mathbf{S}}^2$$
+
+where:
+$$\Delta\tilde{\mathbf{u}}_k = \begin{cases} \tilde{\mathbf{u}}_0 - \tilde{\mathbf{u}}_{\text{meas}} & k = 0 \\ \tilde{\mathbf{u}}_k - \tilde{\mathbf{u}}_{k-1} & k \geq 1 \end{cases}$$
+
+and $\tilde{\mathbf{u}}_{\text{meas}}$ is the **measured current velocity** (normalized), ensuring smooth transitions.
+
+**Terminal cost** (strong end-state tracking):
+$$\ell_N(\mathbf{x}_N) = \|\mathbf{x}_N - \mathbf{x}_{\text{goal}}\|_{\mathbf{Q}_f}^2$$
+
+**Cost weight matrices**:
+$$\mathbf{Q} = \text{diag}(q_{\text{pos}}, q_{\text{pos}}, q_{\phi}) \in \mathbb{R}^{3 \times 3}$$
+$$\mathbf{Q}_f = \text{diag}(q_{f,\text{pos}}, q_{f,\text{pos}}, q_{f,\phi}) \in \mathbb{R}^{3 \times 3}$$
+$$\mathbf{R} = \text{diag}(r_{v_f}, r_{v_s}, r_{\omega}) \in \mathbb{R}^{3 \times 3}$$
+$$\mathbf{S} = \text{diag}(s_{v_f}, s_{v_s}, s_{\omega}) \in \mathbb{R}^{3 \times 3}$$
+
+**Note**: $\mathbf{Q}_f \succ \mathbf{Q}$ (terminal cost stronger than stage cost) to ensure goal convergence.
+
+---
+
+#### 4. Optimization Problem
+
+The finite-horizon optimal control problem is:
+
+$$\begin{aligned}
+\min_{\tilde{\mathbf{U}}} \quad & J(\mathbf{x}_0, \tilde{\mathbf{U}}) \\
+\text{s.t.} \quad & \mathbf{x}_{k+1} = \mathbf{f}(\mathbf{x}_k, \mathbf{u}_k), \quad k = 0, \ldots, N-1 \\
+& \mathbf{x}_0 = \mathbf{x}_{\text{current}} \quad \text{(initial condition)} \\
+& -1 \leq \tilde{u}_{i,k} \leq 1, \quad i \in \{f, s, \omega\}, \; k = 0, \ldots, N-1
+\end{aligned}$$
+
+where the decision variable is the stacked control sequence:
+$$\tilde{\mathbf{U}} = \begin{bmatrix} \tilde{\mathbf{u}}_0 \\ \tilde{\mathbf{u}}_1 \\ \vdots \\ \tilde{\mathbf{u}}_{N-1} \end{bmatrix} \in \mathbb{R}^{3N}$$
+
+---
+
+#### 5. Quadratic Program (QP) Reformulation
+
+By substituting the linear dynamics recursively, we eliminate state variables and obtain a dense QP in **control space only**:
+
+$$\begin{aligned}
+\min_{\tilde{\mathbf{U}}} \quad & \frac{1}{2} \tilde{\mathbf{U}}^T \mathbf{H} \tilde{\mathbf{U}} + \mathbf{f}^T \tilde{\mathbf{U}} \\
+\text{s.t.} \quad & \mathbf{lb} \leq \tilde{\mathbf{U}} \leq \mathbf{ub}
+\end{aligned}$$
+
+**Box constraints**:
+$$\mathbf{lb} = -\mathbf{1}_{3N}, \quad \mathbf{ub} = +\mathbf{1}_{3N}$$
+
+**Hessian matrix** (positive definite, $3N \times 3N$):
+$$\mathbf{H} = 2\left( \mathbf{S}_u^T \bar{\mathbf{Q}} \mathbf{S}_u + \bar{\mathbf{R}} + \mathbf{L}^T \bar{\mathbf{S}} \mathbf{L} \right)$$
+
+**Gradient vector** ($3N \times 1$):
+$$\mathbf{f} = 2\left( \mathbf{S}_u^T \bar{\mathbf{Q}} (\mathbf{S}_x \mathbf{x}_0 - \bar{\mathbf{x}}_{\text{goal}}) + \mathbf{L}^T \bar{\mathbf{S}} \mathbf{l}_0 \right)$$
+
+where:
+
+**State propagation matrix** $\mathbf{S}_u \in \mathbb{R}^{3(N+1) \times 3N}$:
+$$\mathbf{X} = \mathbf{S}_x \mathbf{x}_0 + \mathbf{S}_u \tilde{\mathbf{U}}$$
+
+with $\mathbf{X} = [\mathbf{x}_1^T, \ldots, \mathbf{x}_N^T]^T$ (excludes $\mathbf{x}_0$).
+
+**Control difference matrix** $\mathbf{L} \in \mathbb{R}^{3N \times 3N}$:
+$$\Delta\tilde{\mathbf{U}} = \mathbf{L} \tilde{\mathbf{U}} + \mathbf{l}_0$$
+
+where $\mathbf{l}_0 = [-\tilde{\mathbf{u}}_{\text{meas}}^T, \mathbf{0}_{3(N-1)}^T]^T$ encodes the measured initial velocity.
+
+**Block-diagonal weight matrices**:
+$$\bar{\mathbf{Q}} = \text{diag}(\mathbf{Q}, \ldots, \mathbf{Q}, \mathbf{Q}_f) \in \mathbb{R}^{3(N+1) \times 3(N+1)}$$
+$$\bar{\mathbf{R}} = \text{diag}(\mathbf{R}, \ldots, \mathbf{R}) \in \mathbb{R}^{3N \times 3N}$$
+$$\bar{\mathbf{S}} = \text{diag}(\mathbf{S}, \ldots, \mathbf{S}) \in \mathbb{R}^{3N \times 3N}$$
+
+**Goal reference vector**:
+$$\bar{\mathbf{x}}_{\text{goal}} = \begin{bmatrix} \mathbf{x}_{\text{goal}} \\ \vdots \\ \mathbf{x}_{\text{goal}} \end{bmatrix} \in \mathbb{R}^{3(N+1)}$$
+
+---
+
+#### 6. QP Solver and Receding Horizon
+
+**Solver**: [qpOASES](https://projects.coin-or.org/qpOASES) (online active-set method)
+- **Warm-starting**: Solution from previous timestep used as initial guess
+- **Max iterations**: 50 (typically converges in 20-40)
+- **Computation time**: 1-3 ms on modern CPU (Intel i7, 3.5 GHz)
+
+**Receding horizon policy**:
+1. Solve QP at time $t$ to obtain $\tilde{\mathbf{U}}^* = [\tilde{\mathbf{u}}_0^*, \ldots, \tilde{\mathbf{u}}_{N-1}^*]$
+2. Apply **only first control**: $\mathbf{u}(t) = \mathbf{u}_0^*$
+3. At time $t + \Delta t$, measure new state $\mathbf{x}_{\text{new}}$ and repeat
+
+---
+
+#### 7. Trajectory Prediction (Forward Simulation)
+
+For visualization and planning, we propagate the **full control sequence** using the **nonlinear dynamics**:
+
+$$\mathbf{x}_{k+1} = \mathbf{x}_k + \Delta t \begin{bmatrix} v_{f,k}^* \cos(\phi_k) - v_{s,k}^* \sin(\phi_k) \\ v_{f,k}^* \sin(\phi_k) + v_{s,k}^* \cos(\phi_k) \\ \omega_k^* \end{bmatrix}, \quad k = 0, \ldots, N-1$$
+
+This produces:
+- **State trajectory**: $\{\mathbf{x}_0, \mathbf{x}_1, \ldots, \mathbf{x}_N\}$ (in robot-local frame)
+- **Control trajectory**: $\{\mathbf{u}_0^*, \mathbf{u}_1^*, \ldots, \mathbf{u}_{N-1}^*\}$
+
+These are transformed back to the **global frame** for visualization and integration with the SPG system.
+
+---
+
+#### 8. Key Design Choices
+
+**Why separate stage and terminal costs?**
+- **Stage cost** $\mathbf{Q}$: Encourages progress toward goal during motion
+- **Terminal cost** $\mathbf{Q}_f \succ \mathbf{Q}$: Ensures convergence to goal at end of horizon
+- Without strong terminal cost, robot may "orbit" near goal without reaching it
+- Typical ratio: $q_{f,\text{pos}} / q_{\text{pos}} \approx 8$
+
+**Why measure velocity for smoothness?**
+- Using $\Delta\tilde{\mathbf{u}}_0 = \tilde{\mathbf{u}}_0 - \tilde{\mathbf{u}}_{\text{meas}}$ ensures **continuity** across control cycles
+- Prevents jerky transitions when re-planning at 50 Hz
+- Critical for physical robots with momentum
+
+**Why normalize controls?**
+- Asymmetric velocity limits ($v_f^{\max} \neq v_s^{\max}$) would distort QP geometry
+- Normalization to $[-1, 1]^3$ makes box constraints uniform
+- Weight matrices $\mathbf{R}$, $\mathbf{S}$ can then balance control priorities directly
+
+---
+
+#### 9. Computational Complexity
+
+- **QP size**: $3N$ decision variables, $6N$ box constraints (with $N = 10$: 30 vars, 60 constraints)
+- **Dense formulation**: $\mathbf{H}$ is $3N \times 3N$ dense (no sparsity exploited)
+- **Factorization**: One-time Cholesky of $\mathbf{H}$ per QP solve
+- **Active-set updates**: $O(n^2)$ per iteration, warm-starting reduces iterations
+- **Real-time feasibility**: Consistently meets 20 ms deadline (50 Hz control loop)
 
 ---
 

@@ -211,6 +211,32 @@ demo/fast:
 .PHONY : demo/fast
 
 #=============================================================================
+# Target rules for targets named demo_humanoid_mpc
+
+# Build rule for target.
+demo_humanoid_mpc: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 demo_humanoid_mpc
+.PHONY : demo_humanoid_mpc
+
+# fast build rule for target.
+demo_humanoid_mpc/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demo_humanoid_mpc.dir/build.make CMakeFiles/demo_humanoid_mpc.dir/build
+.PHONY : demo_humanoid_mpc/fast
+
+#=============================================================================
+# Target rules for targets named demo_rotation_test
+
+# Build rule for target.
+demo_rotation_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 demo_rotation_test
+.PHONY : demo_rotation_test
+
+# fast build rule for target.
+demo_rotation_test/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demo_rotation_test.dir/build.make CMakeFiles/demo_rotation_test.dir/build
+.PHONY : demo_rotation_test/fast
+
+#=============================================================================
 # Target rules for targets named test_balanceXY
 
 # Build rule for target.
@@ -341,6 +367,19 @@ test_bouncing_obstacles_integration/fast:
 .PHONY : test_bouncing_obstacles_integration/fast
 
 #=============================================================================
+# Target rules for targets named test_humanoid_mpc
+
+# Build rule for target.
+test_humanoid_mpc: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 test_humanoid_mpc
+.PHONY : test_humanoid_mpc
+
+# fast build rule for target.
+test_humanoid_mpc/fast:
+	$(MAKE) $(MAKESILENT) -f test/CMakeFiles/test_humanoid_mpc.dir/build.make test/CMakeFiles/test_humanoid_mpc.dir/build
+.PHONY : test_humanoid_mpc/fast
+
+#=============================================================================
 # Target rules for targets named gmock
 
 # Build rule for target.
@@ -391,6 +430,54 @@ gtest_main: cmake_check_build_system
 gtest_main/fast:
 	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build
 .PHONY : gtest_main/fast
+
+demo/demo_humanoid_mpc.o: demo/demo_humanoid_mpc.cpp.o
+.PHONY : demo/demo_humanoid_mpc.o
+
+# target to build an object file
+demo/demo_humanoid_mpc.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demo_humanoid_mpc.dir/build.make CMakeFiles/demo_humanoid_mpc.dir/demo/demo_humanoid_mpc.cpp.o
+.PHONY : demo/demo_humanoid_mpc.cpp.o
+
+demo/demo_humanoid_mpc.i: demo/demo_humanoid_mpc.cpp.i
+.PHONY : demo/demo_humanoid_mpc.i
+
+# target to preprocess a source file
+demo/demo_humanoid_mpc.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demo_humanoid_mpc.dir/build.make CMakeFiles/demo_humanoid_mpc.dir/demo/demo_humanoid_mpc.cpp.i
+.PHONY : demo/demo_humanoid_mpc.cpp.i
+
+demo/demo_humanoid_mpc.s: demo/demo_humanoid_mpc.cpp.s
+.PHONY : demo/demo_humanoid_mpc.s
+
+# target to generate assembly for a file
+demo/demo_humanoid_mpc.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demo_humanoid_mpc.dir/build.make CMakeFiles/demo_humanoid_mpc.dir/demo/demo_humanoid_mpc.cpp.s
+.PHONY : demo/demo_humanoid_mpc.cpp.s
+
+demo/demo_rotation_test.o: demo/demo_rotation_test.cpp.o
+.PHONY : demo/demo_rotation_test.o
+
+# target to build an object file
+demo/demo_rotation_test.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demo_rotation_test.dir/build.make CMakeFiles/demo_rotation_test.dir/demo/demo_rotation_test.cpp.o
+.PHONY : demo/demo_rotation_test.cpp.o
+
+demo/demo_rotation_test.i: demo/demo_rotation_test.cpp.i
+.PHONY : demo/demo_rotation_test.i
+
+# target to preprocess a source file
+demo/demo_rotation_test.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demo_rotation_test.dir/build.make CMakeFiles/demo_rotation_test.dir/demo/demo_rotation_test.cpp.i
+.PHONY : demo/demo_rotation_test.cpp.i
+
+demo/demo_rotation_test.s: demo/demo_rotation_test.cpp.s
+.PHONY : demo/demo_rotation_test.s
+
+# target to generate assembly for a file
+demo/demo_rotation_test.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demo_rotation_test.dir/build.make CMakeFiles/demo_rotation_test.dir/demo/demo_rotation_test.cpp.s
+.PHONY : demo/demo_rotation_test.cpp.s
 
 demo/main.o: demo/main.cpp.o
 .PHONY : demo/main.o
@@ -847,6 +934,30 @@ src/spg/setpoint/GetSegments.s: src/spg/setpoint/GetSegments.cpp.s
 src/spg/setpoint/GetSegments.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/setpoint/GetSegments.cpp.s
 .PHONY : src/spg/setpoint/GetSegments.cpp.s
+
+src/spg/setpoint/HumanoidMPC.o: src/spg/setpoint/HumanoidMPC.cpp.o
+.PHONY : src/spg/setpoint/HumanoidMPC.o
+
+# target to build an object file
+src/spg/setpoint/HumanoidMPC.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/setpoint/HumanoidMPC.cpp.o
+.PHONY : src/spg/setpoint/HumanoidMPC.cpp.o
+
+src/spg/setpoint/HumanoidMPC.i: src/spg/setpoint/HumanoidMPC.cpp.i
+.PHONY : src/spg/setpoint/HumanoidMPC.i
+
+# target to preprocess a source file
+src/spg/setpoint/HumanoidMPC.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/setpoint/HumanoidMPC.cpp.i
+.PHONY : src/spg/setpoint/HumanoidMPC.cpp.i
+
+src/spg/setpoint/HumanoidMPC.s: src/spg/setpoint/HumanoidMPC.cpp.s
+.PHONY : src/spg/setpoint/HumanoidMPC.s
+
+# target to generate assembly for a file
+src/spg/setpoint/HumanoidMPC.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/setpoint/HumanoidMPC.cpp.s
+.PHONY : src/spg/setpoint/HumanoidMPC.cpp.s
 
 src/spg/setpoint/Set.o: src/spg/setpoint/Set.cpp.o
 .PHONY : src/spg/setpoint/Set.o
@@ -1414,6 +1525,8 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... test"
 	@echo "... demo"
+	@echo "... demo_humanoid_mpc"
+	@echo "... demo_rotation_test"
 	@echo "... gmock"
 	@echo "... gmock_main"
 	@echo "... gtest"
@@ -1425,11 +1538,18 @@ help:
 	@echo "... test_determine_setpoint_limits"
 	@echo "... test_getSegments"
 	@echo "... test_getSegments_functions"
+	@echo "... test_humanoid_mpc"
 	@echo "... test_move_straight_line"
 	@echo "... test_setpoint_set"
 	@echo "... test_static_obstacles_integration"
 	@echo "... test_traj1"
 	@echo "... test_trajpredict"
+	@echo "... demo/demo_humanoid_mpc.o"
+	@echo "... demo/demo_humanoid_mpc.i"
+	@echo "... demo/demo_humanoid_mpc.s"
+	@echo "... demo/demo_rotation_test.o"
+	@echo "... demo/demo_rotation_test.i"
+	@echo "... demo/demo_rotation_test.s"
 	@echo "... demo/main.o"
 	@echo "... demo/main.i"
 	@echo "... demo/main.s"
@@ -1487,6 +1607,9 @@ help:
 	@echo "... src/spg/setpoint/GetSegments.o"
 	@echo "... src/spg/setpoint/GetSegments.i"
 	@echo "... src/spg/setpoint/GetSegments.s"
+	@echo "... src/spg/setpoint/HumanoidMPC.o"
+	@echo "... src/spg/setpoint/HumanoidMPC.i"
+	@echo "... src/spg/setpoint/HumanoidMPC.s"
 	@echo "... src/spg/setpoint/Set.o"
 	@echo "... src/spg/setpoint/Set.i"
 	@echo "... src/spg/setpoint/Set.s"

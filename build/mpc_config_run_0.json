@@ -1,0 +1,19 @@
+{
+  "start_pos": {
+    "x": 0.0,
+    "y": 3.0,
+    "theta": 0.0
+  },
+  "target_pos": {
+    "x": 0.0,
+    "y": -3.0,
+    "theta": 0.0
+  },
+  "prediction_horizon": 10,
+  "mpc_weights": {
+    "s_vf": 0.1,
+    "s_vs": 0.4,
+    "s_omega": 0.2
+  },
+  "name": "low_smoothness"
+}

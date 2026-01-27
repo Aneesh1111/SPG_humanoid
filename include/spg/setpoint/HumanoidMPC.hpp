@@ -59,6 +59,11 @@ struct MPCParams {
     double vs_max;     // [m/s]
     double omega_max;  // [rad/s]
 
+    // Turn-translation coupling factor [0,1]
+    // 0 = no coupling (can move full speed while turning)
+    // 1 = full coupling (speed reduces to 0 at max turn rate)
+    double coupling_factor;
+
     // BO-ready weights:
     MPCWeights weights;
 
@@ -130,8 +135,20 @@ public:
                                       std::vector<MPCControl>& predicted_controls);
 
 private:
+    void precomputeMatrices();
+    
     MPCParams params_;
     QPSolver* solver_;
+    
+    // Precomputed matrices (assuming phi0 = 0 in robot frame)
+    bool matrices_precomputed_;
+    Eigen::MatrixXd Su_precomp_;
+    Eigen::MatrixXd Sx_precomp_;
+    Eigen::MatrixXd SuT_Qbar_Su_precomp_;  // Su^T * Qbar * Su
+    Eigen::MatrixXd LT_Sbar_L_precomp_;    // L^T * Sbar * L
+    Eigen::MatrixXd H_precomp_;            // Full Hessian
+    Eigen::MatrixXd SuT_Qbar_precomp_;     // Su^T * Qbar (for f computation)
+    Eigen::MatrixXd LT_Sbar_precomp_;      // L^T * Sbar (for f_du computation)
 };
 
 } // namespace setpoint

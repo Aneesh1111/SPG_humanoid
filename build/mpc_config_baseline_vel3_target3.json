@@ -1,0 +1,30 @@
+{
+  "start_pos": {
+    "x": 0.0,
+    "y": 0.0,
+    "theta": 0.0
+  },
+  "target_pos": {
+    "x": -2.0,
+    "y": 0.0,
+    "theta": 1.5707963267948966
+  },
+  "initial_velocity": {
+    "vf": 0.0,
+    "vs": 0.0,
+    "omega": 1.0
+  },
+  "prediction_horizon": 10,
+  "mpc_weights": {
+    "q_pos": 1.0,
+    "q_phi": 0.1,
+    "qf_pos": 8.0,
+    "qf_phi": 1.0,
+    "r_vf": 0.1,
+    "r_vs": 0.5,
+    "r_omega": 0.2,
+    "s_vf": 0.2,
+    "s_vs": 0.8,
+    "s_omega": 0.4
+  }
+}

@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/demo_humanoid_mpc.dir/demo/demo_humanoid_mpc.cpp.o -o demo_humanoid_mpc  libspg.a libimgui.a -lglfw -lGL -lGLU /usr/local/lib/libqpOASES.a 

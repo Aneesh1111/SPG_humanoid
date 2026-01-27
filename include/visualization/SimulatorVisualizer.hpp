@@ -63,6 +63,7 @@ public:
     bool isStepMode() const { return step_mode_; }
     bool shouldStep() const { return step_requested_; }
     void clearStepRequest() { step_requested_ = false; }
+    void requestClose(); // Request the window to close
     
 private:
     FieldParams params;

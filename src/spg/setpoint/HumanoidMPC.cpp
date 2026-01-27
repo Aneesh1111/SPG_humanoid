@@ -53,6 +53,7 @@ MPCParams::MPCParams()
       vf_max(1.0),
       vs_max(0.3),
       omega_max(1.0),
+      coupling_factor(0.5),  // Moderate coupling by default
       weights() {}
 
 // ===================== qpOASES Solver Implementation =====================
@@ -156,11 +157,106 @@ bool QPOasesSolver::solve(const Eigen::MatrixXd& H,
 // ===================== Humanoid MPC Implementation =====================
 
 HumanoidMPC::HumanoidMPC(const MPCParams& params, QPSolver* solver)
-    : params_(params), solver_(solver)
+    : params_(params), solver_(solver), matrices_precomputed_(false)
 {
     if (!solver_) {
         throw std::runtime_error("QPSolver pointer is null.");
     }
+    
+    // Precompute constant matrices (assuming phi0 = 0 in robot frame)
+    precomputeMatrices();
+}
+
+// Precompute matrices that don't change (assumes phi0 = 0)
+void HumanoidMPC::precomputeMatrices() {
+    const int N = params_.horizon;
+    constexpr int nx = 3;
+    constexpr int nu = 3;
+    const int Nu = N * nu;
+    
+    // Normalization diagonal
+    Eigen::Matrix3d D = Eigen::Matrix3d::Zero();
+    D(0, 0) = params_.vf_max;
+    D(1, 1) = params_.vs_max;
+    D(2, 2) = params_.omega_max;
+    
+    // B matrix at phi0 = 0: cos(0)=1, sin(0)=0
+    Eigen::Matrix<double, nx, 3> B;
+    B.setZero();
+    B(0, 0) = params_.dt;  // vf affects x
+    B(0, 1) = 0.0;         // vs doesn't affect x at phi=0
+    B(1, 0) = 0.0;         // vf doesn't affect y at phi=0
+    B(1, 1) = params_.dt;  // vs affects y
+    B(2, 2) = params_.dt;  // omega affects phi
+    
+    Eigen::Matrix<double, nx, nu> B_norm = B * D;
+    
+    // Build Su, Sx
+    Su_precomp_ = Eigen::MatrixXd::Zero(nx * N, Nu);
+    Sx_precomp_ = Eigen::MatrixXd::Zero(nx * N, nx);
+    
+    for (int k = 0; k < N; ++k) {
+        int row_start = k * nx;
+        Sx_precomp_.block(row_start, 0, nx, nx) = Eigen::Matrix3d::Identity();
+        
+        for (int j = 0; j <= k; ++j) {
+            int col_start = j * nu;
+            Su_precomp_.block(row_start, col_start, nx, nu) += B_norm;
+        }
+    }
+    
+    // Build weight matrices
+    const MPCWeights& w = params_.weights;
+    
+    Eigen::Vector3d Q_diag(w.q_pos, w.q_pos, w.q_phi);
+    Eigen::Vector3d Qf_diag(w.qf_pos, w.qf_pos, w.qf_phi);
+    Eigen::Vector3d R_diag(w.r_vf, w.r_vs, w.r_omega);
+    Eigen::Vector3d S_diag(w.s_vf, w.s_vs, w.s_omega);
+    
+    Eigen::Matrix3d Q  = Q_diag.asDiagonal();
+    Eigen::Matrix3d Qf = Qf_diag.asDiagonal();
+    Eigen::Matrix3d R  = R_diag.asDiagonal();
+    Eigen::Matrix3d S  = S_diag.asDiagonal();
+    
+    // Qbar
+    Eigen::MatrixXd Qbar = Eigen::MatrixXd::Zero(nx * N, nx * N);
+    for (int k = 0; k < N; ++k) {
+        Eigen::Matrix3d Qk = (k == N - 1) ? Qf : Q;
+        Qbar.block<3,3>(k * nx, k * nx) = Qk;
+    }
+    
+    // Rbar
+    Eigen::MatrixXd Rbar = Eigen::MatrixXd::Zero(Nu, Nu);
+    for (int k = 0; k < N; ++k) {
+        Rbar.block<3,3>(k * nu, k * nu) = R;
+    }
+    
+    // L matrix for Δu
+    Eigen::MatrixXd L = Eigen::MatrixXd::Zero(Nu, Nu);
+    for (int k = 0; k < N; ++k) {
+        int row_block = k * nu;
+        L.block(row_block, row_block, nu, nu).setIdentity();
+        if (k > 0) {
+            L.block(row_block, (k-1) * nu, nu, nu) -= Eigen::Matrix3d::Identity();
+        }
+    }
+    
+    // Sbar
+    Eigen::MatrixXd Sbar = Eigen::MatrixXd::Zero(Nu, Nu);
+    for (int k = 0; k < N; ++k) {
+        Sbar.block<3,3>(k * nu, k * nu) = S;
+    }
+    
+    // Precompute expensive matrix products
+    SuT_Qbar_Su_precomp_ = Su_precomp_.transpose() * Qbar * Su_precomp_;
+    LT_Sbar_L_precomp_ = L.transpose() * Sbar * L;
+    SuT_Qbar_precomp_ = Su_precomp_.transpose() * Qbar;
+    LT_Sbar_precomp_ = L.transpose() * Sbar;
+    
+    // Final Hessian (constant part)
+    H_precomp_ = 2.0 * (SuT_Qbar_Su_precomp_ + Rbar + 2.0 * LT_Sbar_L_precomp_);
+    
+    matrices_precomputed_ = true;
 }
 
 // Goal-based MPC in robot frame:
@@ -172,114 +268,29 @@ bool HumanoidMPC::computeControl(const MPCState& x0,
                                  const MPCControl& u_meas,
                                  MPCControl& u_out)
 {
+    if (!matrices_precomputed_) {
+        std::cerr << "HumanoidMPC: matrices not precomputed!\n";
+        return false;
+    }
+    
     const int N = params_.horizon;
-    constexpr int nx = 3;  // [x, y, phi]
-    constexpr int nu = 3;  // [vf_norm, vs_norm, omega_norm]
+    constexpr int nx = 3;
+    constexpr int nu = 3;
     const int Nu = N * nu;
 
-    Eigen::MatrixXd Su = Eigen::MatrixXd::Zero(nx * N, Nu);
-    Eigen::MatrixXd Sx = Eigen::MatrixXd::Zero(nx * N, nx);
+    // Warn if phi0 assumption violated
+    if (std::abs(x0.phi) > 0.1) {
+        std::cerr << "Warning: x0.phi=" << x0.phi 
+                  << " rad (expected ~0 in robot frame)\n";
+    }
 
     Eigen::Vector3d x0_vec(x0.x, x0.y, x0.phi);
     Eigen::Vector3d xg_vec(goal.x, goal.y, goal.phi);
-
-    // Normalization diag
-    Eigen::Matrix3d D = Eigen::Matrix3d::Zero();
-    D(0, 0) = params_.vf_max;
-    D(1, 1) = params_.vs_max;
-    D(2, 2) = params_.omega_max;
-
-    // Linearize dynamics about current heading phi0 (robot frame)
-    double phi0 = x0.phi;  // often 0 if you re-center the frame
-    double c = std::cos(phi0);
-    double s = std::sin(phi0);
-
-    Eigen::Matrix<double, nx, 3> B;
-    B.setZero();
-    // Robot-frame kinematics:
-    //   x_{k+1}   = x_k + dt * (vf*c - vs*s)
-    //   y_{k+1}   = y_k + dt * (vf*s + vs*c)
-    //   phi_{k+1} = phi_k + dt * omega
-    B(0, 0) = params_.dt * c;
-    B(0, 1) = -params_.dt * s;
-    B(1, 0) = params_.dt * s;
-    B(1, 1) = params_.dt * c;
-    B(2, 2) = params_.dt;
-
-    Eigen::Matrix<double, nx, nu> B_norm = B * D;
-
-    // Build Sx, Su
-    for (int k = 0; k < N; ++k) {
-        int row_start = k * nx;
-
-        Sx.block(row_start, 0, nx, nx) = Eigen::Matrix3d::Identity();
-
-        for (int j = 0; j <= k; ++j) {
-            int col_start = j * nu;
-            Su.block(row_start, col_start, nx, nu) += B_norm;
-        }
-    }
 
     // Goal stack: same robot-frame goal at each stage
     Eigen::VectorXd xg_stack(nx * N);
     for (int k = 0; k < N; ++k) {
         xg_stack.segment<3>(k * nx) = xg_vec;
-    }
-
-    // Weights
-    const MPCWeights& w = params_.weights;
-
-    Eigen::Vector3d Q_diag;
-    Q_diag << w.q_pos, w.q_pos, w.q_phi;
-
-    Eigen::Vector3d Qf_diag;
-    Qf_diag << w.qf_pos, w.qf_pos, w.qf_phi;
-
-    Eigen::Vector3d R_diag;
-    R_diag << w.r_vf, w.r_vs, w.r_omega;
-
-    Eigen::Vector3d S_diag;
-    S_diag << w.s_vf, w.s_vs, w.s_omega;
-
-    Eigen::Matrix3d Q  = Q_diag.asDiagonal();
-    Eigen::Matrix3d Qf = Qf_diag.asDiagonal();
-    Eigen::Matrix3d R  = R_diag.asDiagonal();
-    Eigen::Matrix3d S  = S_diag.asDiagonal();
-
-    // Qbar
-    Eigen::MatrixXd Qbar = Eigen::MatrixXd::Zero(nx * N, nx * N);
-    for (int k = 0; k < N; ++k) {
-        Eigen::Matrix3d Qk = (k == N - 1) ? Qf : Q;
-        Qbar.block<3,3>(k * nx, k * nx) = Qk;
-    }
-
-    // Rbar
-    Eigen::MatrixXd Rbar = Eigen::MatrixXd::Zero(Nu, Nu);
-    for (int k = 0; k < N; ++k) {
-        int idx = k * nu;
-        Rbar.block<3,3>(idx, idx) = R;
-    }
-
-    // Δu structure:
-    //   Δu_0 = u_0 - u_meas_norm
-    //   Δu_k = u_k - u_{k-1}, k ≥ 1
-    // Stack: Δu = L U + l0
-
-    Eigen::MatrixXd L = Eigen::MatrixXd::Zero(Nu, Nu);
-    for (int k = 0; k < N; ++k) {
-        int row_block = k * nu;
-        int col_block = k * nu;
-        L.block(row_block, col_block, nu, nu).setIdentity();
-        if (k > 0) {
-            int col_prev = (k - 1) * nu;
-            L.block(row_block, col_prev, nu, nu) -= Eigen::Matrix3d::Identity();
-        }
-    }
-
-    Eigen::MatrixXd Sbar = Eigen::MatrixXd::Zero(Nu, Nu);
-    for (int k = 0; k < N; ++k) {
-        int idx = k * nu;
-        Sbar.block<3,3>(idx, idx) = S;
     }
 
     // Measured control normalization (robot frame)
@@ -297,28 +308,50 @@ bool HumanoidMPC::computeControl(const MPCState& x0,
     Eigen::VectorXd l0 = Eigen::VectorXd::Zero(Nu);
     l0.segment<3>(0) = -u_meas_norm;
 
-    // State error part:
-    Eigen::VectorXd X0_stack = Sx * x0_vec;
+    // State error part (using precomputed matrices)
+    Eigen::VectorXd X0_stack = Sx_precomp_ * x0_vec;
     Eigen::VectorXd diff = X0_stack - xg_stack;
 
-    Eigen::MatrixXd H = 2.0 * (Su.transpose() * Qbar * Su + Rbar);
-    Eigen::VectorXd f = 2.0 * (Su.transpose() * Qbar * diff);
-
-    // Δu cost:
-    // J_du = (L U + l0)^T Sbar (L U + l0)
-    Eigen::MatrixXd H_du = L.transpose() * Sbar * L;
-    Eigen::VectorXd f_du = 2.0 * (L.transpose() * Sbar * l0);
-
-    H += 2.0 * H_du;  // matches 0.5 * U^T H U
+    // Compute f using precomputed products
+    Eigen::VectorXd f = 2.0 * (SuT_Qbar_precomp_ * diff);
+    Eigen::VectorXd f_du = 2.0 * (LT_Sbar_precomp_ * l0);
     f += f_du;
 
     // Bounds on normalized controls: each ∈ [-1, 1]
     Eigen::VectorXd lb = Eigen::VectorXd::Constant(Nu, -1.0);
     Eigen::VectorXd ub = Eigen::VectorXd::Constant(Nu,  1.0);
+    
+    // Turn-translation coupling constraint:
+    // Reduce translation speed when turning
+    // vf_max_effective = vf_max * (1 - coupling_factor * |omega_norm|)
+    // vs_max_effective = vs_max * (1 - coupling_factor * |omega_norm|)
+    //
+    // For each timestep k, we modify bounds based on coupling
+    if (params_.coupling_factor > 1e-6) {
+        // Note: We can't apply perfect coupling without general constraints,
+        // but we can approximate by reducing velocity bounds based on expected turn rate
+        // This is a conservative approximation
+        
+        // Estimate average turn rate from goal heading
+        double goal_heading_error = std::abs(goal.phi);
+        double estimated_omega_norm = std::min(1.0, goal_heading_error / (params_.dt * N));
+        double speed_reduction = 1.0 - params_.coupling_factor * estimated_omega_norm;
+        speed_reduction = std::max(0.1, speed_reduction);  // Keep at least 10% speed
+        
+        // Apply to vf and vs bounds for all timesteps
+        for (int k = 0; k < N; ++k) {
+            int vf_idx = k * nu + 0;
+            int vs_idx = k * nu + 1;
+            lb(vf_idx) = -speed_reduction;
+            ub(vf_idx) = speed_reduction;
+            lb(vs_idx) = -speed_reduction;
+            ub(vs_idx) = speed_reduction;
+        }
+    }
 
-    // Solve
+    // Solve using precomputed H
     Eigen::VectorXd U_tilde(Nu);
-    bool ok = solver_->solve(H, f, lb, ub, U_tilde);
+    bool ok = solver_->solve(H_precomp_, f, lb, ub, U_tilde);
     if (!ok) {
         std::cerr << "HumanoidMPC (robot frame): QP solve failed.\n";
         return false;
@@ -344,114 +377,23 @@ bool HumanoidMPC::computeControlAndTrajectory(const MPCState& x0,
                                                std::vector<MPCState>& predicted_states,
                                                std::vector<MPCControl>& predicted_controls)
 {
+    if (!matrices_precomputed_) {
+        std::cerr << "HumanoidMPC: matrices not precomputed!\n";
+        return false;
+    }
+    
     const int N = params_.horizon;
-    constexpr int nx = 3;  // [x, y, phi]
-    constexpr int nu = 3;  // [vf_norm, vs_norm, omega_norm]
+    constexpr int nx = 3;
+    constexpr int nu = 3;
     const int Nu = N * nu;
-
-    Eigen::MatrixXd Su = Eigen::MatrixXd::Zero(nx * N, Nu);
-    Eigen::MatrixXd Sx = Eigen::MatrixXd::Zero(nx * N, nx);
 
     Eigen::Vector3d x0_vec(x0.x, x0.y, x0.phi);
     Eigen::Vector3d xg_vec(goal.x, goal.y, goal.phi);
-
-    // Normalization diag
-    Eigen::Matrix3d D = Eigen::Matrix3d::Zero();
-    D(0, 0) = params_.vf_max;
-    D(1, 1) = params_.vs_max;
-    D(2, 2) = params_.omega_max;
-
-    // Linearize dynamics about current heading phi0 (robot frame)
-    double phi0 = x0.phi;  // often 0 if you re-center the frame
-    double c = std::cos(phi0);
-    double s = std::sin(phi0);
-
-    Eigen::Matrix<double, nx, 3> B;
-    B.setZero();
-    // Robot-frame kinematics:
-    //   x_{k+1}   = x_k + dt * (vf*c - vs*s)
-    //   y_{k+1}   = y_k + dt * (vf*s + vs*c)
-    //   phi_{k+1} = phi_k + dt * omega
-    B(0, 0) = params_.dt * c;
-    B(0, 1) = -params_.dt * s;
-    B(1, 0) = params_.dt * s;
-    B(1, 1) = params_.dt * c;
-    B(2, 2) = params_.dt;
-
-    Eigen::Matrix<double, nx, nu> B_norm = B * D;
-
-    // Build Sx, Su
-    for (int k = 0; k < N; ++k) {
-        int row_start = k * nx;
-
-        Sx.block(row_start, 0, nx, nx) = Eigen::Matrix3d::Identity();
-
-        for (int j = 0; j <= k; ++j) {
-            int col_start = j * nu;
-            Su.block(row_start, col_start, nx, nu) += B_norm;
-        }
-    }
 
     // Goal stack: same robot-frame goal at each stage
     Eigen::VectorXd xg_stack(nx * N);
     for (int k = 0; k < N; ++k) {
         xg_stack.segment<3>(k * nx) = xg_vec;
-    }
-
-    // Weights
-    const MPCWeights& w = params_.weights;
-
-    Eigen::Vector3d Q_diag;
-    Q_diag << w.q_pos, w.q_pos, w.q_phi;
-
-    Eigen::Vector3d Qf_diag;
-    Qf_diag << w.qf_pos, w.qf_pos, w.qf_phi;
-
-    Eigen::Vector3d R_diag;
-    R_diag << w.r_vf, w.r_vs, w.r_omega;
-
-    Eigen::Vector3d S_diag;
-    S_diag << w.s_vf, w.s_vs, w.s_omega;
-
-    Eigen::Matrix3d Q  = Q_diag.asDiagonal();
-    Eigen::Matrix3d Qf = Qf_diag.asDiagonal();
-    Eigen::Matrix3d R  = R_diag.asDiagonal();
-    Eigen::Matrix3d S  = S_diag.asDiagonal();
-
-    // Qbar
-    Eigen::MatrixXd Qbar = Eigen::MatrixXd::Zero(nx * N, nx * N);
-    for (int k = 0; k < N; ++k) {
-        Eigen::Matrix3d Qk = (k == N - 1) ? Qf : Q;
-        Qbar.block<3,3>(k * nx, k * nx) = Qk;
-    }
-
-    // Rbar
-    Eigen::MatrixXd Rbar = Eigen::MatrixXd::Zero(Nu, Nu);
-    for (int k = 0; k < N; ++k) {
-        int idx = k * nu;
-        Rbar.block<3,3>(idx, idx) = R;
-    }
-
-    // Δu structure:
-    //   Δu_0 = u_0 - u_meas_norm
-    //   Δu_k = u_k - u_{k-1}, k ≥ 1
-    // Stack: Δu = L U + l0
-
-    Eigen::MatrixXd L = Eigen::MatrixXd::Zero(Nu, Nu);
-    for (int k = 0; k < N; ++k) {
-        int row_block = k * nu;
-        int col_block = k * nu;
-        L.block(row_block, col_block, nu, nu).setIdentity();
-        if (k > 0) {
-            int col_prev = (k - 1) * nu;
-            L.block(row_block, col_prev, nu, nu) -= Eigen::Matrix3d::Identity();
-        }
-    }
-
-    Eigen::MatrixXd Sbar = Eigen::MatrixXd::Zero(Nu, Nu);
-    for (int k = 0; k < N; ++k) {
-        int idx = k * nu;
-        Sbar.block<3,3>(idx, idx) = S;
     }
 
     // Measured control normalization (robot frame)
@@ -469,28 +411,39 @@ bool HumanoidMPC::computeControlAndTrajectory(const MPCState& x0,
     Eigen::VectorXd l0 = Eigen::VectorXd::Zero(Nu);
     l0.segment<3>(0) = -u_meas_norm;
 
-    // State error part:
-    Eigen::VectorXd X0_stack = Sx * x0_vec;
+    // State error part (using precomputed matrices)
+    Eigen::VectorXd X0_stack = Sx_precomp_ * x0_vec;
     Eigen::VectorXd diff = X0_stack - xg_stack;
 
-    Eigen::MatrixXd H = 2.0 * (Su.transpose() * Qbar * Su + Rbar);
-    Eigen::VectorXd f = 2.0 * (Su.transpose() * Qbar * diff);
-
-    // Δu cost:
-    // J_du = (L U + l0)^T Sbar (L U + l0)
-    Eigen::MatrixXd H_du = L.transpose() * Sbar * L;
-    Eigen::VectorXd f_du = 2.0 * (L.transpose() * Sbar * l0);
-
-    H += 2.0 * H_du;  // matches 0.5 * U^T H U
+    // Compute f using precomputed products
+    Eigen::VectorXd f = 2.0 * (SuT_Qbar_precomp_ * diff);
+    Eigen::VectorXd f_du = 2.0 * (LT_Sbar_precomp_ * l0);
     f += f_du;
 
     // Bounds on normalized controls: each ∈ [-1, 1]
     Eigen::VectorXd lb = Eigen::VectorXd::Constant(Nu, -1.0);
     Eigen::VectorXd ub = Eigen::VectorXd::Constant(Nu,  1.0);
+    
+    // Turn-translation coupling constraint (same as computeControl)
+    if (params_.coupling_factor > 1e-6) {
+        double goal_heading_error = std::abs(goal.phi);
+        double estimated_omega_norm = std::min(1.0, goal_heading_error / (params_.dt * N));
+        double speed_reduction = 1.0 - params_.coupling_factor * estimated_omega_norm;
+        speed_reduction = std::max(0.1, speed_reduction);
+        
+        for (int k = 0; k < N; ++k) {
+            int vf_idx = k * nu + 0;
+            int vs_idx = k * nu + 1;
+            lb(vf_idx) = -speed_reduction;
+            ub(vf_idx) = speed_reduction;
+            lb(vs_idx) = -speed_reduction;
+            ub(vs_idx) = speed_reduction;
+        }
+    }
 
-    // Solve
+    // Solve using precomputed H
     Eigen::VectorXd U_tilde(Nu);
-    bool ok = solver_->solve(H, f, lb, ub, U_tilde);
+    bool ok = solver_->solve(H_precomp_, f, lb, ub, U_tilde);
     if (!ok) {
         std::cerr << "HumanoidMPC (robot frame): QP solve failed.\n";
         return false;

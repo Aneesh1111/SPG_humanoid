@@ -8,6 +8,8 @@
 #include "spg/setpoint/HumanoidMPC.hpp"
 #endif
 #include <algorithm>
+#include <fstream>
+#include <string>
 #include <cmath>
 #include <iostream>
 
@@ -58,6 +60,37 @@ SPGState Set(SPGState& d) {
                 mpc_params.weights.s_vs = 0.8;        // sideways velocity smoothness
                 mpc_params.weights.s_omega = 0.4;     // rotation smoothness
                 
+                // Check for weight overrides from config file
+                std::ifstream override_file("mpc_weights_override.json");
+                if (override_file.is_open()) {
+                    std::string line;
+                    while (std::getline(override_file, line)) {
+                        auto parse_weight = [](const std::string& l, const std::string& key) -> double {
+                            size_t pos = l.find("\"" + key + "\"");
+                            if (pos != std::string::npos) {
+                                size_t colon = l.find(":", pos);
+                                if (colon != std::string::npos) {
+                                    return std::stod(l.substr(colon + 1));
+                                }
+                            }
+                            return -1.0;
+                        };
+                        
+                        double val;
+                        if ((val = parse_weight(line, "q_pos")) >= 0) mpc_params.weights.q_pos = val;
+                        else if ((val = parse_weight(line, "q_phi")) >= 0) mpc_params.weights.q_phi = val;
+                        else if ((val = parse_weight(line, "qf_pos")) >= 0) mpc_params.weights.qf_pos = val;
+                        else if ((val = parse_weight(line, "qf_phi")) >= 0) mpc_params.weights.qf_phi = val;
+                        else if ((val = parse_weight(line, "r_vf")) >= 0) mpc_params.weights.r_vf = val;
+                        else if ((val = parse_weight(line, "r_vs")) >= 0) mpc_params.weights.r_vs = val;
+                        else if ((val = parse_weight(line, "r_omega")) >= 0) mpc_params.weights.r_omega = val;
+                        else if ((val = parse_weight(line, "s_vf")) >= 0) mpc_params.weights.s_vf = val;
+                        else if ((val = parse_weight(line, "s_vs")) >= 0) mpc_params.weights.s_vs = val;
+                        else if ((val = parse_weight(line, "s_omega")) >= 0) mpc_params.weights.s_omega = val;
+                    }
+                    override_file.close();
+                }
+                
                 mpc_initialized = true;
             }
             static HumanoidMPC mpc(mpc_params, &qp_solver);
@@ -106,6 +139,19 @@ SPGState Set(SPGState& d) {
             u_meas.vs    = -d.setpoint.v[0] * sin_phi + d.setpoint.v[1] * cos_phi;  // global → body
             u_meas.omega = d.setpoint.v[2];
             
+            // Debug: Print goal once every 50 iterations
+            static int debug_counter = 0;
+            if (debug_counter++ % 50 == 0) {
+                std::cout << "MPC Goal (local frame): x=" << goal_x_local 
+                          << " y=" << goal_y_local << " phi=" << goal_phi_local << " rad" << std::endl;
+                std::cout << "  Subtarget (global): x=" << d.subtarget.p[0] 
+                          << " y=" << d.subtarget.p[1] << " phi=" << d.subtarget.p[2] << " rad" << std::endl;
+                std::cout << "  Robot (global): x=" << robot_x_global 
+                          << " y=" << robot_y_global << " phi=" << robot_phi_global << " rad" << std::endl;
+                std::cout << "  u_meas (body frame): vf=" << u_meas.vf 
+                          << " vs=" << u_meas.vs << " omega=" << u_meas.omega << std::endl;
+            }
+            
             // Compute optimal control AND get predicted trajectory
             MPCControl u;
             std::vector<MPCState> predicted_states;
@@ -114,6 +160,13 @@ SPGState Set(SPGState& d) {
                                                                 predicted_states, predicted_controls);
             
             if (mpc_success) {
+                // Debug: Print MPC output
+                static int output_counter = 0;
+                if (output_counter++ % 50 == 0) {
+                    std::cout << "  MPC output (body frame): vf=" << u.vf 
+                              << " vs=" << u.vs << " omega=" << u.omega << std::endl;
+                }
+                
                 // MPC returns control in body frame, which is what we need
                 // Now transform back to global frame for setpoint update
                 

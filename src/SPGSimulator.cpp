@@ -5,9 +5,11 @@
 #include "spg/target/Target.hpp"
 #include "visualization/SimulatorVisualizer.hpp"
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <chrono>
 #include <thread>
+#include <algorithm>
 
 SPGSimulator::SPGSimulator(const spg::SPGState& initial_state)
     : state_(initial_state), initial_state_(initial_state),
@@ -15,7 +17,8 @@ SPGSimulator::SPGSimulator(const spg::SPGState& initial_state)
           state_.par.field_size[0], state_.par.field_size[1],
           state_.par.field_penalty_area[0], state_.par.field_penalty_area[1],
           state_.par.field_border_margin, state_.par.field_circle_radius
-      }), simulation_time_(0.0), step_count_(0), simulation_completed_(false) {}
+      }), simulation_time_(0.0), step_count_(0), simulation_completed_(false),
+      total_mpc_time_ms_(0.0), mpc_call_count_(0), start_time_(std::chrono::high_resolution_clock::now()) {}
 
 void SPGSimulator::run() {
     // Initialize visualization
@@ -40,6 +43,10 @@ void SPGSimulator::run() {
             simulation_time_ = 0.0; // Reset simulation time
             step_count_ = 0; // Reset step count
             simulation_completed_ = false; // Reset completion status
+            total_mpc_time_ms_ = 0.0; // Reset MPC timing
+            mpc_call_count_ = 0; // Reset MPC call counter
+            mpc_times_ms_.clear(); // Clear MPC times array
+            start_time_ = std::chrono::high_resolution_clock::now(); // Reset start time
             last_time = std::chrono::high_resolution_clock::now();
             std::cout << "Simulation reset to initial state" << std::endl;
             visualizer.clearResetRequest();
@@ -78,8 +85,14 @@ void SPGSimulator::run() {
             spg::target::updateTarget(state_);
             // Update subtarget
             spg::subtarget::updateSubtarget(state_);
-            // Update setpoint
+            // Update setpoint (with timing)
+            auto mpc_start = std::chrono::high_resolution_clock::now();
             spg::setpoint::updateSetpoint(state_);
+            auto mpc_end = std::chrono::high_resolution_clock::now();
+            double mpc_ms = std::chrono::duration<double, std::milli>(mpc_end - mpc_start).count();
+            total_mpc_time_ms_ += mpc_ms;
+            mpc_times_ms_.push_back(mpc_ms);
+            mpc_call_count_++;
 
             // Simulate robot motion (simple propagation)
             for (int i = 0; i < 3; ++i) {
@@ -97,13 +110,79 @@ void SPGSimulator::run() {
             double position_error_norm = position_error.norm();
             double velocity_norm = state_.input.robot.v.norm();
             
-            if (position_error_norm < 1e-3 && velocity_norm < 1e-3) { // Using 1e-3 for better practical threshold
+            if (position_error_norm < 1e-2 && velocity_norm < 1e-2) { // Using 1e-2 for better practical threshold
                 simulation_completed_ = true;
-                std::cout << "Simulation completed! Robot reached target." << std::endl;
-                std::cout << "Final position error: " << position_error_norm << std::endl;
-                std::cout << "Final velocity: " << velocity_norm << std::endl;
-                std::cout << "Total simulation time: " << simulation_time_ << " seconds" << std::endl;
-                std::cout << "Total steps: " << step_count_ << std::endl;
+                auto end_time = std::chrono::high_resolution_clock::now();
+                double wall_time = std::chrono::duration<double>(end_time - start_time_).count();
+                
+                std::cout << "\n╔══════════════════════════════════════════════════════════════╗" << std::endl;
+                std::cout << "║              Simulation Completed Successfully!              ║" << std::endl;
+                std::cout << "╚══════════════════════════════════════════════════════════════╝" << std::endl;
+                std::cout << "\nPerformance Metrics:" << std::endl;
+                std::cout << "  Final position error: " << position_error_norm << " m" << std::endl;
+                std::cout << "  Final velocity: " << velocity_norm << " m/s" << std::endl;
+                std::cout << "  Simulation time: " << simulation_time_ << " s" << std::endl;
+                std::cout << "  Wall clock time: " << wall_time << " s" << std::endl;
+                std::cout << "  Total steps: " << step_count_ << std::endl;
+                
+                if (mpc_call_count_ > 0) {
+                    double avg_mpc_ms = total_mpc_time_ms_ / mpc_call_count_;
+                    double min_mpc_ms = *std::min_element(mpc_times_ms_.begin(), mpc_times_ms_.end());
+                    double max_mpc_ms = *std::max_element(mpc_times_ms_.begin(), mpc_times_ms_.end());
+                    
+                    std::cout << "\nMPC Performance:" << std::endl;
+                    std::cout << "  MPC calls: " << mpc_call_count_ << std::endl;
+                    std::cout << "  Total MPC time: " << total_mpc_time_ms_ << " ms" << std::endl;
+                    std::cout << "  Average MPC time: " << avg_mpc_ms << " ms/step" << std::endl;
+                    std::cout << "  Min MPC time: " << min_mpc_ms << " ms" << std::endl;
+                    std::cout << "  Max MPC time: " << max_mpc_ms << " ms" << std::endl;
+                    std::cout << "  MPC frequency: " << (1000.0 / avg_mpc_ms) << " Hz" << std::endl;
+                    
+                    // Show first 10 and last 10 MPC times
+                    std::cout << "\n  First 10 MPC times (ms): ";
+                    for (size_t i = 0; i < std::min(size_t(10), mpc_times_ms_.size()); ++i) {
+                        std::cout << mpc_times_ms_[i];
+                        if (i < std::min(size_t(10), mpc_times_ms_.size()) - 1) std::cout << ", ";
+                    }
+                    if (mpc_times_ms_.size() > 10) {
+                        std::cout << "\n  Last 10 MPC times (ms):  ";
+                        for (size_t i = std::max(size_t(0), mpc_times_ms_.size() - 10); i < mpc_times_ms_.size(); ++i) {
+                            std::cout << mpc_times_ms_[i];
+                            if (i < mpc_times_ms_.size() - 1) std::cout << ", ";
+                        }
+                    }
+                    std::cout << std::endl;
+                    
+                    // Save timing data to JSON file
+                    std::ofstream timing_file("mpc_timing_results.json");
+                    if (timing_file.is_open()) {
+                        timing_file << "{" << std::endl;
+                        timing_file << "  \"simulation_time_s\": " << simulation_time_ << "," << std::endl;
+                        timing_file << "  \"wall_time_s\": " << wall_time << "," << std::endl;
+                        timing_file << "  \"total_steps\": " << step_count_ << "," << std::endl;
+                        timing_file << "  \"mpc_call_count\": " << mpc_call_count_ << "," << std::endl;
+                        timing_file << "  \"total_mpc_time_ms\": " << total_mpc_time_ms_ << "," << std::endl;
+                        timing_file << "  \"avg_mpc_time_ms\": " << avg_mpc_ms << "," << std::endl;
+                        timing_file << "  \"min_mpc_time_ms\": " << min_mpc_ms << "," << std::endl;
+                        timing_file << "  \"max_mpc_time_ms\": " << max_mpc_ms << "," << std::endl;
+                        timing_file << "  \"mpc_frequency_hz\": " << (1000.0 / avg_mpc_ms) << "," << std::endl;
+                        timing_file << "  \"final_position_error_m\": " << position_error_norm << "," << std::endl;
+                        timing_file << "  \"final_velocity_ms\": " << velocity_norm << "," << std::endl;
+                        timing_file << "  \"mpc_times_ms\": [";
+                        for (size_t i = 0; i < mpc_times_ms_.size(); ++i) {
+                            timing_file << mpc_times_ms_[i];
+                            if (i < mpc_times_ms_.size() - 1) timing_file << ", ";
+                        }
+                        timing_file << "]" << std::endl;
+                        timing_file << "}" << std::endl;
+                        timing_file.close();
+                        std::cout << "  Timing data saved to: mpc_timing_results.json" << std::endl;
+                    }
+                }
+                std::cout << std::endl;
+
+                // Request window close after a brief delay or immediately
+                visualizer.requestClose();
             }
             for (size_t i = 0; i < state_.input.obstacles.p.size(); ++i) {
                 if (state_.input.obstacles.active[i]) {

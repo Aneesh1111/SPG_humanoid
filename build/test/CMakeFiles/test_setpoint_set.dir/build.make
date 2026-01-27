@@ -94,6 +94,7 @@ test/test_setpoint_set: test/CMakeFiles/test_setpoint_set.dir/test_setpoint_set.
 test/test_setpoint_set: test/CMakeFiles/test_setpoint_set.dir/build.make
 test/test_setpoint_set: libspg.a
 test/test_setpoint_set: lib/libgtest_main.a
+test/test_setpoint_set: /usr/local/lib/libqpOASES.a
 test/test_setpoint_set: lib/libgtest.a
 test/test_setpoint_set: test/CMakeFiles/test_setpoint_set.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable test_setpoint_set"

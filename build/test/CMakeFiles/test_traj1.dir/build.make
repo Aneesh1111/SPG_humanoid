@@ -94,6 +94,7 @@ test/test_traj1: test/CMakeFiles/test_traj1.dir/test_traj1.cpp.o
 test/test_traj1: test/CMakeFiles/test_traj1.dir/build.make
 test/test_traj1: libspg.a
 test/test_traj1: lib/libgtest_main.a
+test/test_traj1: /usr/local/lib/libqpOASES.a
 test/test_traj1: lib/libgtest.a
 test/test_traj1: test/CMakeFiles/test_traj1.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable test_traj1"

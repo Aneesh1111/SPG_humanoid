@@ -94,6 +94,7 @@ test/test_getSegments_functions: test/CMakeFiles/test_getSegments_functions.dir/
 test/test_getSegments_functions: test/CMakeFiles/test_getSegments_functions.dir/build.make
 test/test_getSegments_functions: libspg.a
 test/test_getSegments_functions: lib/libgtest_main.a
+test/test_getSegments_functions: /usr/local/lib/libqpOASES.a
 test/test_getSegments_functions: lib/libgtest.a
 test/test_getSegments_functions: test/CMakeFiles/test_getSegments_functions.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable test_getSegments_functions"

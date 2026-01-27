@@ -84,6 +84,12 @@ bool SimulatorVisualizer::shouldClose() const {
     return window ? glfwWindowShouldClose(window) : true;
 }
 
+void SimulatorVisualizer::requestClose() {
+    if (window) {
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+    }
+}
+
 void SimulatorVisualizer::beginFrame() {
     if (!initialized) return;
     

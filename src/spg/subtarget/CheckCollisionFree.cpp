@@ -6,6 +6,9 @@
 #include "spg/subtarget/CheckViolation.hpp"
 #include "spg/setpoint/ConvertSegment.hpp"
 #include "spg/setpoint/TrajPredict.hpp"
+// #ifdef HAVE_ACADOS
+// #include "spg/setpoint/HumanoidReferenceMPC.hpp"
+// #endif
 #include <iostream>
 
 namespace spg {
@@ -15,6 +18,51 @@ Subtarget checkCollisionFree(SPGState& d, Subtarget subtarget, double obstacle_m
     // Update subtarget.segment, subtarget.collisionfree, subtarget.eta
     // Convert segment type if needed
     // Use conversion functions from spg::setpoint namespace
+// #ifdef HAVE_ACADOS
+//     // Predict trajectory with 400 ms timesteps
+//     spg::setpoint::AcadosMPCParams predictionParams;
+//     predictionParams.dt = 0.4;     
+
+//     // Create MPC Prediction Steps
+//     static spg::setpoint::HumanoidReferenceMPC predictionMPC(predictionParams);
+
+//     if (predictionMPC.isInitialized()) {
+//         // Convert current state into MPC state
+//         spg::setpoint::AcadosMPCState currentState;
+//         currentState.px = d.setpoint.p(0);
+//         currentState.py = d.setpoint.p(1);
+//         currentState.theta = d.setpoint.p(2);
+//         currentState.vx = d.setpoint.v(0);
+//         currentState.vy = d.setpoint.v(1);
+//         currentState.omega = d.setpoint.v(2);
+
+//         // Convert subtarget to MPC goal
+//         spg::setpoint::AcadosMPCState goalState;
+//         goalState.px = subtarget.p(0);
+//         goalState.py = subtarget.p(1);
+//         goalState.theta = subtarget.p(2);
+//         goalState.vx = subtarget.v(0);
+//         goalState.vy = subtarget.v(1);
+//         goalState.omega = subtarget.v(2);
+
+//         // Compute predicted trajectory
+//         spg::setpoint::AcadosMPCControl u_out;
+//         std::vector<spg::setpoint::AcadosMPCState> predicted_states;
+//         std::vector<spg::setpoint::AcadosMPCControl> predicted_controls;
+//         bool success = predictionMPC.computeControlAndTrajectory(
+//             currentState, goalState, u_out, predicted_states, predicted_controls
+//         );
+//         if (success) {
+//             // Convert MPC predicted trajectory back to subtarget format
+//             d2.traj.p.clear();
+//             d2.traj.v.clear();
+//             d2.traj.a.clear();
+//             d2.traj.t.clear();
+
+//             for ()
+
+//     }
+// #else
     auto setpointSegments = spg::setpoint::convertSegmentVector(subtarget.segment);
     setpointSegments = setpoint::getSegments(setpointSegments, d.setpoint.p, d.setpoint.v, subtarget.p, subtarget.v, subtarget.vmax, subtarget.amax, {d.par.dmax_move, d.par.dmax_move, d.par.dmax_rotate});
     subtarget.segment = spg::setpoint::convertBackSegmentVector(setpointSegments);
@@ -29,6 +77,7 @@ Subtarget checkCollisionFree(SPGState& d, Subtarget subtarget, double obstacle_m
             d2.traj.segment_id[0][2]
         );
     }
+// #endif
     if (p_robot_out) {
         p_robot_out->clear();
         for (const auto& p : d2.traj.p) p_robot_out->push_back(p.head<2>());

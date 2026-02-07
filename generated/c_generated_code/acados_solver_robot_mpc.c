@@ -413,33 +413,33 @@ void robot_mpc_acados_setup_nlp_in(robot_mpc_solver_capsule* capsule, const int 
     {
         // set time_steps
     
-        double time_step = 0.05;
+        double time_step = 0.15;
         for (int i = 0; i < N; i++)
         {
             ocp_nlp_in_set(nlp_config, nlp_dims, nlp_in, i, "Ts", &time_step);
         }
         // set cost scaling
         double* cost_scaling = malloc((N+1)*sizeof(double));
-        cost_scaling[0] = 0.05;
-        cost_scaling[1] = 0.05;
-        cost_scaling[2] = 0.05;
-        cost_scaling[3] = 0.05;
-        cost_scaling[4] = 0.05;
-        cost_scaling[5] = 0.05;
-        cost_scaling[6] = 0.05;
-        cost_scaling[7] = 0.05;
-        cost_scaling[8] = 0.05;
-        cost_scaling[9] = 0.05;
-        cost_scaling[10] = 0.05;
-        cost_scaling[11] = 0.05;
-        cost_scaling[12] = 0.05;
-        cost_scaling[13] = 0.05;
-        cost_scaling[14] = 0.05;
-        cost_scaling[15] = 0.05;
-        cost_scaling[16] = 0.05;
-        cost_scaling[17] = 0.05;
-        cost_scaling[18] = 0.05;
-        cost_scaling[19] = 0.05;
+        cost_scaling[0] = 0.15;
+        cost_scaling[1] = 0.15;
+        cost_scaling[2] = 0.15;
+        cost_scaling[3] = 0.15;
+        cost_scaling[4] = 0.15;
+        cost_scaling[5] = 0.15;
+        cost_scaling[6] = 0.15;
+        cost_scaling[7] = 0.15;
+        cost_scaling[8] = 0.15;
+        cost_scaling[9] = 0.15;
+        cost_scaling[10] = 0.15;
+        cost_scaling[11] = 0.15;
+        cost_scaling[12] = 0.15;
+        cost_scaling[13] = 0.15;
+        cost_scaling[14] = 0.15;
+        cost_scaling[15] = 0.15;
+        cost_scaling[16] = 0.15;
+        cost_scaling[17] = 0.15;
+        cost_scaling[18] = 0.15;
+        cost_scaling[19] = 0.15;
         cost_scaling[20] = 1;
         for (int i = 0; i <= N; i++)
         {
@@ -667,13 +667,13 @@ void robot_mpc_acados_setup_nlp_in(robot_mpc_solver_capsule* capsule, const int 
     double* lubx = calloc(2*NBX, sizeof(double));
     double* lbx = lubx;
     double* ubx = lubx + NBX;
-    lbx[0] = -10;
-    ubx[0] = 10;
-    lbx[1] = -10;
-    ubx[1] = 10;
+    lbx[0] = -20;
+    ubx[0] = 20;
+    lbx[1] = -20;
+    ubx[1] = 20;
     lbx[2] = -3.141592653589793;
     ubx[2] = 3.141592653589793;
-    lbx[3] = -0.8;
+    lbx[3] = -0.1;
     ubx[3] = 0.8;
     lbx[4] = -0.3;
     ubx[4] = 0.3;
@@ -703,6 +703,19 @@ void robot_mpc_acados_setup_nlp_in(robot_mpc_solver_capsule* capsule, const int 
 
     /* terminal constraints */
 
+    // set up bounds for last stage
+    // x
+    int* idxbx_e = malloc(NBXN * sizeof(int));
+    idxbx_e[0] = 3;
+    idxbx_e[1] = 4;
+    double* lubx_e = calloc(2*NBXN, sizeof(double));
+    double* lbx_e = lubx_e;
+    double* ubx_e = lubx_e + NBXN;
+    ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, nlp_out, N, "idxbx", idxbx_e);
+    ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, nlp_out, N, "lbx", lbx_e);
+    ocp_nlp_constraints_model_set(nlp_config, nlp_dims, nlp_in, nlp_out, N, "ubx", ubx_e);
+    free(idxbx_e);
+    free(lubx_e);
 
 
 

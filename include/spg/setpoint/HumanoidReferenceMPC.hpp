@@ -113,9 +113,18 @@ private:
     static double wrap_pi(double a);
     static double clamp(double v, double lo, double hi);
     
+    // Warm-start management
+    void applyWarmStart();
+    void storeSolution();
+    
     AcadosMPCParams params_;
     robot_mpc_solver_capsule* capsule_;
     bool solver_initialized_;
+    
+    // Warm-start storage
+    std::vector<std::array<double, 6>> prev_states_;    // Size N+1
+    std::vector<std::array<double, 3>> prev_controls_;  // Size N
+    bool has_previous_solution_;
 };
 
 } // namespace setpoint

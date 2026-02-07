@@ -42,7 +42,7 @@ SPGState Set(SPGState& d) {
             
             if (!acados_initialized) {
                 // Initialize MPC parameters
-                acados_params.dt = 0.05;  // MPC timestep (must match generated solver)
+                acados_params.dt = 0.15;  // MPC timestep (must match generated solver)
                 acados_params.horizon = 20;  // 20 steps @ 0.05s = 1.0s horizon
                 
                 // Physical velocity limits for humanoid (state constraints)

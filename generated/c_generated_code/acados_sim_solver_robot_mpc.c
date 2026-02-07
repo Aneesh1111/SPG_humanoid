@@ -73,7 +73,7 @@ int robot_mpc_acados_sim_create(robot_mpc_sim_solver_capsule * capsule)
     const int np = ROBOT_MPC_NP;
     bool tmp_bool;
 
-    double Tsim = 0.05;
+    double Tsim = 0.15;
 
     capsule->acados_sim_mem = NULL;
 

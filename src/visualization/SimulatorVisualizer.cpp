@@ -257,7 +257,7 @@ void SimulatorVisualizer::drawTarget(const Eigen::Vector3d& target_pos) {
     
     // Draw target orientation arrow (if theta is non-zero)
     if (std::abs(theta) > 0.01) {
-        double adjusted_theta = theta - M_PI/2;
+        double adjusted_theta = theta;
         double arrow_length = 0.5;
         double arrow_x[2] = {x, x + arrow_length * cos(adjusted_theta)};
         double arrow_y[2] = {y, y + arrow_length * sin(adjusted_theta)};
@@ -298,7 +298,7 @@ void SimulatorVisualizer::drawSubtarget(const Eigen::Vector3d& subtarget_pos) {
     
     // Draw subtarget orientation arrow (if theta is non-zero)
     if (std::abs(theta) > 0.01) {
-        double adjusted_theta = theta - M_PI/2;
+        double adjusted_theta = theta;
         double arrow_length = 0.35;
         double arrow_x[2] = {x, x + arrow_length * cos(adjusted_theta)};
         double arrow_y[2] = {y, y + arrow_length * sin(adjusted_theta)};

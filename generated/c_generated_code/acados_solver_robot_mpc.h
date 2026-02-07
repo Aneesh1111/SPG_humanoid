@@ -59,7 +59,7 @@
 #define ROBOT_MPC_NS0    0
 #define ROBOT_MPC_NSN    0
 #define ROBOT_MPC_NG     0
-#define ROBOT_MPC_NBXN   0
+#define ROBOT_MPC_NBXN   2
 #define ROBOT_MPC_NGN    0
 #define ROBOT_MPC_NY0    9
 #define ROBOT_MPC_NY     9

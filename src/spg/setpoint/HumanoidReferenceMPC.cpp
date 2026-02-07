@@ -22,7 +22,7 @@ namespace setpoint {
 // ==================== AcadosMPCParams ====================
 
 AcadosMPCParams::AcadosMPCParams()
-    : dt(0.05)
+    : dt(0.15)
     , horizon(20)
     , vx_max(0.8)
     , vy_max(0.3)
@@ -51,6 +51,7 @@ HumanoidReferenceMPC::HumanoidReferenceMPC(const AcadosMPCParams& params)
     : params_(params)
     , capsule_(nullptr)
     , solver_initialized_(false)
+    , has_previous_solution_(false)
 {
 #ifdef HAVE_ACADOS
     // Create acados solver capsule
@@ -97,7 +98,7 @@ bool HumanoidReferenceMPC::computeControl(
     }
     
 #ifdef HAVE_ACADOS
-    // Build reference trajectory
+    // Build reference trajectory (fixed goal for all stages)
     AcadosMPCReference ref = buildReference(x0, x_goal);
     
     // Set initial state constraint
@@ -106,12 +107,18 @@ bool HumanoidReferenceMPC::computeControl(
     // Set stage and terminal references
     setReferences(ref);
     
+    // Apply warm-start (shift previous solution)
+    applyWarmStart();
+    
     // Solve
     int status = robot_mpc_acados_solve(capsule_);
     if (status != 0) {
         std::cerr << "HumanoidReferenceMPC: Solve failed with status " << status << "\n";
         return false;
     }
+    
+    // Store solution for next warm-start
+    storeSolution();
     
     // Extract first control (acceleration)
     u_out = getFirstControl();
@@ -159,88 +166,36 @@ AcadosMPCReference HumanoidReferenceMPC::buildReference(
     ref.x_ref.resize(params_.horizon + 1);
     ref.u_ref.resize(params_.horizon);
     
-    // Goal in robot body frame
-    const double dx_world = x_goal.px - x0.px;
-    const double dy_world = x_goal.py - x0.py;
-    const double dtheta = wrap_pi(x_goal.theta - x0.theta);
+    // FIXED GOAL REFERENCE: Use same goal for all stages k=0,...,N
+    // Goal is in WORLD FRAME with zero velocities
+    std::array<double, 6> goal_state = {
+        x_goal.px,     // Position x (world frame)
+        x_goal.py,     // Position y (world frame)
+        x_goal.theta,  // Heading (world frame)
+        0.0,           // Forward velocity = 0 at goal
+        0.0,           // Sideways velocity = 0 at goal
+        0.0            // Angular velocity = 0 at goal
+    };
     
-    // Transform goal to robot body frame (forward = x, sideways = y)
-    const double cos_th0 = std::cos(x0.theta);
-    const double sin_th0 = std::sin(x0.theta);
-    const double dx_body = dx_world * cos_th0 + dy_world * sin_th0;
-    const double dy_body = -dx_world * sin_th0 + dy_world * cos_th0;
-    
-    const double dp = std::hypot(dx_body, dy_body);
-    
-    // Time estimates
-    const double vmax = params_.vx_max;
-    const double time2target_xy = (dp > 1e-3) ? (dp / vmax) : 0.0;
-    const double time2target_theta = (std::abs(dtheta) > 1e-3) ? 
-                                      (std::abs(dtheta) / params_.omega_max) : 0.0;
-    
-    // Initialize state in robot local frame (starts at origin)
-    double px = 0.0, py = 0.0, theta = 0.0;
-    double vx = x0.vx, vy = x0.vy, omega = x0.omega;
-    
-    ref.x_ref[0] = {px, py, theta, vx, vy, omega};
-    
-    // Debug: print goal and time estimates
-    static int ref_debug = 0;
-    if (ref_debug++ % 50 == 0) {
-        std::cout << "buildReference: goal_body=(" << dx_body << "," << dy_body << ") dp=" << dp 
-                  << " time_xy=" << time2target_xy << " time_theta=" << time2target_theta << "\n";
+    // Set same goal for ALL stages (not a time-varying trajectory)
+    for (int k = 0; k <= params_.horizon; ++k) {
+        ref.x_ref[k] = goal_state;
     }
     
-    // Build reference with bang-bang accelerations
+    // Zero control reference (accelerations)
+    std::array<double, 3> zero_control = {0.0, 0.0, 0.0};
     for (int k = 0; k < params_.horizon; ++k) {
-        const double dx_rem = dx_body - px;
-        const double dy_rem = dy_body - py;
-        const double dtheta_rem = wrap_pi(dtheta - theta);
-        
-        // Bang-bang control selection
-        double ax = 0.0, ay = 0.0, alpha = 0.0;
-        
-        // Rotation control
-        if (std::abs(dtheta_rem) > 0.01) {
-            alpha = (dtheta_rem > 0) ? params_.alpha_max : -params_.alpha_max;
-        }
-        
-        // Position control strategy
-        if (time2target_xy > time2target_theta) {
-            // Position-limited: use forward AND sideways to reach goal
-            if (std::abs(dx_rem) > 0.05) {
-                ax = (dx_rem > 0) ? params_.ax_max : -params_.ax_max;
-            }
-            if (std::abs(dy_rem) > 0.05) {
-                ay = (dy_rem > 0) ? params_.ay_max : -params_.ay_max;
-            }
-        } else {
-            // Heading-limited: same - use both axes
-            if (std::abs(dx_rem) > 0.05) {
-                ax = (dx_rem > 0) ? params_.ax_max : -params_.ax_max;
-            }
-            if (std::abs(dy_rem) > 0.05) {
-                ay = (dy_rem > 0) ? params_.ay_max : -params_.ay_max;
-            }
-        }
-        
-        ref.u_ref[k] = {ax, ay, alpha};
-        
-        // Integrate: x(k+1) = x(k) + v(k)*dt + 0.5*a*dt²
-        const double dt = params_.dt;
-        const double dt2 = 0.5 * dt * dt;
-        
-        // Update positions using CURRENT velocities
-        px += vx * dt + ax * dt2;
-        py += vy * dt + ay * dt2;
-        theta = wrap_pi(theta + omega * dt + alpha * dt2);
-        
-        // Update velocities for next step - use conservative limits for reference
-        vx = clamp(vx + ax * dt, -params_.vx_max * 0.90, params_.vx_max * 0.90);
-        vy = clamp(vy + ay * dt, -params_.vy_max * 0.90, params_.vy_max * 0.90);
-        omega = clamp(omega + alpha * dt, -params_.omega_max, params_.omega_max);
-        
-        ref.x_ref[k + 1] = {px, py, theta, vx, vy, omega};
+        ref.u_ref[k] = zero_control;
+    }
+    
+    // Debug: print goal in world frame
+    static int ref_debug = 0;
+    if (ref_debug++ % 50 == 0) {
+        const double dx = x_goal.px - x0.px;
+        const double dy = x_goal.py - x0.py;
+        const double dist = std::hypot(dx, dy);
+        std::cout << "buildReference: goal_world=(" << x_goal.px << "," << x_goal.py 
+                  << "," << x_goal.theta << ") dist=" << dist << "m\n";
     }
     
     return ref;
@@ -372,6 +327,80 @@ AcadosMPCVelocity HumanoidReferenceMPC::getVelocityCommand() const {
 #endif
     
     return vel;
+}
+
+void HumanoidReferenceMPC::applyWarmStart() {
+#ifdef HAVE_ACADOS
+    if (!capsule_ || !has_previous_solution_) return;
+    
+    const int N = params_.horizon;
+    
+    // Shift states: x_k^(0) = x_{k+1}^{*,prev}
+    for (int i = 0; i < N; ++i) {
+        ocp_nlp_out_set(capsule_->nlp_config, capsule_->nlp_dims, capsule_->nlp_out,
+                        capsule_->nlp_in, i, "x", prev_states_[i + 1].data());
+    }
+    
+    // Extrapolate final state: x_N = x_N^{prev} + dt*f(x_N^{prev}, 0)
+    // Simple forward Euler with zero control
+    double final_state[6];
+    for (int j = 0; j < 6; ++j) {
+        final_state[j] = prev_states_[N][j];
+    }
+    
+    // Position dynamics: px_dot = cos(theta)*vx - sin(theta)*vy
+    const double theta_N = final_state[2];
+    const double vx_N = final_state[3];
+    const double vy_N = final_state[4];
+    const double omega_N = final_state[5];
+    
+    final_state[0] += params_.dt * (std::cos(theta_N) * vx_N - std::sin(theta_N) * vy_N);
+    final_state[1] += params_.dt * (std::sin(theta_N) * vx_N + std::cos(theta_N) * vy_N);
+    final_state[2] = wrap_pi(final_state[2] + params_.dt * omega_N);
+    // Velocities unchanged with zero acceleration
+    
+    ocp_nlp_out_set(capsule_->nlp_config, capsule_->nlp_dims, capsule_->nlp_out,
+                    capsule_->nlp_in, N, "x", final_state);
+    
+    // Shift controls: u_k^(0) = u_{k+1}^{*,prev}
+    for (int i = 0; i < N - 1; ++i) {
+        ocp_nlp_out_set(capsule_->nlp_config, capsule_->nlp_dims, capsule_->nlp_out,
+                        capsule_->nlp_in, i, "u", prev_controls_[i + 1].data());
+    }
+    
+    // Append zero control at final stage
+    double zero_control[3] = {0.0, 0.0, 0.0};
+    ocp_nlp_out_set(capsule_->nlp_config, capsule_->nlp_dims, capsule_->nlp_out,
+                    capsule_->nlp_in, N - 1, "u", zero_control);
+#endif
+}
+
+void HumanoidReferenceMPC::storeSolution() {
+#ifdef HAVE_ACADOS
+    if (!capsule_) return;
+    
+    const int N = params_.horizon;
+    prev_states_.resize(N + 1);
+    prev_controls_.resize(N);
+    
+    // Store all states
+    for (int i = 0; i <= N; ++i) {
+        double x[6];
+        ocp_nlp_out_get(capsule_->nlp_config, capsule_->nlp_dims,
+                        capsule_->nlp_out, i, "x", x);
+        prev_states_[i] = {x[0], x[1], x[2], x[3], x[4], x[5]};
+    }
+    
+    // Store all controls
+    for (int i = 0; i < N; ++i) {
+        double u[3];
+        ocp_nlp_out_get(capsule_->nlp_config, capsule_->nlp_dims,
+                        capsule_->nlp_out, i, "u", u);
+        prev_controls_[i] = {u[0], u[1], u[2]};
+    }
+    
+    has_previous_solution_ = true;
+#endif
 }
 
 } // namespace setpoint

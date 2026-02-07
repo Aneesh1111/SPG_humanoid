@@ -92,7 +92,7 @@ def create_ocp_solver():
     nx = 6
     nu = 3
     N = 20
-    dt = 0.05
+    dt = 0.15
     
     ocp.dims.N = N
     ocp.solver_options.tf = N * dt
@@ -128,6 +128,7 @@ def create_ocp_solver():
     
     # Define velocity limits first
     vx_max = 0.8  # Conservative limit
+    vx_min = -0.1 # Robot should not move backwards significantly (cannot see where it is going)
     vy_max = 0.3  # Conservative limit  
     omega_max = 1.2  # Conservative limit
     
@@ -137,9 +138,16 @@ def create_ocp_solver():
     
     # Add state bounds to prevent drift
     # Bounds on [px, py, theta, vx, vy, omega]
-    ocp.constraints.lbx = np.array([-10.0, -10.0, -np.pi, -vx_max, -vy_max, -omega_max])
-    ocp.constraints.ubx = np.array([10.0, 10.0, np.pi, vx_max, vy_max, omega_max])
+    ocp.constraints.lbx = np.array([-20.0, -20.0, -np.pi, vx_min, -vy_max, -omega_max])
+    ocp.constraints.ubx = np.array([20.0, 20.0, np.pi, vx_max, vy_max, omega_max])
     ocp.constraints.idxbx = np.array([0, 1, 2, 3, 4, 5])  # All states bounded
+    
+    # Terminal velocity constraints: robot must stop at end of horizon
+    # v_x,N = 0, v_y,N = 0 (hard equality constraints)
+    # Note: bounds arrays must match length of idxbx_e (only 2 values for indices 3,4)
+    ocp.constraints.lbx_e = np.array([0.0, 0.0])
+    ocp.constraints.ubx_e = np.array([0.0, 0.0])
+    ocp.constraints.idxbx_e = np.array([3, 4])  # Constrain v_x, v_y at terminal stage
     
     # Solver options - optimized for numerical stability
     ocp.solver_options.qp_solver = 'PARTIAL_CONDENSING_HPIPM'

@@ -167,9 +167,9 @@ SPGState Set(SPGState& d) {
                         double phi_local = predicted_states[i].theta;
                         
                         // Rotate position back to global frame
-                        d.traj.p[i][0] = predicted_states[i].px;robot_x_global + (x_local * cos_phi - y_local * sin_phi);
-                        d.traj.p[i][1] = robot_y_global + (x_local * sin_phi + y_local * cos_phi);
-                        d.traj.p[i][2] = robot_phi_global + phi_local;
+                        d.traj.p[i][0] = predicted_states[i].px; // robot_x_global + (x_local * cos_phi - y_local * sin_phi);
+                        d.traj.p[i][1] = predicted_states[i].py; // robot_y_global + (x_local * sin_phi + y_local * cos_phi);
+                        d.traj.p[i][2] = predicted_states[i].theta; // robot_phi_global + phi_local;
                         d.traj.t[i] = i * d.par.Ts;
                         
                         // Velocities are in predicted state (body frame), transform to global frame

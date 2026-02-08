@@ -409,4 +409,14 @@ CMakeFiles/spg.dir/src/spg/subtarget/CheckCollisionFree.cpp.o: \
  /home/robocup/Downloads/spg_cmake/include/spg/subtarget/CheckViolation.hpp \
  /home/robocup/Downloads/spg_cmake/include/spg/setpoint/ConvertSegment.hpp \
  /home/robocup/Downloads/spg_cmake/include/spg/setpoint/TrajPredict.hpp \
- /usr/include/c++/13/iostream
+ /home/robocup/Downloads/spg_cmake/include/spg/setpoint/HumanoidReferenceMPC.hpp \
+ /usr/include/c++/13/memory \
+ /usr/include/c++/13/bits/stl_raw_storage_iter.h \
+ /usr/include/c++/13/bits/align.h /usr/include/c++/13/bits/unique_ptr.h \
+ /usr/include/c++/13/bits/shared_ptr.h \
+ /usr/include/c++/13/bits/shared_ptr_base.h \
+ /usr/include/c++/13/bits/allocated_ptr.h \
+ /usr/include/c++/13/ext/concurrence.h \
+ /usr/include/c++/13/bits/shared_ptr_atomic.h \
+ /usr/include/c++/13/backward/auto_ptr.h \
+ /usr/include/c++/13/pstl/glue_memory_defs.h /usr/include/c++/13/iostream

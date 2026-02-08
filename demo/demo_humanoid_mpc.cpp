@@ -133,7 +133,7 @@ int main(int argc, char** argv) {
     Eigen::Vector3d p_initial = config.start_pos;
     Eigen::Vector3d v_initial(0, 0, 0);
     int npredict = config.prediction_horizon;
-    int nobstacles = 0;
+    int nobstacles = 3;
     int nintercept_positions = 15;
     Eigen::Vector2d p_initial_ball(0, 0);
     Eigen::Vector2d v_initial_ball(0, 0);

@@ -42,9 +42,9 @@ Subtarget checkCollisionFree(SPGState& d, Subtarget subtarget, double obstacle_m
         goalState.px = subtarget.p(0);
         goalState.py = subtarget.p(1);
         goalState.theta = subtarget.p(2);
-        goalState.vx = subtarget.v(0);
-        goalState.vy = subtarget.v(1);
-        goalState.omega = subtarget.v(2);
+        goalState.vx = 0.0; //subtarget.v(0);
+        goalState.vy = 0.0; //subtarget.v(1);
+        goalState.omega = 0.0; //subtarget.v(2);
 
         // Compute predicted trajectory
         spg::setpoint::AcadosMPCControl u_out;

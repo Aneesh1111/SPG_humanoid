@@ -94,9 +94,9 @@ SPGState Set(SPGState& d) {
                 
                 // In robot local frame, current state is always at origin with current body velocities
                 AcadosMPCState current_state;
-                current_state.px = 0.0;
-                current_state.py = 0.0;
-                current_state.theta = 0.0;
+                current_state.px = robot_x_global;//0.0;
+                current_state.py = robot_y_global;//0.0;
+                current_state.theta = robot_phi_global;//0.0;
                 // Convert current global-frame velocity to body-frame velocity (measured)
                 current_state.vx    = d.input.robot.v[0] * cos_phi + d.input.robot.v[1] * sin_phi;   // global → body
                 current_state.vy    = -d.input.robot.v[0] * sin_phi + d.input.robot.v[1] * cos_phi;  // global → body
@@ -104,9 +104,9 @@ SPGState Set(SPGState& d) {
                 
                 // Goal in local frame (with zero velocity at goal)
                 AcadosMPCState goal_state;
-                goal_state.px = goal_x_local;
-                goal_state.py = goal_y_local;
-                goal_state.theta = goal_phi_local;
+                goal_state.px = d.subtarget.p[0];//goal_x_local;
+                goal_state.py = d.subtarget.p[1];//goal_y_local;
+                goal_state.theta = d.subtarget.p[2];//goal_phi_local;
                 goal_state.vx = 0.0;
                 goal_state.vy = 0.0;
                 goal_state.omega = 0.0;
@@ -138,9 +138,9 @@ SPGState Set(SPGState& d) {
                     double omega_global = vel_cmd.omega;
                     
                     // Update setpoint position in global frame
-                    d.setpoint.p[0] = robot_x_global + vx_global * d.par.Ts;
-                    d.setpoint.p[1] = robot_y_global + vy_global * d.par.Ts;
-                    d.setpoint.p[2] = robot_phi_global + omega_global * d.par.Ts;
+                    d.setpoint.p[0] = d.input.robot.p[0] + vx_global * d.par.Ts;// robot_x_global + vx_global * d.par.Ts;
+                    d.setpoint.p[1] = d.input.robot.p[1] + vy_global * d.par.Ts;// robot_y_global + vy_global * d.par.Ts;
+                    d.setpoint.p[2] = d.input.robot.p[2] + omega_global * d.par.Ts; //robot_phi_global + omega_global * d.par.Ts;
                     
                     // Update setpoint velocity in global frame
                     d.setpoint.v[0] = vx_global;
@@ -167,7 +167,7 @@ SPGState Set(SPGState& d) {
                         double phi_local = predicted_states[i].theta;
                         
                         // Rotate position back to global frame
-                        d.traj.p[i][0] = robot_x_global + (x_local * cos_phi - y_local * sin_phi);
+                        d.traj.p[i][0] = predicted_states[i].px;robot_x_global + (x_local * cos_phi - y_local * sin_phi);
                         d.traj.p[i][1] = robot_y_global + (x_local * sin_phi + y_local * cos_phi);
                         d.traj.p[i][2] = robot_phi_global + phi_local;
                         d.traj.t[i] = i * d.par.Ts;

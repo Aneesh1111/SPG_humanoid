@@ -52,8 +52,9 @@ Subtarget random(SPGState& d, const Subtarget& best, const Eigen::Vector3d& sear
                     double v_subtarget_y = std::copysign(std::min(std::abs(d.target.v(1) - d.input.robot.v(1)), vy_max), d.target.v(1) - d.input.robot.v(1));
                     subtarget_candidate.v = Eigen::Vector3d(0,0,0);//Eigen::Vector3d(v_subtarget_x, v_subtarget_y, 0);
                     subtarget_candidate = spg::subtarget::replan::determineSetpointLimits(d, subtarget_candidate);
-                    subtarget_candidate.predicted_traj.clear();
-                    subtarget_candidate = spg::subtarget::checkCollisionFree(d, subtarget_candidate, d.par.margin_replan, &subtarget_candidate.predicted_traj);
+                    std::vector<Eigen::Vector2d> temp_predicted_traj;
+                    subtarget_candidate = spg::subtarget::checkCollisionFree(d, subtarget_candidate, d.par.margin_replan, &temp_predicted_traj);
+                    subtarget_candidate.predicted_traj = temp_predicted_traj;                    
                     // Optionally update best
                     best_so_far = spg::subtarget::replan::updateBest(best_so_far, subtarget_candidate, d.target.p);
                 }

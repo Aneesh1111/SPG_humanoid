@@ -394,7 +394,7 @@ void SimulatorVisualizer::render(const RobotState& robot,
         if (obs.active) active_obstacles++;
     }
     ImGui::Text("Active Obstacles: %d / %d", active_obstacles, (int)obstacles.size());
-    
+
     // Calculate distances
     double distance_to_target = (robot.pose.head<2>() - target_pos.head<2>()).norm();
     double distance_to_subtarget = (robot.pose.head<2>() - subtarget_pos.head<2>()).norm();

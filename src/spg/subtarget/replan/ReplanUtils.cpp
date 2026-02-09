@@ -202,8 +202,9 @@ Subtarget toTarget(SPGState& d) {
     subtarget_target.v = d.target.v;
     subtarget_target = determineSetpointLimits(d, subtarget_target);
     subtarget_target.target = d.target.p;
-    subtarget_target.predicted_traj.clear();
-    subtarget_target = subtarget::checkCollisionFree(d, subtarget_target, d.par.margin_replan, &subtarget_target.predicted_traj);
+    std::vector<Eigen::Vector2d> temp_predicted_traj;
+    subtarget_target = subtarget::checkCollisionFree(d, subtarget_target, d.par.margin_replan, &temp_predicted_traj);
+    subtarget_target.predicted_traj = temp_predicted_traj;    
     subtarget_target.age = 0;
     return subtarget_target;
 }

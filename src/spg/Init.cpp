@@ -15,7 +15,11 @@ SPGState Init(const Eigen::Vector3d& p_initial,
     // Initialize field parameters
     d.par = FieldParams{
         nobstacles,                    // number of obstacles
+#ifdef HAVE_ACADOS
+        0.15,                         // Ts: sampling time [s] (longer for MPC)
+#else
         0.02,                         // Ts: sampling time [s]
+#endif
         {8, 12},                      // field_size: [width, length] [m] 
         1.5,                          // field_circle_radius [m]
         {4, 1.5},                     // field_penalty_area: [width, length] [m]
@@ -23,7 +27,11 @@ SPGState Init(const Eigen::Vector3d& p_initial,
         0.5,                          // field_border_margin [m]
         2.4,                          // goalwidth [m]
         0.9,                          // technical_area_width [m]
+#ifdef HAVE_ACADOS
+        0.4,                          // Ts_predict: prediction sampling time [s] (longer for MPC)
+#else
         0.1,                          // Ts_predict: prediction sampling time [s]
+#endif
         npredict,                     // npredict: number of prediction samples
         0.25,                         // robot_radius [m]
         0.11,                         // ball_radius [m]
@@ -32,15 +40,28 @@ SPGState Init(const Eigen::Vector3d& p_initial,
         6,                            // search_distance [m]
         2,                            // replan_uphill_distance [m]
         0.1,                          // margin_replan [m]
+#ifdef HAVE_ACADOS
+        1.0,                          // vmax_move: max translational velocity [m/s] (lower for humanoid)
+        1.5,                          // vmax_rotate: max rotational velocity [rad/s] (lower for humanoid)
+        3.0,                          // amax_move: max translational acceleration [m/s²] (higher for humanoid)
+        3.0,                          // amax_quickstop: max quickstop acceleration [m/s²] (same for humanoid)
+        3.0,                          // amax_rotate: max rotational acceleration [rad/s²] (lower for humanoid)
+#else
         4,                            // vmax_move: max translational velocity [m/s]
         13,                           // vmax_rotate: max rotational velocity [rad/s]
         1.8,                          // amax_move: max translational acceleration [m/s²]
         3.5,                          // amax_quickstop: max quickstop acceleration [m/s²]
         13,                           // amax_rotate: max rotational acceleration [rad/s²]
+#endif
         0.3,                          // scale_rotate: rotation scaling factor
         40.0/180.0*M_PI,             // scale_angle: angle scaling factor [rad]
+#ifdef HAVE_ACADOS
+        3.0,                          // dmax_move: max translational deceleration [m/s²] (higher for humanoid)
+        1.5,                          // dmax_rotate: max rotational deceleration [rad/s²] (lower for humanoid)
+#else
         1.8,                          // dmax_move: max translational deceleration [m/s²]
         13,                           // dmax_rotate: max rotational deceleration [rad/s²]
+#endif
         nintercept_positions,         // number of intercept positions
         true                         // use_humanoid_mpc: default to traditional MSL controller
     };

@@ -409,6 +409,7 @@ void SPGSimulator::step() {
     for (const auto& p : state_.traj.p) {
         robot_traj.push_back(p.head<2>());
     }
+    std::vector<Eigen::Vector2d> robot_traj_400ms = state_.subtarget.predicted_traj; // Use predicted trajectory for 400ms display
     std::vector<std::vector<Eigen::Vector2d>> obs_traj; // Fill if you have obstacle trajectories
-    visualizer.render(robot, obstacles, ball, robot_traj, obs_traj, state_.target.p, state_.subtarget.p, simulation_time_, step_count_, simulation_completed_);
+    visualizer.render(robot, obstacles, ball, robot_traj, robot_traj_400ms, obs_traj, state_.target.p, state_.subtarget.p, simulation_time_, step_count_, simulation_completed_);
 }

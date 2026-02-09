@@ -42,11 +42,13 @@ public:
     void drawTarget(const Eigen::Vector3d& target_pos);
     void drawSubtarget(const Eigen::Vector3d& subtarget_pos);
     void drawTrajectories(const std::vector<Eigen::Vector2d>& robot_traj,
+                          const std::vector<Eigen::Vector2d>& robot_traj_400ms,
                           const std::vector<std::vector<Eigen::Vector2d>>& obs_traj);
     void render(const RobotState& robot,
                 const std::vector<ObstacleState>& obstacles,
                 const BallState& ball,
                 const std::vector<Eigen::Vector2d>& robot_traj,
+                const std::vector<Eigen::Vector2d>& robot_traj_400ms,
                 const std::vector<std::vector<Eigen::Vector2d>>& obs_traj,
                 const Eigen::Vector3d& target_pos,
                 const Eigen::Vector3d& subtarget_pos,

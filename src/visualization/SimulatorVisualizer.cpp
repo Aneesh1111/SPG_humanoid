@@ -219,17 +219,32 @@ void SimulatorVisualizer::drawBall(const BallState& ball) {
 }
 
 void SimulatorVisualizer::drawTrajectories(const std::vector<Eigen::Vector2d>& robot_traj,
+                                           const std::vector<Eigen::Vector2d>& robot_traj_400ms,
                                            const std::vector<std::vector<Eigen::Vector2d>>& obs_traj) {
     if (!robot_traj.empty()) {
         std::vector<double> x, y;
         for (const auto& p : robot_traj) { x.push_back(p.x()); y.push_back(p.y()); }
         
+        // Green
+        ImPlot::SetNextLineStyle(ImVec4(0.0f, 1.0f, 0.0f, 1.0f), 2.0f);
         // Draw trajectory as a line
         ImPlot::PlotLine("Robot Traj Line", x.data(), y.data(), x.size());
-        
         // Draw trajectory points as individual markers
         ImPlot::PlotScatter("Robot Traj Points", x.data(), y.data(), x.size());
     }
+
+    if (!robot_traj_400ms.empty()) {
+        std::vector<double> x, y;
+        for (const auto& p : robot_traj_400ms) { x.push_back(p.x()); y.push_back(p.y()); }
+        
+        // Blue
+        ImPlot::SetNextLineStyle(ImVec4(0.0f, 0.5f, 1.0f, 1.0f), 3.0f);
+        // Draw predicted trajectory as a line
+        ImPlot::PlotLine("Robot Traj 400ms Line", x.data(), y.data(), x.size());
+        // Draw predicted trajectory points as individual markers
+        ImPlot::PlotScatter("Robot Traj 400ms Points", x.data(), y.data(), x.size());
+    }
+
     for (const auto& traj : obs_traj) {
         if (!traj.empty()) {
             std::vector<double> x, y;
@@ -328,6 +343,7 @@ void SimulatorVisualizer::render(const RobotState& robot,
                                  const std::vector<ObstacleState>& obstacles,
                                  const BallState& ball,
                                  const std::vector<Eigen::Vector2d>& robot_traj,
+                                 const std::vector<Eigen::Vector2d>& robot_traj_400ms,
                                  const std::vector<std::vector<Eigen::Vector2d>>& obs_traj,
                                  const Eigen::Vector3d& target_pos,
                                  const Eigen::Vector3d& subtarget_pos,
@@ -428,7 +444,7 @@ void SimulatorVisualizer::render(const RobotState& robot,
         drawBall(ball);
         drawTarget(target_pos);
         drawSubtarget(subtarget_pos);
-        drawTrajectories(robot_traj, obs_traj);
+        drawTrajectories(robot_traj, robot_traj_400ms, obs_traj);
         ImPlot::EndPlot();
     }
     ImGui::End();

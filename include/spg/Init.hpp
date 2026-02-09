@@ -93,6 +93,7 @@ struct Subtarget {
     int violation_count;
     std::vector<Segment> segment;
     int automatic_substitution_flag;
+    std::vector<Eigen::Vector2d> predicted_traj;  // 400ms predicted trajectory from checkCollisionFree
 };
 
 struct Target {

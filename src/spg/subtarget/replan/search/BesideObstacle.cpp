@@ -34,7 +34,8 @@ Subtarget besideObstacle(SPGState& d, const Subtarget& best) {
                         Eigen::Vector2d v_xy = v1.normalized() * speed;
                         subtarget_candidate.v = Eigen::Vector3d(0,0,0);//Eigen::Vector3d(v_xy(0), v_xy(1), 0);
                         subtarget_candidate = spg::subtarget::replan::determineSetpointLimits(d, subtarget_candidate);
-                        subtarget_candidate = spg::subtarget::checkCollisionFree(d, subtarget_candidate, d.par.margin_replan);
+                        subtarget_candidate.predicted_traj.clear();
+                        subtarget_candidate = spg::subtarget::checkCollisionFree(d, subtarget_candidate, d.par.margin_replan, &subtarget_candidate.predicted_traj);
                         // Update best
                         current_best = spg::subtarget::replan::updateBest(current_best, subtarget_candidate, d.target.p);
                     }

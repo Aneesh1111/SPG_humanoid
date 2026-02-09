@@ -25,7 +25,8 @@ SPGState Set(SPGState& d) {
         return d;
     } else {
         d.subtarget.p(2) = angle::set(d);
-        d.subtarget = subtarget::checkCollisionFree(d, d.subtarget, 0);
+        d.subtarget.predicted_traj.clear();
+        d.subtarget = subtarget::checkCollisionFree(d, d.subtarget, 0, &d.subtarget.predicted_traj);
         d.subtarget.age += 1;
         if (replan::quickstopDesired(d)) {
             d.subtarget = replan::quickstop(d, d.subtarget);

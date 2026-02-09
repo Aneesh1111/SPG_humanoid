@@ -97,6 +97,7 @@ demo_humanoid_mpc: libimgui.a
 demo_humanoid_mpc: /usr/local/lib/libqpOASES.a
 demo_humanoid_mpc: /home/robocup/Downloads/spg_cmake/acados/lib/libacados.so
 demo_humanoid_mpc: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_mpc.so
+demo_humanoid_mpc: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_mpc_predicted_traj.so
 demo_humanoid_mpc: CMakeFiles/demo_humanoid_mpc.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable demo_humanoid_mpc"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/demo_humanoid_mpc.dir/link.txt --verbose=$(VERBOSE)

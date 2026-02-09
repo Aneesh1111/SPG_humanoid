@@ -98,6 +98,7 @@ test/test_bouncing_obstacles_integration: libimgui.a
 test/test_bouncing_obstacles_integration: /usr/local/lib/libqpOASES.a
 test/test_bouncing_obstacles_integration: /home/robocup/Downloads/spg_cmake/acados/lib/libacados.so
 test/test_bouncing_obstacles_integration: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_mpc.so
+test/test_bouncing_obstacles_integration: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_mpc_predicted_traj.so
 test/test_bouncing_obstacles_integration: lib/libgtest.a
 test/test_bouncing_obstacles_integration: test/CMakeFiles/test_bouncing_obstacles_integration.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable test_bouncing_obstacles_integration"

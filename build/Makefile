@@ -983,6 +983,30 @@ src/spg/setpoint/HumanoidReferenceMPC.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferenceMPC.cpp.s
 .PHONY : src/spg/setpoint/HumanoidReferenceMPC.cpp.s
 
+src/spg/setpoint/HumanoidReferencePredictedTrajMPC.o: src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.o
+.PHONY : src/spg/setpoint/HumanoidReferencePredictedTrajMPC.o
+
+# target to build an object file
+src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.o
+.PHONY : src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.o
+
+src/spg/setpoint/HumanoidReferencePredictedTrajMPC.i: src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.i
+.PHONY : src/spg/setpoint/HumanoidReferencePredictedTrajMPC.i
+
+# target to preprocess a source file
+src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.i
+.PHONY : src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.i
+
+src/spg/setpoint/HumanoidReferencePredictedTrajMPC.s: src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.s
+.PHONY : src/spg/setpoint/HumanoidReferencePredictedTrajMPC.s
+
+# target to generate assembly for a file
+src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.s
+.PHONY : src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.s
+
 src/spg/setpoint/Set.o: src/spg/setpoint/Set.cpp.o
 .PHONY : src/spg/setpoint/Set.o
 
@@ -1637,6 +1661,9 @@ help:
 	@echo "... src/spg/setpoint/HumanoidReferenceMPC.o"
 	@echo "... src/spg/setpoint/HumanoidReferenceMPC.i"
 	@echo "... src/spg/setpoint/HumanoidReferenceMPC.s"
+	@echo "... src/spg/setpoint/HumanoidReferencePredictedTrajMPC.o"
+	@echo "... src/spg/setpoint/HumanoidReferencePredictedTrajMPC.i"
+	@echo "... src/spg/setpoint/HumanoidReferencePredictedTrajMPC.s"
 	@echo "... src/spg/setpoint/Set.o"
 	@echo "... src/spg/setpoint/Set.i"
 	@echo "... src/spg/setpoint/Set.s"

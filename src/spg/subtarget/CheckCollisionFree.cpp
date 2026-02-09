@@ -7,7 +7,7 @@
 #include "spg/setpoint/ConvertSegment.hpp"
 #include "spg/setpoint/TrajPredict.hpp"
 #ifdef HAVE_ACADOS
-#include "spg/setpoint/HumanoidReferenceMPC.hpp"
+#include "spg/setpoint/HumanoidReferencePredictedTrajMPC.hpp"
 #endif
 #include <iostream>
 
@@ -20,16 +20,24 @@ Subtarget checkCollisionFree(SPGState& d, Subtarget subtarget, double obstacle_m
     // Use conversion functions from spg::setpoint namespace
 #ifdef HAVE_ACADOS
     // Predict trajectory with 400 ms timesteps
-    spg::setpoint::AcadosMPCParams predictionParams;
-    predictionParams.dt = 0.4;     
-
+    spg::setpoint::AcadosMPCParamsPredictedTraj predictionParams;
+    predictionParams.dt = 0.4;//d.par.Ts_predict;
+    predictionParams.horizon = 20;
+    predictionParams.vx_max = 1.1;
+    predictionParams.vy_max = 0.4;
+    predictionParams.omega_max = 1.5;
+    predictionParams.ax_max = 8.0;
+    predictionParams.ay_max = 6.0;
+    predictionParams.alpha_max = 3.0;
+    predictionParams.polygon_sides = 12;
+    
     // Create MPC Prediction Steps
-    static spg::setpoint::HumanoidReferenceMPC predictionMPC(predictionParams);
+    static spg::setpoint::HumanoidReferencePredictedTrajMPC predictionMPC(predictionParams);
     SPGState d2 = d;
 
     if (predictionMPC.isInitialized()) {
         // Convert current state into MPC state
-        spg::setpoint::AcadosMPCState currentState;
+        spg::setpoint::AcadosMPCStatePredictedTraj currentState;
         currentState.px = d.setpoint.p(0);
         currentState.py = d.setpoint.p(1);
         currentState.theta = d.setpoint.p(2);
@@ -38,7 +46,7 @@ Subtarget checkCollisionFree(SPGState& d, Subtarget subtarget, double obstacle_m
         currentState.omega = d.setpoint.v(2);
 
         // Convert subtarget to MPC goal
-        spg::setpoint::AcadosMPCState goalState;
+        spg::setpoint::AcadosMPCStatePredictedTraj goalState;
         goalState.px = subtarget.p(0);
         goalState.py = subtarget.p(1);
         goalState.theta = subtarget.p(2);
@@ -47,9 +55,9 @@ Subtarget checkCollisionFree(SPGState& d, Subtarget subtarget, double obstacle_m
         goalState.omega = 0.0; //subtarget.v(2);
 
         // Compute predicted trajectory
-        spg::setpoint::AcadosMPCControl u_out;
-        std::vector<spg::setpoint::AcadosMPCState> predicted_states;
-        std::vector<spg::setpoint::AcadosMPCControl> predicted_controls;
+        spg::setpoint::AcadosMPCControlPredictedTraj u_out;
+        std::vector<spg::setpoint::AcadosMPCStatePredictedTraj> predicted_states;
+        std::vector<spg::setpoint::AcadosMPCControlPredictedTraj> predicted_controls;
         bool success = predictionMPC.computeControlAndTrajectory(
             currentState, goalState, u_out, predicted_states, predicted_controls
         );

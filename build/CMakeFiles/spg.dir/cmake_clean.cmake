@@ -19,6 +19,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/spg.dir/src/spg/setpoint/HumanoidMPC.cpp.o.d"
   "CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferenceMPC.cpp.o"
   "CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferenceMPC.cpp.o.d"
+  "CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.o"
+  "CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.o.d"
   "CMakeFiles/spg.dir/src/spg/setpoint/Set.cpp.o"
   "CMakeFiles/spg.dir/src/spg/setpoint/Set.cpp.o.d"
   "CMakeFiles/spg.dir/src/spg/setpoint/Setpoint.cpp.o"

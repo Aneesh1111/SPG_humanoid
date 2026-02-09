@@ -97,6 +97,7 @@ test/test_determine_setpoint_limits: lib/libgtest_main.a
 test/test_determine_setpoint_limits: /usr/local/lib/libqpOASES.a
 test/test_determine_setpoint_limits: /home/robocup/Downloads/spg_cmake/acados/lib/libacados.so
 test/test_determine_setpoint_limits: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_mpc.so
+test/test_determine_setpoint_limits: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_mpc_predicted_traj.so
 test/test_determine_setpoint_limits: lib/libgtest.a
 test/test_determine_setpoint_limits: test/CMakeFiles/test_determine_setpoint_limits.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable test_determine_setpoint_limits"

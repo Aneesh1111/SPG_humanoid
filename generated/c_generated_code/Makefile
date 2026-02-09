@@ -37,11 +37,11 @@
 # model
 MODEL_SRC=
 
-MODEL_SRC+= robot_mpc_model/robot_mpc_impl_dae_fun.c
-MODEL_SRC+= robot_mpc_model/robot_mpc_impl_dae_fun_jac_x_xdot_z.c
-MODEL_SRC+= robot_mpc_model/robot_mpc_impl_dae_fun_jac_x_xdot_u_z.c
-MODEL_SRC+= robot_mpc_model/robot_mpc_impl_dae_fun_jac_x_xdot_u.c
-MODEL_SRC+= robot_mpc_model/robot_mpc_impl_dae_jac_x_xdot_u_z.c
+MODEL_SRC+= robot_mpc_predicted_traj_model/robot_mpc_predicted_traj_impl_dae_fun.c
+MODEL_SRC+= robot_mpc_predicted_traj_model/robot_mpc_predicted_traj_impl_dae_fun_jac_x_xdot_z.c
+MODEL_SRC+= robot_mpc_predicted_traj_model/robot_mpc_predicted_traj_impl_dae_fun_jac_x_xdot_u_z.c
+MODEL_SRC+= robot_mpc_predicted_traj_model/robot_mpc_predicted_traj_impl_dae_fun_jac_x_xdot_u.c
+MODEL_SRC+= robot_mpc_predicted_traj_model/robot_mpc_predicted_traj_impl_dae_jac_x_xdot_u_z.c
 
 MODEL_OBJ := $(MODEL_SRC:.c=.o)
 # optimal control problem - mostly CasADi exports
@@ -49,19 +49,19 @@ OCP_SRC=
 
 
 
-OCP_SRC+= acados_solver_robot_mpc.c
+OCP_SRC+= acados_solver_robot_mpc_predicted_traj.c
 
 OCP_OBJ := $(OCP_SRC:.c=.o)
 # for sim solver
-SIM_SRC= acados_sim_solver_robot_mpc.c
+SIM_SRC= acados_sim_solver_robot_mpc_predicted_traj.c
 SIM_OBJ := $(SIM_SRC:.c=.o)
 
 # for target example_sim
-EX_SIM_SRC= main_sim_robot_mpc.c
+EX_SIM_SRC= main_sim_robot_mpc_predicted_traj.c
 EX_SIM_OBJ := $(EX_SIM_SRC:.c=.o)
 EX_SIM_EXE := $(EX_SIM_SRC:.c=)
 # for target example
-EX_SRC= main_robot_mpc.c
+EX_SRC= main_robot_mpc_predicted_traj.c
 EX_OBJ := $(EX_SRC:.c=.o)
 EX_EXE := $(EX_SRC:.c=)
 
@@ -103,8 +103,8 @@ LDLIBS+= -lm
 LDLIBS+= 
 
 # libraries
-LIBACADOS_SOLVER=libacados_solver_robot_mpc.so
-LIBACADOS_OCP_SOLVER=libacados_ocp_solver_robot_mpc.so
+LIBACADOS_SOLVER=libacados_solver_robot_mpc_predicted_traj.so
+LIBACADOS_OCP_SOLVER=libacados_ocp_solver_robot_mpc_predicted_traj.so
 LIBACADOS_SIM_SOLVER=lib$(SIM_SRC:.c=.so)
 
 # virtual targets
@@ -155,7 +155,7 @@ ocp_cython: ocp_cython_o
 	-o acados_ocp_solver_pyx.so \
 	-Wl,-rpath=$(LIB_PATH) \
 	acados_ocp_solver_pyx.o \
-	$(abspath .)/libacados_ocp_solver_robot_mpc.so \
+	$(abspath .)/libacados_ocp_solver_robot_mpc_predicted_traj.so \
 	$(LDFLAGS) $(LDLIBS)
 
 
@@ -184,7 +184,7 @@ sim_cython: sim_cython_o
 	-o acados_sim_solver_pyx.so \
 	-Wl,-rpath=$(LIB_PATH) \
 	acados_sim_solver_pyx.o \
-	$(abspath .)/libacados_sim_solver_robot_mpc.so \
+	$(abspath .)/libacados_sim_solver_robot_mpc_predicted_traj.so \
 	$(LDFLAGS) $(LDLIBS)
 
 clean:
@@ -196,13 +196,13 @@ clean_ocp_shared_lib:
 	$(RM) $(OCP_OBJ)
 
 clean_ocp_cython:
-	$(RM) libacados_ocp_solver_robot_mpc.so
-	$(RM) acados_solver_robot_mpc.o
+	$(RM) libacados_ocp_solver_robot_mpc_predicted_traj.so
+	$(RM) acados_solver_robot_mpc_predicted_traj.o
 	$(RM) acados_ocp_solver_pyx.so
 	$(RM) acados_ocp_solver_pyx.o
 
 clean_sim_cython:
-	$(RM) libacados_sim_solver_robot_mpc.so
-	$(RM) acados_sim_solver_robot_mpc.o
+	$(RM) libacados_sim_solver_robot_mpc_predicted_traj.so
+	$(RM) acados_sim_solver_robot_mpc_predicted_traj.o
 	$(RM) acados_sim_solver_pyx.so
 	$(RM) acados_sim_solver_pyx.o

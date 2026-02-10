@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.o"
+  "CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.o.d"
   "CMakeFiles/spg.dir/src/SPGSimulator.cpp.o"
   "CMakeFiles/spg.dir/src/SPGSimulator.cpp.o.d"
   "CMakeFiles/spg.dir/src/functions/rot.cpp.o"
@@ -7,6 +9,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/spg.dir/src/functions/sign.cpp.o.d"
   "CMakeFiles/spg.dir/src/spg/Init.cpp.o"
   "CMakeFiles/spg.dir/src/spg/Init.cpp.o.d"
+  "CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.o"
+  "CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.o.d"
   "CMakeFiles/spg.dir/src/spg/setpoint/BalanceXY.cpp.o"
   "CMakeFiles/spg.dir/src/spg/setpoint/BalanceXY.cpp.o.d"
   "CMakeFiles/spg.dir/src/spg/setpoint/CombineSegmentData.cpp.o"

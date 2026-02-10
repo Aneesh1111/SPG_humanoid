@@ -69,10 +69,24 @@ include CMakeFiles/spg.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/spg.dir/flags.make
 
+CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.o: CMakeFiles/spg.dir/flags.make
+CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.o: /home/robocup/Downloads/spg_cmake/src/MPCObstacleAvoidingSimulator.cpp
+CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.o -MF CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.o.d -o CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.o -c /home/robocup/Downloads/spg_cmake/src/MPCObstacleAvoidingSimulator.cpp
+
+CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/robocup/Downloads/spg_cmake/src/MPCObstacleAvoidingSimulator.cpp > CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.i
+
+CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/robocup/Downloads/spg_cmake/src/MPCObstacleAvoidingSimulator.cpp -o CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.s
+
 CMakeFiles/spg.dir/src/SPGSimulator.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/SPGSimulator.cpp.o: /home/robocup/Downloads/spg_cmake/src/SPGSimulator.cpp
 CMakeFiles/spg.dir/src/SPGSimulator.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/spg.dir/src/SPGSimulator.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/spg.dir/src/SPGSimulator.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/SPGSimulator.cpp.o -MF CMakeFiles/spg.dir/src/SPGSimulator.cpp.o.d -o CMakeFiles/spg.dir/src/SPGSimulator.cpp.o -c /home/robocup/Downloads/spg_cmake/src/SPGSimulator.cpp
 
 CMakeFiles/spg.dir/src/SPGSimulator.cpp.i: cmake_force
@@ -86,7 +100,7 @@ CMakeFiles/spg.dir/src/SPGSimulator.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/functions/rot.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/functions/rot.cpp.o: /home/robocup/Downloads/spg_cmake/src/functions/rot.cpp
 CMakeFiles/spg.dir/src/functions/rot.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/spg.dir/src/functions/rot.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/spg.dir/src/functions/rot.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/functions/rot.cpp.o -MF CMakeFiles/spg.dir/src/functions/rot.cpp.o.d -o CMakeFiles/spg.dir/src/functions/rot.cpp.o -c /home/robocup/Downloads/spg_cmake/src/functions/rot.cpp
 
 CMakeFiles/spg.dir/src/functions/rot.cpp.i: cmake_force
@@ -100,7 +114,7 @@ CMakeFiles/spg.dir/src/functions/rot.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/functions/sign.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/functions/sign.cpp.o: /home/robocup/Downloads/spg_cmake/src/functions/sign.cpp
 CMakeFiles/spg.dir/src/functions/sign.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/spg.dir/src/functions/sign.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/spg.dir/src/functions/sign.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/functions/sign.cpp.o -MF CMakeFiles/spg.dir/src/functions/sign.cpp.o.d -o CMakeFiles/spg.dir/src/functions/sign.cpp.o -c /home/robocup/Downloads/spg_cmake/src/functions/sign.cpp
 
 CMakeFiles/spg.dir/src/functions/sign.cpp.i: cmake_force
@@ -114,7 +128,7 @@ CMakeFiles/spg.dir/src/functions/sign.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/Init.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/Init.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/Init.cpp
 CMakeFiles/spg.dir/src/spg/Init.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/spg.dir/src/spg/Init.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/spg.dir/src/spg/Init.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/Init.cpp.o -MF CMakeFiles/spg.dir/src/spg/Init.cpp.o.d -o CMakeFiles/spg.dir/src/spg/Init.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/Init.cpp
 
 CMakeFiles/spg.dir/src/spg/Init.cpp.i: cmake_force
@@ -125,10 +139,24 @@ CMakeFiles/spg.dir/src/spg/Init.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/spg.dir/src/spg/Init.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/robocup/Downloads/spg_cmake/src/spg/Init.cpp -o CMakeFiles/spg.dir/src/spg/Init.cpp.s
 
+CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.o: CMakeFiles/spg.dir/flags.make
+CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp
+CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.o -MF CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.o.d -o CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp
+
+CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/robocup/Downloads/spg_cmake/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp > CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.i
+
+CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/robocup/Downloads/spg_cmake/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp -o CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.s
+
 CMakeFiles/spg.dir/src/spg/setpoint/BalanceXY.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/setpoint/BalanceXY.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/setpoint/BalanceXY.cpp
 CMakeFiles/spg.dir/src/spg/setpoint/BalanceXY.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/BalanceXY.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/BalanceXY.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/setpoint/BalanceXY.cpp.o -MF CMakeFiles/spg.dir/src/spg/setpoint/BalanceXY.cpp.o.d -o CMakeFiles/spg.dir/src/spg/setpoint/BalanceXY.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/setpoint/BalanceXY.cpp
 
 CMakeFiles/spg.dir/src/spg/setpoint/BalanceXY.cpp.i: cmake_force
@@ -142,7 +170,7 @@ CMakeFiles/spg.dir/src/spg/setpoint/BalanceXY.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/setpoint/CombineSegmentData.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/setpoint/CombineSegmentData.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/setpoint/CombineSegmentData.cpp
 CMakeFiles/spg.dir/src/spg/setpoint/CombineSegmentData.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/CombineSegmentData.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/CombineSegmentData.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/setpoint/CombineSegmentData.cpp.o -MF CMakeFiles/spg.dir/src/spg/setpoint/CombineSegmentData.cpp.o.d -o CMakeFiles/spg.dir/src/spg/setpoint/CombineSegmentData.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/setpoint/CombineSegmentData.cpp
 
 CMakeFiles/spg.dir/src/spg/setpoint/CombineSegmentData.cpp.i: cmake_force
@@ -156,7 +184,7 @@ CMakeFiles/spg.dir/src/spg/setpoint/CombineSegmentData.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/setpoint/ConvertSegment.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/setpoint/ConvertSegment.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/setpoint/ConvertSegment.cpp
 CMakeFiles/spg.dir/src/spg/setpoint/ConvertSegment.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/ConvertSegment.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/ConvertSegment.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/setpoint/ConvertSegment.cpp.o -MF CMakeFiles/spg.dir/src/spg/setpoint/ConvertSegment.cpp.o.d -o CMakeFiles/spg.dir/src/spg/setpoint/ConvertSegment.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/setpoint/ConvertSegment.cpp
 
 CMakeFiles/spg.dir/src/spg/setpoint/ConvertSegment.cpp.i: cmake_force
@@ -170,7 +198,7 @@ CMakeFiles/spg.dir/src/spg/setpoint/ConvertSegment.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/setpoint/GetSegments.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/setpoint/GetSegments.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/setpoint/GetSegments.cpp
 CMakeFiles/spg.dir/src/spg/setpoint/GetSegments.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/GetSegments.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/GetSegments.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/setpoint/GetSegments.cpp.o -MF CMakeFiles/spg.dir/src/spg/setpoint/GetSegments.cpp.o.d -o CMakeFiles/spg.dir/src/spg/setpoint/GetSegments.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/setpoint/GetSegments.cpp
 
 CMakeFiles/spg.dir/src/spg/setpoint/GetSegments.cpp.i: cmake_force
@@ -184,7 +212,7 @@ CMakeFiles/spg.dir/src/spg/setpoint/GetSegments.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/setpoint/HumanoidMPC.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/setpoint/HumanoidMPC.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/setpoint/HumanoidMPC.cpp
 CMakeFiles/spg.dir/src/spg/setpoint/HumanoidMPC.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/HumanoidMPC.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/HumanoidMPC.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/setpoint/HumanoidMPC.cpp.o -MF CMakeFiles/spg.dir/src/spg/setpoint/HumanoidMPC.cpp.o.d -o CMakeFiles/spg.dir/src/spg/setpoint/HumanoidMPC.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/setpoint/HumanoidMPC.cpp
 
 CMakeFiles/spg.dir/src/spg/setpoint/HumanoidMPC.cpp.i: cmake_force
@@ -198,7 +226,7 @@ CMakeFiles/spg.dir/src/spg/setpoint/HumanoidMPC.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferenceMPC.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferenceMPC.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/setpoint/HumanoidReferenceMPC.cpp
 CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferenceMPC.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferenceMPC.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferenceMPC.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferenceMPC.cpp.o -MF CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferenceMPC.cpp.o.d -o CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferenceMPC.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/setpoint/HumanoidReferenceMPC.cpp
 
 CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferenceMPC.cpp.i: cmake_force
@@ -212,7 +240,7 @@ CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferenceMPC.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp
 CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.o -MF CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.o.d -o CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp
 
 CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.i: cmake_force
@@ -226,7 +254,7 @@ CMakeFiles/spg.dir/src/spg/setpoint/HumanoidReferencePredictedTrajMPC.cpp.s: cma
 CMakeFiles/spg.dir/src/spg/setpoint/Set.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/setpoint/Set.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/setpoint/Set.cpp
 CMakeFiles/spg.dir/src/spg/setpoint/Set.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/Set.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/Set.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/setpoint/Set.cpp.o -MF CMakeFiles/spg.dir/src/spg/setpoint/Set.cpp.o.d -o CMakeFiles/spg.dir/src/spg/setpoint/Set.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/setpoint/Set.cpp
 
 CMakeFiles/spg.dir/src/spg/setpoint/Set.cpp.i: cmake_force
@@ -240,7 +268,7 @@ CMakeFiles/spg.dir/src/spg/setpoint/Set.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/setpoint/Setpoint.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/setpoint/Setpoint.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/setpoint/Setpoint.cpp
 CMakeFiles/spg.dir/src/spg/setpoint/Setpoint.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/Setpoint.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/Setpoint.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/setpoint/Setpoint.cpp.o -MF CMakeFiles/spg.dir/src/spg/setpoint/Setpoint.cpp.o.d -o CMakeFiles/spg.dir/src/spg/setpoint/Setpoint.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/setpoint/Setpoint.cpp
 
 CMakeFiles/spg.dir/src/spg/setpoint/Setpoint.cpp.i: cmake_force
@@ -254,7 +282,7 @@ CMakeFiles/spg.dir/src/spg/setpoint/Setpoint.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/setpoint/StateCorrection.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/setpoint/StateCorrection.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/setpoint/StateCorrection.cpp
 CMakeFiles/spg.dir/src/spg/setpoint/StateCorrection.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/StateCorrection.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/StateCorrection.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/setpoint/StateCorrection.cpp.o -MF CMakeFiles/spg.dir/src/spg/setpoint/StateCorrection.cpp.o.d -o CMakeFiles/spg.dir/src/spg/setpoint/StateCorrection.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/setpoint/StateCorrection.cpp
 
 CMakeFiles/spg.dir/src/spg/setpoint/StateCorrection.cpp.i: cmake_force
@@ -268,7 +296,7 @@ CMakeFiles/spg.dir/src/spg/setpoint/StateCorrection.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/setpoint/Traj1.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/setpoint/Traj1.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/setpoint/Traj1.cpp
 CMakeFiles/spg.dir/src/spg/setpoint/Traj1.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/Traj1.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/Traj1.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/setpoint/Traj1.cpp.o -MF CMakeFiles/spg.dir/src/spg/setpoint/Traj1.cpp.o.d -o CMakeFiles/spg.dir/src/spg/setpoint/Traj1.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/setpoint/Traj1.cpp
 
 CMakeFiles/spg.dir/src/spg/setpoint/Traj1.cpp.i: cmake_force
@@ -282,7 +310,7 @@ CMakeFiles/spg.dir/src/spg/setpoint/Traj1.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/setpoint/TrajPredict.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/setpoint/TrajPredict.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/setpoint/TrajPredict.cpp
 CMakeFiles/spg.dir/src/spg/setpoint/TrajPredict.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/TrajPredict.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/TrajPredict.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/setpoint/TrajPredict.cpp.o -MF CMakeFiles/spg.dir/src/spg/setpoint/TrajPredict.cpp.o.d -o CMakeFiles/spg.dir/src/spg/setpoint/TrajPredict.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/setpoint/TrajPredict.cpp
 
 CMakeFiles/spg.dir/src/spg/setpoint/TrajPredict.cpp.i: cmake_force
@@ -296,7 +324,7 @@ CMakeFiles/spg.dir/src/spg/setpoint/TrajPredict.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/setpoint/TrajSegment.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/setpoint/TrajSegment.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/setpoint/TrajSegment.cpp
 CMakeFiles/spg.dir/src/spg/setpoint/TrajSegment.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/TrajSegment.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/TrajSegment.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/setpoint/TrajSegment.cpp.o -MF CMakeFiles/spg.dir/src/spg/setpoint/TrajSegment.cpp.o.d -o CMakeFiles/spg.dir/src/spg/setpoint/TrajSegment.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/setpoint/TrajSegment.cpp
 
 CMakeFiles/spg.dir/src/spg/setpoint/TrajSegment.cpp.i: cmake_force
@@ -310,7 +338,7 @@ CMakeFiles/spg.dir/src/spg/setpoint/TrajSegment.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/setpoint/Wrap.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/setpoint/Wrap.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/setpoint/Wrap.cpp
 CMakeFiles/spg.dir/src/spg/setpoint/Wrap.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_18) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/Wrap.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/spg.dir/src/spg/setpoint/Wrap.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/setpoint/Wrap.cpp.o -MF CMakeFiles/spg.dir/src/spg/setpoint/Wrap.cpp.o.d -o CMakeFiles/spg.dir/src/spg/setpoint/Wrap.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/setpoint/Wrap.cpp
 
 CMakeFiles/spg.dir/src/spg/setpoint/Wrap.cpp.i: cmake_force
@@ -324,7 +352,7 @@ CMakeFiles/spg.dir/src/spg/setpoint/Wrap.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/subtarget/CheckCollisionFree.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/subtarget/CheckCollisionFree.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/subtarget/CheckCollisionFree.cpp
 CMakeFiles/spg.dir/src/spg/subtarget/CheckCollisionFree.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_19) "Building CXX object CMakeFiles/spg.dir/src/spg/subtarget/CheckCollisionFree.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/spg.dir/src/spg/subtarget/CheckCollisionFree.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/subtarget/CheckCollisionFree.cpp.o -MF CMakeFiles/spg.dir/src/spg/subtarget/CheckCollisionFree.cpp.o.d -o CMakeFiles/spg.dir/src/spg/subtarget/CheckCollisionFree.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/subtarget/CheckCollisionFree.cpp
 
 CMakeFiles/spg.dir/src/spg/subtarget/CheckCollisionFree.cpp.i: cmake_force
@@ -338,7 +366,7 @@ CMakeFiles/spg.dir/src/spg/subtarget/CheckCollisionFree.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/subtarget/CheckViolation.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/subtarget/CheckViolation.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/subtarget/CheckViolation.cpp
 CMakeFiles/spg.dir/src/spg/subtarget/CheckViolation.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_20) "Building CXX object CMakeFiles/spg.dir/src/spg/subtarget/CheckViolation.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object CMakeFiles/spg.dir/src/spg/subtarget/CheckViolation.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/subtarget/CheckViolation.cpp.o -MF CMakeFiles/spg.dir/src/spg/subtarget/CheckViolation.cpp.o.d -o CMakeFiles/spg.dir/src/spg/subtarget/CheckViolation.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/subtarget/CheckViolation.cpp
 
 CMakeFiles/spg.dir/src/spg/subtarget/CheckViolation.cpp.i: cmake_force
@@ -352,7 +380,7 @@ CMakeFiles/spg.dir/src/spg/subtarget/CheckViolation.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/subtarget/Subtarget.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/subtarget/Subtarget.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/subtarget/Subtarget.cpp
 CMakeFiles/spg.dir/src/spg/subtarget/Subtarget.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_21) "Building CXX object CMakeFiles/spg.dir/src/spg/subtarget/Subtarget.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object CMakeFiles/spg.dir/src/spg/subtarget/Subtarget.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/subtarget/Subtarget.cpp.o -MF CMakeFiles/spg.dir/src/spg/subtarget/Subtarget.cpp.o.d -o CMakeFiles/spg.dir/src/spg/subtarget/Subtarget.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/subtarget/Subtarget.cpp
 
 CMakeFiles/spg.dir/src/spg/subtarget/Subtarget.cpp.i: cmake_force
@@ -366,7 +394,7 @@ CMakeFiles/spg.dir/src/spg/subtarget/Subtarget.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/subtarget/SubtargetSet.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/subtarget/SubtargetSet.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/subtarget/SubtargetSet.cpp
 CMakeFiles/spg.dir/src/spg/subtarget/SubtargetSet.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_22) "Building CXX object CMakeFiles/spg.dir/src/spg/subtarget/SubtargetSet.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object CMakeFiles/spg.dir/src/spg/subtarget/SubtargetSet.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/subtarget/SubtargetSet.cpp.o -MF CMakeFiles/spg.dir/src/spg/subtarget/SubtargetSet.cpp.o.d -o CMakeFiles/spg.dir/src/spg/subtarget/SubtargetSet.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/subtarget/SubtargetSet.cpp
 
 CMakeFiles/spg.dir/src/spg/subtarget/SubtargetSet.cpp.i: cmake_force
@@ -380,7 +408,7 @@ CMakeFiles/spg.dir/src/spg/subtarget/SubtargetSet.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/subtarget/angle/AngleUtils.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/subtarget/angle/AngleUtils.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/subtarget/angle/AngleUtils.cpp
 CMakeFiles/spg.dir/src/spg/subtarget/angle/AngleUtils.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_23) "Building CXX object CMakeFiles/spg.dir/src/spg/subtarget/angle/AngleUtils.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/spg.dir/src/spg/subtarget/angle/AngleUtils.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/subtarget/angle/AngleUtils.cpp.o -MF CMakeFiles/spg.dir/src/spg/subtarget/angle/AngleUtils.cpp.o.d -o CMakeFiles/spg.dir/src/spg/subtarget/angle/AngleUtils.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/subtarget/angle/AngleUtils.cpp
 
 CMakeFiles/spg.dir/src/spg/subtarget/angle/AngleUtils.cpp.i: cmake_force
@@ -394,7 +422,7 @@ CMakeFiles/spg.dir/src/spg/subtarget/angle/AngleUtils.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/subtarget/replan/ReplanUtils.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/subtarget/replan/ReplanUtils.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/subtarget/replan/ReplanUtils.cpp
 CMakeFiles/spg.dir/src/spg/subtarget/replan/ReplanUtils.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_24) "Building CXX object CMakeFiles/spg.dir/src/spg/subtarget/replan/ReplanUtils.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/spg.dir/src/spg/subtarget/replan/ReplanUtils.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/subtarget/replan/ReplanUtils.cpp.o -MF CMakeFiles/spg.dir/src/spg/subtarget/replan/ReplanUtils.cpp.o.d -o CMakeFiles/spg.dir/src/spg/subtarget/replan/ReplanUtils.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/subtarget/replan/ReplanUtils.cpp
 
 CMakeFiles/spg.dir/src/spg/subtarget/replan/ReplanUtils.cpp.i: cmake_force
@@ -408,7 +436,7 @@ CMakeFiles/spg.dir/src/spg/subtarget/replan/ReplanUtils.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/subtarget/replan/search/BesideObstacle.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/subtarget/replan/search/BesideObstacle.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/subtarget/replan/search/BesideObstacle.cpp
 CMakeFiles/spg.dir/src/spg/subtarget/replan/search/BesideObstacle.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_25) "Building CXX object CMakeFiles/spg.dir/src/spg/subtarget/replan/search/BesideObstacle.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/spg.dir/src/spg/subtarget/replan/search/BesideObstacle.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/subtarget/replan/search/BesideObstacle.cpp.o -MF CMakeFiles/spg.dir/src/spg/subtarget/replan/search/BesideObstacle.cpp.o.d -o CMakeFiles/spg.dir/src/spg/subtarget/replan/search/BesideObstacle.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/subtarget/replan/search/BesideObstacle.cpp
 
 CMakeFiles/spg.dir/src/spg/subtarget/replan/search/BesideObstacle.cpp.i: cmake_force
@@ -422,7 +450,7 @@ CMakeFiles/spg.dir/src/spg/subtarget/replan/search/BesideObstacle.cpp.s: cmake_f
 CMakeFiles/spg.dir/src/spg/subtarget/replan/search/Random.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/subtarget/replan/search/Random.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/subtarget/replan/search/Random.cpp
 CMakeFiles/spg.dir/src/spg/subtarget/replan/search/Random.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/spg.dir/src/spg/subtarget/replan/search/Random.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/spg.dir/src/spg/subtarget/replan/search/Random.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/subtarget/replan/search/Random.cpp.o -MF CMakeFiles/spg.dir/src/spg/subtarget/replan/search/Random.cpp.o.d -o CMakeFiles/spg.dir/src/spg/subtarget/replan/search/Random.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/subtarget/replan/search/Random.cpp
 
 CMakeFiles/spg.dir/src/spg/subtarget/replan/search/Random.cpp.i: cmake_force
@@ -436,7 +464,7 @@ CMakeFiles/spg.dir/src/spg/subtarget/replan/search/Random.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/target/AdjustTo3mRule.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/target/AdjustTo3mRule.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/target/AdjustTo3mRule.cpp
 CMakeFiles/spg.dir/src/spg/target/AdjustTo3mRule.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/spg.dir/src/spg/target/AdjustTo3mRule.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/spg.dir/src/spg/target/AdjustTo3mRule.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/target/AdjustTo3mRule.cpp.o -MF CMakeFiles/spg.dir/src/spg/target/AdjustTo3mRule.cpp.o.d -o CMakeFiles/spg.dir/src/spg/target/AdjustTo3mRule.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/target/AdjustTo3mRule.cpp
 
 CMakeFiles/spg.dir/src/spg/target/AdjustTo3mRule.cpp.i: cmake_force
@@ -450,7 +478,7 @@ CMakeFiles/spg.dir/src/spg/target/AdjustTo3mRule.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/target/AdjustToField.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/target/AdjustToField.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/target/AdjustToField.cpp
 CMakeFiles/spg.dir/src/spg/target/AdjustToField.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/spg.dir/src/spg/target/AdjustToField.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/spg.dir/src/spg/target/AdjustToField.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/target/AdjustToField.cpp.o -MF CMakeFiles/spg.dir/src/spg/target/AdjustToField.cpp.o.d -o CMakeFiles/spg.dir/src/spg/target/AdjustToField.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/target/AdjustToField.cpp
 
 CMakeFiles/spg.dir/src/spg/target/AdjustToField.cpp.i: cmake_force
@@ -464,7 +492,7 @@ CMakeFiles/spg.dir/src/spg/target/AdjustToField.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/target/AdjustToGoalArea.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/target/AdjustToGoalArea.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/target/AdjustToGoalArea.cpp
 CMakeFiles/spg.dir/src/spg/target/AdjustToGoalArea.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/spg.dir/src/spg/target/AdjustToGoalArea.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/spg.dir/src/spg/target/AdjustToGoalArea.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/target/AdjustToGoalArea.cpp.o -MF CMakeFiles/spg.dir/src/spg/target/AdjustToGoalArea.cpp.o.d -o CMakeFiles/spg.dir/src/spg/target/AdjustToGoalArea.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/target/AdjustToGoalArea.cpp
 
 CMakeFiles/spg.dir/src/spg/target/AdjustToGoalArea.cpp.i: cmake_force
@@ -478,7 +506,7 @@ CMakeFiles/spg.dir/src/spg/target/AdjustToGoalArea.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/target/AdjustToObstacles.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/target/AdjustToObstacles.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/target/AdjustToObstacles.cpp
 CMakeFiles/spg.dir/src/spg/target/AdjustToObstacles.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/spg.dir/src/spg/target/AdjustToObstacles.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/spg.dir/src/spg/target/AdjustToObstacles.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/target/AdjustToObstacles.cpp.o -MF CMakeFiles/spg.dir/src/spg/target/AdjustToObstacles.cpp.o.d -o CMakeFiles/spg.dir/src/spg/target/AdjustToObstacles.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/target/AdjustToObstacles.cpp
 
 CMakeFiles/spg.dir/src/spg/target/AdjustToObstacles.cpp.i: cmake_force
@@ -492,7 +520,7 @@ CMakeFiles/spg.dir/src/spg/target/AdjustToObstacles.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/target/AdjustToPenaltyArea.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/target/AdjustToPenaltyArea.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/target/AdjustToPenaltyArea.cpp
 CMakeFiles/spg.dir/src/spg/target/AdjustToPenaltyArea.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/spg.dir/src/spg/target/AdjustToPenaltyArea.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/spg.dir/src/spg/target/AdjustToPenaltyArea.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/target/AdjustToPenaltyArea.cpp.o -MF CMakeFiles/spg.dir/src/spg/target/AdjustToPenaltyArea.cpp.o.d -o CMakeFiles/spg.dir/src/spg/target/AdjustToPenaltyArea.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/target/AdjustToPenaltyArea.cpp
 
 CMakeFiles/spg.dir/src/spg/target/AdjustToPenaltyArea.cpp.i: cmake_force
@@ -506,7 +534,7 @@ CMakeFiles/spg.dir/src/spg/target/AdjustToPenaltyArea.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/target/Target.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/target/Target.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/target/Target.cpp
 CMakeFiles/spg.dir/src/spg/target/Target.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/spg.dir/src/spg/target/Target.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/spg.dir/src/spg/target/Target.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/target/Target.cpp.o -MF CMakeFiles/spg.dir/src/spg/target/Target.cpp.o.d -o CMakeFiles/spg.dir/src/spg/target/Target.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/target/Target.cpp
 
 CMakeFiles/spg.dir/src/spg/target/Target.cpp.i: cmake_force
@@ -520,7 +548,7 @@ CMakeFiles/spg.dir/src/spg/target/Target.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/spg/target/TargetSet.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/spg/target/TargetSet.cpp.o: /home/robocup/Downloads/spg_cmake/src/spg/target/TargetSet.cpp
 CMakeFiles/spg.dir/src/spg/target/TargetSet.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/spg.dir/src/spg/target/TargetSet.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Building CXX object CMakeFiles/spg.dir/src/spg/target/TargetSet.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/spg/target/TargetSet.cpp.o -MF CMakeFiles/spg.dir/src/spg/target/TargetSet.cpp.o.d -o CMakeFiles/spg.dir/src/spg/target/TargetSet.cpp.o -c /home/robocup/Downloads/spg_cmake/src/spg/target/TargetSet.cpp
 
 CMakeFiles/spg.dir/src/spg/target/TargetSet.cpp.i: cmake_force
@@ -534,7 +562,7 @@ CMakeFiles/spg.dir/src/spg/target/TargetSet.cpp.s: cmake_force
 CMakeFiles/spg.dir/src/visualization/SimulatorVisualizer.cpp.o: CMakeFiles/spg.dir/flags.make
 CMakeFiles/spg.dir/src/visualization/SimulatorVisualizer.cpp.o: /home/robocup/Downloads/spg_cmake/src/visualization/SimulatorVisualizer.cpp
 CMakeFiles/spg.dir/src/visualization/SimulatorVisualizer.cpp.o: CMakeFiles/spg.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/spg.dir/src/visualization/SimulatorVisualizer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_36) "Building CXX object CMakeFiles/spg.dir/src/visualization/SimulatorVisualizer.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/spg.dir/src/visualization/SimulatorVisualizer.cpp.o -MF CMakeFiles/spg.dir/src/visualization/SimulatorVisualizer.cpp.o.d -o CMakeFiles/spg.dir/src/visualization/SimulatorVisualizer.cpp.o -c /home/robocup/Downloads/spg_cmake/src/visualization/SimulatorVisualizer.cpp
 
 CMakeFiles/spg.dir/src/visualization/SimulatorVisualizer.cpp.i: cmake_force
@@ -547,10 +575,12 @@ CMakeFiles/spg.dir/src/visualization/SimulatorVisualizer.cpp.s: cmake_force
 
 # Object files for target spg
 spg_OBJECTS = \
+"CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.o" \
 "CMakeFiles/spg.dir/src/SPGSimulator.cpp.o" \
 "CMakeFiles/spg.dir/src/functions/rot.cpp.o" \
 "CMakeFiles/spg.dir/src/functions/sign.cpp.o" \
 "CMakeFiles/spg.dir/src/spg/Init.cpp.o" \
+"CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.o" \
 "CMakeFiles/spg.dir/src/spg/setpoint/BalanceXY.cpp.o" \
 "CMakeFiles/spg.dir/src/spg/setpoint/CombineSegmentData.cpp.o" \
 "CMakeFiles/spg.dir/src/spg/setpoint/ConvertSegment.cpp.o" \
@@ -585,10 +615,12 @@ spg_OBJECTS = \
 # External object files for target spg
 spg_EXTERNAL_OBJECTS =
 
+libspg.a: CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.o
 libspg.a: CMakeFiles/spg.dir/src/SPGSimulator.cpp.o
 libspg.a: CMakeFiles/spg.dir/src/functions/rot.cpp.o
 libspg.a: CMakeFiles/spg.dir/src/functions/sign.cpp.o
 libspg.a: CMakeFiles/spg.dir/src/spg/Init.cpp.o
+libspg.a: CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.o
 libspg.a: CMakeFiles/spg.dir/src/spg/setpoint/BalanceXY.cpp.o
 libspg.a: CMakeFiles/spg.dir/src/spg/setpoint/CombineSegmentData.cpp.o
 libspg.a: CMakeFiles/spg.dir/src/spg/setpoint/ConvertSegment.cpp.o
@@ -621,7 +653,7 @@ libspg.a: CMakeFiles/spg.dir/src/spg/target/TargetSet.cpp.o
 libspg.a: CMakeFiles/spg.dir/src/visualization/SimulatorVisualizer.cpp.o
 libspg.a: CMakeFiles/spg.dir/build.make
 libspg.a: CMakeFiles/spg.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_35) "Linking CXX static library libspg.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/robocup/Downloads/spg_cmake/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_37) "Linking CXX static library libspg.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/spg.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/spg.dir/link.txt --verbose=$(VERBOSE)
 

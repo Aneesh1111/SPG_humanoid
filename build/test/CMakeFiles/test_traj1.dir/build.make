@@ -97,6 +97,7 @@ test/test_traj1: lib/libgtest_main.a
 test/test_traj1: /usr/local/lib/libqpOASES.a
 test/test_traj1: /home/robocup/Downloads/spg_cmake/acados/lib/libacados.so
 test/test_traj1: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_mpc.so
+test/test_traj1: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_obstacle_mpc.so
 test/test_traj1: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_mpc_predicted_traj.so
 test/test_traj1: lib/libgtest.a
 test/test_traj1: test/CMakeFiles/test_traj1.dir/link.txt

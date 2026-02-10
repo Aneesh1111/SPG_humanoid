@@ -97,6 +97,7 @@ test/test_setpoint_set: lib/libgtest_main.a
 test/test_setpoint_set: /usr/local/lib/libqpOASES.a
 test/test_setpoint_set: /home/robocup/Downloads/spg_cmake/acados/lib/libacados.so
 test/test_setpoint_set: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_mpc.so
+test/test_setpoint_set: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_obstacle_mpc.so
 test/test_setpoint_set: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_mpc_predicted_traj.so
 test/test_setpoint_set: lib/libgtest.a
 test/test_setpoint_set: test/CMakeFiles/test_setpoint_set.dir/link.txt

@@ -47,6 +47,8 @@ if(ACADOS_INCLUDE_DIR AND ACADOS_LIBRARY)
     else()
         message(STATUS "acados generated code not found. Run acados_template to generate solver.")
     endif()
+    
+    # No longer checking build/c_generated_code - all solvers in generated/
 else()
     set(ACADOS_FOUND FALSE)
     message(STATUS "acados not found. HumanoidReferenceMPC will use placeholder code.")
@@ -89,6 +91,7 @@ endif()
 file(GLOB SPG_SRC
     "src/spg/setpoint/*.cpp"
     "src/spg/setpoint/ConvertSegment.cpp"
+    "src/spg/integrated_mpc/*.cpp"
     "src/spg/subtarget/*.cpp"
     "src/spg/subtarget/replan/*.cpp"
     "src/spg/subtarget/replan/search/*.cpp"
@@ -133,6 +136,16 @@ if(ACADOS_FOUND)
         message(WARNING "acados generated solver library not found at ${GENERATED_SOLVER_LIB}")
         message(WARNING "Run: python3 scripts/generate_acados_solver.py")
     endif()
+    
+    # Link obstacle avoidance MPC solver if it exists
+    set(OBSTACLE_MPC_LIB "${CMAKE_SOURCE_DIR}/generated/c_generated_code/libacados_ocp_solver_robot_obstacle_mpc.so")
+    if(EXISTS "${OBSTACLE_MPC_LIB}")
+        target_link_libraries(spg ${OBSTACLE_MPC_LIB})
+        message(STATUS "Linking acados obstacle avoidance MPC solver: ${OBSTACLE_MPC_LIB}")
+    else()
+        message(WARNING "acados obstacle avoidance MPC solver not found at ${OBSTACLE_MPC_LIB}")
+        message(WARNING "Run: python3 scripts/generate_acados_obstacle_mpc.py")
+    endif()
     set(GENERATED_SOLVER_LIB_PRED "${CMAKE_SOURCE_DIR}/generated/c_generated_code/libacados_ocp_solver_robot_mpc_predicted_traj.so")
     if(EXISTS "${GENERATED_SOLVER_LIB_PRED}")
         target_link_libraries(spg ${GENERATED_SOLVER_LIB_PRED})
@@ -171,5 +184,10 @@ target_include_directories(demo_humanoid_mpc PUBLIC external/imgui external/imgu
 add_executable(demo_rotation_test demo/demo_rotation_test.cpp)
 target_link_libraries(demo_rotation_test spg imgui glfw GL GLU)
 target_include_directories(demo_rotation_test PUBLIC external/imgui external/imgui/backends external/implot)
+
+# Add integrated obstacle avoidance MPC demonstration executable
+add_executable(demo_obstacle_mpc demo/demo_obstacle_mpc.cpp)
+target_link_libraries(demo_obstacle_mpc spg imgui glfw GL GLU)
+target_include_directories(demo_obstacle_mpc PUBLIC external/imgui external/imgui/backends external/implot)
 
 add_subdirectory(test)

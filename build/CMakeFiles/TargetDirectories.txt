@@ -3,6 +3,7 @@
 /home/robocup/Downloads/spg_cmake/build/CMakeFiles/demo.dir
 /home/robocup/Downloads/spg_cmake/build/CMakeFiles/demo_humanoid_mpc.dir
 /home/robocup/Downloads/spg_cmake/build/CMakeFiles/demo_rotation_test.dir
+/home/robocup/Downloads/spg_cmake/build/CMakeFiles/demo_obstacle_mpc.dir
 /home/robocup/Downloads/spg_cmake/build/CMakeFiles/test.dir
 /home/robocup/Downloads/spg_cmake/build/CMakeFiles/edit_cache.dir
 /home/robocup/Downloads/spg_cmake/build/CMakeFiles/rebuild_cache.dir

@@ -98,6 +98,7 @@ test/test_move_straight_line: libimgui.a
 test/test_move_straight_line: /usr/local/lib/libqpOASES.a
 test/test_move_straight_line: /home/robocup/Downloads/spg_cmake/acados/lib/libacados.so
 test/test_move_straight_line: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_mpc.so
+test/test_move_straight_line: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_obstacle_mpc.so
 test/test_move_straight_line: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_mpc_predicted_traj.so
 test/test_move_straight_line: lib/libgtest.a
 test/test_move_straight_line: test/CMakeFiles/test_move_straight_line.dir/link.txt

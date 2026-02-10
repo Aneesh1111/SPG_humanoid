@@ -237,6 +237,19 @@ demo_rotation_test/fast:
 .PHONY : demo_rotation_test/fast
 
 #=============================================================================
+# Target rules for targets named demo_obstacle_mpc
+
+# Build rule for target.
+demo_obstacle_mpc: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 demo_obstacle_mpc
+.PHONY : demo_obstacle_mpc
+
+# fast build rule for target.
+demo_obstacle_mpc/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demo_obstacle_mpc.dir/build.make CMakeFiles/demo_obstacle_mpc.dir/build
+.PHONY : demo_obstacle_mpc/fast
+
+#=============================================================================
 # Target rules for targets named test_balanceXY
 
 # Build rule for target.
@@ -454,6 +467,30 @@ demo/demo_humanoid_mpc.s: demo/demo_humanoid_mpc.cpp.s
 demo/demo_humanoid_mpc.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/demo_humanoid_mpc.dir/build.make CMakeFiles/demo_humanoid_mpc.dir/demo/demo_humanoid_mpc.cpp.s
 .PHONY : demo/demo_humanoid_mpc.cpp.s
+
+demo/demo_obstacle_mpc.o: demo/demo_obstacle_mpc.cpp.o
+.PHONY : demo/demo_obstacle_mpc.o
+
+# target to build an object file
+demo/demo_obstacle_mpc.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demo_obstacle_mpc.dir/build.make CMakeFiles/demo_obstacle_mpc.dir/demo/demo_obstacle_mpc.cpp.o
+.PHONY : demo/demo_obstacle_mpc.cpp.o
+
+demo/demo_obstacle_mpc.i: demo/demo_obstacle_mpc.cpp.i
+.PHONY : demo/demo_obstacle_mpc.i
+
+# target to preprocess a source file
+demo/demo_obstacle_mpc.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demo_obstacle_mpc.dir/build.make CMakeFiles/demo_obstacle_mpc.dir/demo/demo_obstacle_mpc.cpp.i
+.PHONY : demo/demo_obstacle_mpc.cpp.i
+
+demo/demo_obstacle_mpc.s: demo/demo_obstacle_mpc.cpp.s
+.PHONY : demo/demo_obstacle_mpc.s
+
+# target to generate assembly for a file
+demo/demo_obstacle_mpc.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/demo_obstacle_mpc.dir/build.make CMakeFiles/demo_obstacle_mpc.dir/demo/demo_obstacle_mpc.cpp.s
+.PHONY : demo/demo_obstacle_mpc.cpp.s
 
 demo/demo_rotation_test.o: demo/demo_rotation_test.cpp.o
 .PHONY : demo/demo_rotation_test.o
@@ -743,6 +780,30 @@ external/implot/implot_items.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/imgui.dir/build.make CMakeFiles/imgui.dir/external/implot/implot_items.cpp.s
 .PHONY : external/implot/implot_items.cpp.s
 
+src/MPCObstacleAvoidingSimulator.o: src/MPCObstacleAvoidingSimulator.cpp.o
+.PHONY : src/MPCObstacleAvoidingSimulator.o
+
+# target to build an object file
+src/MPCObstacleAvoidingSimulator.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.o
+.PHONY : src/MPCObstacleAvoidingSimulator.cpp.o
+
+src/MPCObstacleAvoidingSimulator.i: src/MPCObstacleAvoidingSimulator.cpp.i
+.PHONY : src/MPCObstacleAvoidingSimulator.i
+
+# target to preprocess a source file
+src/MPCObstacleAvoidingSimulator.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.i
+.PHONY : src/MPCObstacleAvoidingSimulator.cpp.i
+
+src/MPCObstacleAvoidingSimulator.s: src/MPCObstacleAvoidingSimulator.cpp.s
+.PHONY : src/MPCObstacleAvoidingSimulator.s
+
+# target to generate assembly for a file
+src/MPCObstacleAvoidingSimulator.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.s
+.PHONY : src/MPCObstacleAvoidingSimulator.cpp.s
+
 src/SPGSimulator.o: src/SPGSimulator.cpp.o
 .PHONY : src/SPGSimulator.o
 
@@ -838,6 +899,30 @@ src/spg/Init.s: src/spg/Init.cpp.s
 src/spg/Init.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/Init.cpp.s
 .PHONY : src/spg/Init.cpp.s
+
+src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.o: src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.o
+.PHONY : src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.o
+
+# target to build an object file
+src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.o
+.PHONY : src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.o
+
+src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.i: src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.i
+.PHONY : src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.i
+
+# target to preprocess a source file
+src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.i
+.PHONY : src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.i
+
+src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.s: src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.s
+.PHONY : src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.s
+
+# target to generate assembly for a file
+src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/spg.dir/build.make CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.s
+.PHONY : src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.s
 
 src/spg/setpoint/BalanceXY.o: src/spg/setpoint/BalanceXY.cpp.o
 .PHONY : src/spg/setpoint/BalanceXY.o
@@ -1574,6 +1659,7 @@ help:
 	@echo "... test"
 	@echo "... demo"
 	@echo "... demo_humanoid_mpc"
+	@echo "... demo_obstacle_mpc"
 	@echo "... demo_rotation_test"
 	@echo "... gmock"
 	@echo "... gmock_main"
@@ -1595,6 +1681,9 @@ help:
 	@echo "... demo/demo_humanoid_mpc.o"
 	@echo "... demo/demo_humanoid_mpc.i"
 	@echo "... demo/demo_humanoid_mpc.s"
+	@echo "... demo/demo_obstacle_mpc.o"
+	@echo "... demo/demo_obstacle_mpc.i"
+	@echo "... demo/demo_obstacle_mpc.s"
 	@echo "... demo/demo_rotation_test.o"
 	@echo "... demo/demo_rotation_test.i"
 	@echo "... demo/demo_rotation_test.s"
@@ -1631,6 +1720,9 @@ help:
 	@echo "... external/implot/implot_items.o"
 	@echo "... external/implot/implot_items.i"
 	@echo "... external/implot/implot_items.s"
+	@echo "... src/MPCObstacleAvoidingSimulator.o"
+	@echo "... src/MPCObstacleAvoidingSimulator.i"
+	@echo "... src/MPCObstacleAvoidingSimulator.s"
 	@echo "... src/SPGSimulator.o"
 	@echo "... src/SPGSimulator.i"
 	@echo "... src/SPGSimulator.s"
@@ -1643,6 +1735,9 @@ help:
 	@echo "... src/spg/Init.o"
 	@echo "... src/spg/Init.i"
 	@echo "... src/spg/Init.s"
+	@echo "... src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.o"
+	@echo "... src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.i"
+	@echo "... src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.s"
 	@echo "... src/spg/setpoint/BalanceXY.o"
 	@echo "... src/spg/setpoint/BalanceXY.i"
 	@echo "... src/spg/setpoint/BalanceXY.s"

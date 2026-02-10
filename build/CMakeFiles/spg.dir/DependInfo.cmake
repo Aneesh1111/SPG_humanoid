@@ -8,10 +8,12 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/home/robocup/Downloads/spg_cmake/src/MPCObstacleAvoidingSimulator.cpp" "CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.o" "gcc" "CMakeFiles/spg.dir/src/MPCObstacleAvoidingSimulator.cpp.o.d"
   "/home/robocup/Downloads/spg_cmake/src/SPGSimulator.cpp" "CMakeFiles/spg.dir/src/SPGSimulator.cpp.o" "gcc" "CMakeFiles/spg.dir/src/SPGSimulator.cpp.o.d"
   "/home/robocup/Downloads/spg_cmake/src/functions/rot.cpp" "CMakeFiles/spg.dir/src/functions/rot.cpp.o" "gcc" "CMakeFiles/spg.dir/src/functions/rot.cpp.o.d"
   "/home/robocup/Downloads/spg_cmake/src/functions/sign.cpp" "CMakeFiles/spg.dir/src/functions/sign.cpp.o" "gcc" "CMakeFiles/spg.dir/src/functions/sign.cpp.o.d"
   "/home/robocup/Downloads/spg_cmake/src/spg/Init.cpp" "CMakeFiles/spg.dir/src/spg/Init.cpp.o" "gcc" "CMakeFiles/spg.dir/src/spg/Init.cpp.o.d"
+  "/home/robocup/Downloads/spg_cmake/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp" "CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.o" "gcc" "CMakeFiles/spg.dir/src/spg/integrated_mpc/HumanoidObstacleAvoidanceMPC.cpp.o.d"
   "/home/robocup/Downloads/spg_cmake/src/spg/setpoint/BalanceXY.cpp" "CMakeFiles/spg.dir/src/spg/setpoint/BalanceXY.cpp.o" "gcc" "CMakeFiles/spg.dir/src/spg/setpoint/BalanceXY.cpp.o.d"
   "/home/robocup/Downloads/spg_cmake/src/spg/setpoint/CombineSegmentData.cpp" "CMakeFiles/spg.dir/src/spg/setpoint/CombineSegmentData.cpp.o" "gcc" "CMakeFiles/spg.dir/src/spg/setpoint/CombineSegmentData.cpp.o.d"
   "/home/robocup/Downloads/spg_cmake/src/spg/setpoint/ConvertSegment.cpp" "CMakeFiles/spg.dir/src/spg/setpoint/ConvertSegment.cpp.o" "gcc" "CMakeFiles/spg.dir/src/spg/setpoint/ConvertSegment.cpp.o.d"

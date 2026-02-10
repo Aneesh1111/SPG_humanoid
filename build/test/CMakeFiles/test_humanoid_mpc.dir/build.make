@@ -97,6 +97,7 @@ test/test_humanoid_mpc: lib/libgtest_main.a
 test/test_humanoid_mpc: /usr/local/lib/libqpOASES.a
 test/test_humanoid_mpc: /home/robocup/Downloads/spg_cmake/acados/lib/libacados.so
 test/test_humanoid_mpc: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_mpc.so
+test/test_humanoid_mpc: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_obstacle_mpc.so
 test/test_humanoid_mpc: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_mpc_predicted_traj.so
 test/test_humanoid_mpc: lib/libgtest.a
 test/test_humanoid_mpc: test/CMakeFiles/test_humanoid_mpc.dir/link.txt

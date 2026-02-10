@@ -98,6 +98,7 @@ test/test_static_obstacles_integration: libimgui.a
 test/test_static_obstacles_integration: /usr/local/lib/libqpOASES.a
 test/test_static_obstacles_integration: /home/robocup/Downloads/spg_cmake/acados/lib/libacados.so
 test/test_static_obstacles_integration: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_mpc.so
+test/test_static_obstacles_integration: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_obstacle_mpc.so
 test/test_static_obstacles_integration: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_mpc_predicted_traj.so
 test/test_static_obstacles_integration: lib/libgtest.a
 test/test_static_obstacles_integration: test/CMakeFiles/test_static_obstacles_integration.dir/link.txt

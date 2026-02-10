@@ -97,6 +97,7 @@ test/test_balanceXY: lib/libgtest_main.a
 test/test_balanceXY: /usr/local/lib/libqpOASES.a
 test/test_balanceXY: /home/robocup/Downloads/spg_cmake/acados/lib/libacados.so
 test/test_balanceXY: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_mpc.so
+test/test_balanceXY: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_obstacle_mpc.so
 test/test_balanceXY: /home/robocup/Downloads/spg_cmake/generated/c_generated_code/libacados_ocp_solver_robot_mpc_predicted_traj.so
 test/test_balanceXY: lib/libgtest.a
 test/test_balanceXY: test/CMakeFiles/test_balanceXY.dir/link.txt

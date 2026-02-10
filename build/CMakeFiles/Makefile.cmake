@@ -88,6 +88,7 @@ set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/demo.dir/DependInfo.cmake"
   "CMakeFiles/demo_humanoid_mpc.dir/DependInfo.cmake"
   "CMakeFiles/demo_rotation_test.dir/DependInfo.cmake"
+  "CMakeFiles/demo_obstacle_mpc.dir/DependInfo.cmake"
   "test/CMakeFiles/test_balanceXY.dir/DependInfo.cmake"
   "test/CMakeFiles/test_getSegments.dir/DependInfo.cmake"
   "test/CMakeFiles/test_getSegments_functions.dir/DependInfo.cmake"

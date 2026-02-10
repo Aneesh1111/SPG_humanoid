@@ -70,28 +70,23 @@ def create_robot_obstacle_model():
     x_dot = ca.SX.sym('x_dot', nx)
     f_impl = x_dot - f_expl
     
-    # Obstacle avoidance constraints using octagonal approximation
-    # For each obstacle, use 8 linear half-plane constraints instead of circle
-    # This makes the problem CONVEX! Much easier to solve.
+    # Obstacle avoidance constraints using CIRCLE constraints
+    # For each obstacle: (px - obs_px)^2 + (py - obs_py)^2 >= obs_r^2
+    # Reformulated as: (px - obs_px)^2 + (py - obs_py)^2 - obs_r^2 >= 0
+    # This is a convex second-order cone constraint that acados handles well.
     h_expr = []
-    n_sides = 8  # Octagon (8 sides)
     
     for i in range(max_obstacles):
         obs_px = p[i * 3 + 0]
         obs_py = p[i * 3 + 1]
-        obs_r = p[i * 3 + 2]  # This is the inscribed circle radius
+        obs_r = p[i * 3 + 2]  # Combined radius (robot + obstacle + margin)
         
-        # For each side of the octagon, create a linear constraint
-        # Each side is defined by: normal · (pos - obs_pos) >= radius
-        for side in range(n_sides):
-            angle = side * 2.0 * np.pi / n_sides
-            nx = np.cos(angle)  # Normal vector x component
-            ny = np.sin(angle)  # Normal vector y component
-            
-            # Linear constraint: nx·(px - obs_px) + ny·(py - obs_py) >= obs_r
-            # Reformulated as: nx·px + ny·py - nx·obs_px - ny·obs_py - obs_r >= 0
-            # Simplified: nx·(px - obs_px) + ny·(py - obs_py) - obs_r >= 0
-            h_expr.append(nx * (px - obs_px) + ny * (py - obs_py) - obs_r)
+        # Distance squared from robot to obstacle
+        dist_sq = (px - obs_px)**2 + (py - obs_py)**2
+        
+        # Constraint: distance^2 >= radius^2
+        # Reformulated as: distance^2 - radius^2 >= 0
+        h_expr.append(dist_sq - obs_r**2)
     
     h = ca.vertcat(*h_expr)
     
@@ -118,7 +113,6 @@ def generate_solver():
     nx = 6
     nu = 3
     n_obs = 10
-    n_sides = 8  # Octagonal approximation
     
     # Create OCP
     ocp = AcadosOcp()
@@ -178,23 +172,23 @@ def generate_solver():
     ocp.constraints.ubx = np.array([vx_max, vy_max, omega_max])
     ocp.constraints.idxbx = np.array([3, 4, 5])
     
-    # Obstacle avoidance constraints (linear half-planes forming octagons)
-    # Each obstacle has n_sides linear constraints
+    # Obstacle avoidance constraints (circular)
+    # Each obstacle has 1 nonlinear constraint
     # h(x,u,p) >= 0
-    n_constraints = n_obs * n_sides  # 10 obstacles × 8 sides = 80 linear constraints
+    n_constraints = n_obs  # 10 obstacles × 1 constraint each = 10 constraints
     ocp.constraints.lh = np.zeros(n_constraints)  # >= 0
     ocp.constraints.uh = np.ones(n_constraints) * 1e6  # no upper limit
     
-    # Optional: Add slack variables for robustness (not strictly needed with linear constraints)
+    # Add slack variables for robustness
     ocp.constraints.lsh = np.zeros(n_constraints)
     ocp.constraints.ush = np.ones(n_constraints) * 1e6
     ocp.constraints.idxsh = np.arange(n_constraints)
     
-    # Smaller penalties since constraints are now convex (easier to satisfy)
-    ocp.cost.zl = 10.0 * np.ones(n_constraints)
-    ocp.cost.zu = 10.0 * np.ones(n_constraints)
-    ocp.cost.Zl = 10.0 * np.ones(n_constraints)
-    ocp.cost.Zu = 10.0 * np.ones(n_constraints)
+    # High penalties for violating obstacle constraints
+    ocp.cost.zl = 1000.0 * np.ones(n_constraints)
+    ocp.cost.zu = 1000.0 * np.ones(n_constraints)
+    ocp.cost.Zl = 1000.0 * np.ones(n_constraints)
+    ocp.cost.Zu = 1000.0 * np.ones(n_constraints)
     
     # Same constraints at terminal stage
     ocp.constraints.lbx_e = np.array([-vx_max, -vy_max, -omega_max])
@@ -202,16 +196,16 @@ def generate_solver():
     ocp.constraints.idxbx_e = np.array([3, 4, 5])
     
     # Solver options
-    # Try FULL_CONDENSING_QPOASES - different QP solver that might handle this better
-    ocp.solver_options.qp_solver = 'FULL_CONDENSING_QPOASES'  # Try qpOASES instead of HPIPM
+    ocp.solver_options.qp_solver = 'PARTIAL_CONDENSING_HPIPM'  # Try qpOASES instead of HPIPM
     ocp.solver_options.hessian_approx = 'GAUSS_NEWTON'
     ocp.solver_options.integrator_type = 'ERK'
     ocp.solver_options.nlp_solver_type = 'SQP'  # Nonlinear solver (handles nonlinear constraints)
-    ocp.solver_options.nlp_solver_max_iter = 10  # Reduce to 10 for real-time
-    ocp.solver_options.qp_solver_iter_max = 50  # 50 QP iterations max
-    ocp.solver_options.tol = 1e-2  # Relaxed but reasonable tolerance
-    ocp.solver_options.qp_tol = 1e-3  # Reasonable QP tolerance
-    ocp.solver_options.print_level = 1  # Print solver progress
+    ocp.solver_options.nlp_solver_max_iter = 100
+    ocp.solver_options.qp_solver_iter_max = 100
+    ocp.solver_options.tol = 1e-2  # Tighter tolerance
+    ocp.solver_options.qp_tol = 1e-3  # Tighter QP tolerance
+    ocp.solver_options.print_level = 0  # Disable verbose output
+
     
     # Regularization to improve numerical conditioning
     ocp.solver_options.regularize_method = 'PROJECT'

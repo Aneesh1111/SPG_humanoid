@@ -210,6 +210,11 @@ void HumanoidObstacleAvoidanceMPC::setGoalReference(const ObstacleAvoidanceState
 #ifdef HAVE_ACADOS
     if (!capsule_) return;
     
+    // DEBUG: Print what we're setting as goal
+    std::cout << "setGoalReference: target=(" << x_goal.px << "," << x_goal.py 
+              << "," << x_goal.theta << ")" << std::endl;
+
+
     // Goal state (with zero velocities)
     double goal_state[6] = {
         x_goal.px,
@@ -235,6 +240,7 @@ void HumanoidObstacleAvoidanceMPC::setGoalReference(const ObstacleAvoidanceState
         
         ocp_nlp_cost_model_set(capsule_->nlp_config, capsule_->nlp_dims,
                                capsule_->nlp_in, k, "yref", yref);
+        std::cout << "  Stage " << k << " yref set to: [" << yref[0] << "," << yref[1] << "," << yref[2] << "]" << std::endl;
     }
     
     // Terminal reference
@@ -256,7 +262,7 @@ void HumanoidObstacleAvoidanceMPC::updateObstacleConstraints(const std::vector<O
     const int n_obs = std::min(static_cast<int>(obstacles.size()), params_.max_obstacles);
     const int param_size = params_.max_obstacles * 3;  // 3 params per obstacle (px, py, r)
     
-    std::vector<double> obs_params(param_size, 1e6);  // Initialize far away (inactive)
+    std::vector<double> obs_params(param_size, 0.0);  // zero raduis = inactive obstacle
     
     // Pack active obstacles
     for (int i = 0; i < n_obs; ++i) {

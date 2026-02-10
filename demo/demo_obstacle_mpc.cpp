@@ -35,14 +35,14 @@ struct ObstacleConfig {
 struct Config {
     Eigen::Vector3d start_pos = Eigen::Vector3d(0.0, -3.0, 0.0);
     Eigen::Vector3d start_vel = Eigen::Vector3d(0.0, 0.0, 0.0);
-    Eigen::Vector3d target_pos = Eigen::Vector3d(0.0, 3.0, 0.0);
+    Eigen::Vector3d target_pos = Eigen::Vector3d(3.0, 3.0, 0.0);
     
     std::vector<ObstacleConfig> obstacles = {
         // Default obstacles disabled - they block direct path making problem very hard
         // Enable via config file or uncomment for testing
-        // {{-1.0, 0.0}, 0.3, {0.5, 0.0}},  // Left obstacle moving right
-        // {{ 1.0, 0.0}, 0.3, {-0.5, 0.0}}, // Right obstacle moving left
-        // {{ 0.0, 1.5}, 0.25, {0.0, 0.3}}  // Center obstacle moving up
+        {{-1.0, 0.0}, 0.3, {0.5, 0.0}},  // Left obstacle moving right
+        {{ 1.0, 0.0}, 0.3, {-0.5, 0.0}}, // Right obstacle moving left
+        {{ 0.0, 1.5}, 0.25, {0.0, 0.3}}  // Center obstacle moving up
     };
     
     // MPC parameters

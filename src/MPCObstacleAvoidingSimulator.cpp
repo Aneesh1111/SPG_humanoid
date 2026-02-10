@@ -338,12 +338,28 @@ void MPCObstacleAvoidingSimulator::run() {
         std::vector<ObstacleState> obstacles_vis;
         for (size_t i = 0; i < dummy_state.input.obstacles.p.size(); ++i) {
             if (dummy_state.input.obstacles.active[i]) {
-                obstacles_vis.push_back({dummy_state.input.obstacles.p[i], dummy_state.input.obstacles.r[i]});
+                obstacles_vis.push_back({dummy_state.input.obstacles.p[i], dummy_state.input.obstacles.r[i], true});
             }
         }
         BallState ball{{0, 0}, {0, 0}};
         std::vector<Eigen::Vector2d> empty_intercepts;
         std::vector<std::vector<Eigen::Vector2d>> empty_paths;
+        
+        // Debug: Print obstacle info every 50 frames
+        static int viz_debug_ctr = 0;
+        if (viz_debug_ctr++ % 50 == 0) {
+            std::cout << "\n=== Visualization Debug (frame " << step_count_ << ") ===" << std::endl;
+            std::cout << "Obstacles in simulator: " << obstacles_.size() << std::endl;
+            for (size_t i = 0; i < obstacles_.size(); ++i) {
+                std::cout << "  Obs " << i << ": pos=(" << obstacles_[i].px << "," << obstacles_[i].py 
+                          << ") r=" << obstacles_[i].radius << " active=" << obstacles_[i].active << std::endl;
+            }
+            std::cout << "Obstacles sent to visualizer: " << obstacles_vis.size() << std::endl;
+            for (size_t i = 0; i < obstacles_vis.size(); ++i) {
+                std::cout << "  VisObs " << i << ": pos=(" << obstacles_vis[i].pos.x() << "," 
+                          << obstacles_vis[i].pos.y() << ") r=" << obstacles_vis[i].radius << std::endl;
+            }
+        }
         
         visualizer_.render(robot, obstacles_vis, ball, predicted_traj, empty_intercepts, 
                           empty_paths, dummy_state.target.p, dummy_state.input.robot.p, 

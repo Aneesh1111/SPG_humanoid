@@ -19,7 +19,7 @@ Subtarget besideObstacle(SPGState& d, const Subtarget& best) {
             Eigen::Vector2d v2 = pos - d.setpoint.p.head<2>();
             Eigen::Vector2d v3 = v1 * v2.dot(v1) / v1.squaredNorm();
             Eigen::Vector2d v4 = v2 - v3;
-            for (double speed : std::vector<double>{0.0, d.par.vmax_move*0.2, d.par.vmax_move*0.4, d.par.vmax_move*0.6}) {
+            for (double speed : std::vector<double>{0.0, d.par.vmax_move*0.2, d.par.vmax_move*0.4, d.par.vmax_move*0.6, d.par.vmax_move*0.8, d.par.vmax_move}) {
                 Eigen::Vector2d displacement = v4.normalized() * (d.par.robot_radius + obstacle_radius + 0.1 + d.par.margin_replan * std::abs(speed));
                 double obstacle_margin = d.par.robot_radius + obstacle_radius + additional_obstacle_margin;
                 for (int side : {-1, 1}) {

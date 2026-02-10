@@ -91,6 +91,92 @@ def with_mpc_params(
     return cfg
 
 
+def regenerate_acados_solver_with_weights(
+    acados_gen_script: Path,
+    weights: Dict[str, float],
+    horizon: int = 20,
+) -> bool:
+    """
+    Modify generate_acados_solver.py with new weights, run it, return success.
+    
+    Acados weights mapping:
+    - Q_pos (position) 
+    - Q_theta (heading)
+    - Q_vel (velocity)
+    - R_accel (acceleration effort)
+    - Q_term_pos, Q_term_theta, Q_term_vel, Q_term_omega (terminal costs)
+    """
+    # Read the generation script
+    with open(acados_gen_script, 'r') as f:
+        lines = f.readlines()
+    
+    # Find and replace weight lines
+    new_lines = []
+    for line in lines:
+        if line.strip().startswith('N ='):
+            new_lines.append(f"    N = {horizon}\n")
+        elif line.strip().startswith('Q_pos ='):
+            new_lines.append(f"    Q_pos = {weights.get('Q_pos', 15.0)}\n")
+        elif line.strip().startswith('Q_theta ='):
+            new_lines.append(f"    Q_theta = {weights.get('Q_theta', 2.0)}\n")
+        elif line.strip().startswith('Q_vel ='):
+            new_lines.append(f"    Q_vel = {weights.get('Q_vel', 0.5)}\n")
+        elif line.strip().startswith('R_accel ='):
+            new_lines.append(f"    R_accel = {weights.get('R_accel', 0.1)}\n")
+        elif 'Q_term = np.diag' in line:
+            # Terminal cost: [pos_x, pos_y, theta, vx, vy, omega]
+            qtp = weights.get('Q_term_pos', 100.0)
+            qtt = weights.get('Q_term_theta', 10.0)
+            qtv = weights.get('Q_term_vel', 5.0)
+            qto = weights.get('Q_term_omega', 2.0)
+            new_lines.append(f"    Q_term = np.diag([{qtp}, {qtp}, {qtt}, {qtv}, {qtv}, {qto}])\n")
+        else:
+            new_lines.append(line)
+    
+    # Write modified script
+    with open(acados_gen_script, 'w') as f:
+        f.writelines(new_lines)
+    
+    # Run the generation script
+    try:
+        result = subprocess.run(
+            [sys.executable, str(acados_gen_script)],
+            cwd=acados_gen_script.parent,
+            capture_output=True,
+            text=True,
+            timeout=60
+        )
+        if result.returncode != 0:
+            print(f"❌ Acados generation failed: {result.stderr}")
+            return False
+        print("✅ Acados solver generated")
+        return True
+    except Exception as e:
+        print(f"❌ Error running acados generation: {e}")
+        return False
+
+
+def recompile_project(build_dir: Path) -> bool:
+    """Recompile the C++ project after acados solver regeneration."""
+    try:
+        print("🔨 Recompiling project...")
+        result = subprocess.run(
+            ["make", "-j4"],
+            cwd=build_dir,
+            capture_output=True,
+            text=True,
+            timeout=300  # 5 min compile timeout
+        )
+        if result.returncode != 0:
+            print(f"❌ Compilation failed: {result.stderr}")
+            return False
+        print("✅ Compilation successful")
+        return True
+    except Exception as e:
+        print(f"❌ Compilation error: {e}")
+        return False
+
+
 def run_single_simulation(
     build_dir: Path, 
     demo_executable: Path, 
@@ -213,6 +299,54 @@ def run_all_configurations(
 
     return all_results
 
+
+def run_all_configurations_with_acados_weights(
+    build_dir: Path,
+    demo_executable: Path,
+    acados_gen_script: Path,
+    scenario_configs: List[Tuple[str, Dict[str, Any]]],
+    *,
+    acados_weights: Dict[str, float],
+    horizon: int = 20,
+    verbose: bool = False,
+) -> Dict[str, Dict[str, Any]]:
+    """
+    Regenerate acados solver with new weights, recompile, then run all scenarios.
+    
+    acados_weights keys:
+    - Q_pos, Q_theta, Q_vel, R_accel
+    - Q_term_pos, Q_term_theta, Q_term_vel, Q_term_omega
+    """
+    # Step 1: Regenerate acados solver
+    if not regenerate_acados_solver_with_weights(acados_gen_script, acados_weights, horizon):
+        return {}
+    
+    # Step 2: Recompile
+    if not recompile_project(build_dir):
+        return {}
+    
+    # Step 3: Run scenarios (no mpc_weights in config - weights are now baked in)
+    all_results: Dict[str, Dict[str, Any]] = {}
+    for idx, (run_id, base_cfg) in enumerate(scenario_configs):
+        # Add horizon to config for npredict
+        full_cfg = dict(base_cfg)
+        full_cfg["prediction_horizon"] = horizon
+        
+        if not verbose:
+            print(f"[{idx+1}/{len(scenario_configs)}] ", end="")
+        
+        result = run_single_simulation(
+            build_dir=build_dir,
+            demo_executable=demo_executable,
+            config=full_cfg,
+            run_id=run_id,
+            verbose=verbose,
+        )
+        all_results[run_id] = result
+    
+    return all_results
+
+
 def compute_metrics(results: Dict[str, Dict[str, Any]]):
     """
     Returns (avg_sim_time, success_rate, n_success, n_total)
@@ -270,6 +404,60 @@ def make_objective(
 
     return objective
 
+
+def make_acados_objective(
+    *,
+    build_dir: Path,
+    demo_executable: Path,
+    acados_gen_script: Path,
+    scenario_configs,
+    horizon: int,
+    default_weights: Dict[str, float],
+    min_success_rate: float,
+    penalty_time_s: float,
+    verbose: bool = False,
+):
+    """Create objective function that regenerates acados solver for each BO iteration."""
+    def objective(**bo_params) -> float:
+        optimized_subset = {k: float(v) for k, v in bo_params.items()}
+        weights = merge_optimized_into_defaults(default_weights, optimized_subset)
+        
+        print(f"\n{'='*70}")
+        print(f"BO iteration: Testing weights {optimized_subset}")
+        print(f"{'='*70}")
+        
+        results = run_all_configurations_with_acados_weights(
+            build_dir=build_dir,
+            demo_executable=demo_executable,
+            acados_gen_script=acados_gen_script,
+            scenario_configs=scenario_configs,
+            acados_weights=weights,
+            horizon=horizon,
+            verbose=verbose,
+        )
+        
+        if not results:
+            return -1e6
+        
+        avg_time, success_rate, n_success, n_total = compute_metrics(results)
+        
+        if not np.isfinite(avg_time):
+            score = -1e6
+        else:
+            score = -avg_time
+            if success_rate < min_success_rate:
+                score -= (min_success_rate - success_rate) * penalty_time_s
+        
+        print(
+            f"[BO] avg={avg_time:.3f}s "
+            f"success={n_success}/{n_total} "
+            f"score={score:.4f}"
+        )
+        return float(score)
+    
+    return objective
+
+
 def main() -> int:
     initial_velocities = [
         (0.0, 0.0, 0.0),      # Stationary
@@ -292,17 +480,16 @@ def main() -> int:
 
     start_pos = (0.0, 0.0, 0.0)
 
-    weight_spec = {
-        "q_pos":   {"init": 1.0, "min": 0.1, "max": 10.0},
-        "q_phi":   {"init": 0.1, "min": 0.01, "max": 2.0},
-        "qf_pos":  {"init": 8.0, "min": 1.0, "max": 50.0},
-        "qf_phi":  {"init": 1.0, "min": 0.05, "max": 10.0},
-        "r_vf":    {"init": 0.1, "min": 0.01, "max": 2.0},
-        "r_vs":    {"init": 0.5, "min": 0.01, "max": 5.0},
-        "r_omega": {"init": 0.2, "min": 0.01, "max": 5.0},
-        "s_vf":    {"init": 0.2, "min": 0.01, "max": 5.0},
-        "s_vs":    {"init": 0.8, "min": 0.01, "max": 10.0},
-        "s_omega": {"init": 0.4, "min": 0.01, "max": 10.0},
+    # Acados weight spec (different from qpOASES!)
+    acados_weight_spec = {
+        "Q_pos":         {"init": 15.0, "min": 1.0, "max": 100.0},
+        "Q_theta":       {"init": 2.0,  "min": 0.1, "max": 20.0},
+        "Q_vel":         {"init": 0.5,  "min": 0.01, "max": 10.0},
+        "R_accel":       {"init": 0.1,  "min": 0.01, "max": 5.0},
+        "Q_term_pos":    {"init": 100.0, "min": 10.0, "max": 500.0},
+        "Q_term_theta":  {"init": 10.0, "min": 1.0, "max": 100.0},
+        "Q_term_vel":    {"init": 5.0,  "min": 0.1, "max": 50.0},
+        "Q_term_omega":  {"init": 2.0,  "min": 0.1, "max": 20.0},
     }
 
     configs = generate_scenario_configs(
@@ -316,11 +503,12 @@ def main() -> int:
     for run_id, cfg in configs[:2]:
         print(run_id, cfg)
 
-    # --- Paths (same logic as original script) ---
+    # --- Paths ---
     script_dir = Path(__file__).parent.absolute()
     project_root = script_dir.parent
     build_dir = project_root / "build"
     demo_executable = build_dir / "demo_humanoid_mpc"
+    acados_gen_script = script_dir / "generate_acados_solver.py"
 
     if not build_dir.exists():
         print("❌ Build directory not found. Build first: cd build && cmake .. && make -j4")
@@ -328,39 +516,53 @@ def main() -> int:
     if not demo_executable.exists():
         print("❌ Executable not found. Build first: cd build && make demo_humanoid_mpc -j4")
         return 1
+    if not acados_gen_script.exists():
+        print(f"❌ Acados generation script not found: {acados_gen_script}")
+        return 1
 
-    default_weights = spec_to_weights(weight_spec)
-    # --- Run all scenarios with default weights ---
-    results = run_all_configurations(
+    default_weights = spec_to_weights(acados_weight_spec)
+    
+    # --- Test with default acados weights ---
+    print("\n" + "="*70)
+    print("Testing DEFAULT acados weights")
+    print("="*70)
+    print(json.dumps(default_weights, indent=2))
+    
+    results = run_all_configurations_with_acados_weights(
         build_dir=build_dir,
         demo_executable=demo_executable,
+        acados_gen_script=acados_gen_script,
         scenario_configs=configs,
-        mpc_weights=default_weights,
-        horizon=10,     # use None if you want the C++ default instead
+        acados_weights=default_weights,
+        horizon=20,
         verbose=False,
     )
 
     # --- Save results ---
-    out_file = project_root / "results_default_weights.json"
+    out_file = project_root / "results_acados_default.json"
     with open(out_file, "w") as f:
         json.dump(results, f, indent=2)
 
-    successful = sum(1 for r in results.values() if "simulation_time_s" in r)
-    print(f"\nCompleted {len(results)} runs. Successful: {successful}/{len(results)}")
+    avg_time, success_rate, n_success, n_total = compute_metrics(results)
+    print(f"\nDefault weights: avg={avg_time:.3f}s, success={n_success}/{n_total}")
     print(f"Saved results to: {out_file}")
 
-    # --- BayesOpt ---
-    # Choose which weights to optimize
-    opt_var = ["q_pos", "qf_pos", "r_vf", "r_omega"]  # example subset
+    # --- BayesOpt (WARNING: Each iteration takes ~1-2 minutes!) ---
+    print("\n" + "="*70)
+    print("Starting Bayesian Optimization (SLOW - regen + compile each iter)")
+    print("="*70)
+    
+    # Optimize subset of weights
+    opt_var = ["Q_pos", "Q_term_pos", "R_accel"]  # Start with 3 variables
 
-    # BayesOpt only sees these variables
-    init, pbounds = spec_to_init_and_bounds(weight_spec, opt_var=opt_var)
+    init, pbounds = spec_to_init_and_bounds(acados_weight_spec, opt_var=opt_var)
 
-    objective = make_objective(
+    objective = make_acados_objective(
         build_dir=build_dir,
         demo_executable=demo_executable,
+        acados_gen_script=acados_gen_script,
         scenario_configs=configs,
-        horizon=10,
+        horizon=20,
         default_weights=default_weights,
         min_success_rate=0.8,
         penalty_time_s=120.0,
@@ -373,26 +575,32 @@ def main() -> int:
         verbose=2,
     )
 
-    optimizer.probe(params=init, lazy=True)
-    optimizer.maximize(init_points=5, n_iter=15)
+    # Fewer iterations due to slow regeneration+compilation
+    optimizer.maximize(init_points=3, n_iter=10)
 
     best_subset = optimizer.max["params"]
     best_weights = merge_optimized_into_defaults(default_weights, best_subset)
 
-    print("Best subset:", best_subset)
-    print("Best full weights:", best_weights)
+    print("\n" + "="*70)
+    print("BEST WEIGHTS FOUND:")
+    print("="*70)
+    print(json.dumps(best_weights, indent=2))
 
-    out_file_bo = project_root / "results_bayesopt_best.json"
-    best_results = run_all_configurations(
+    out_file_bo = project_root / "results_acados_best.json"
+    best_results = run_all_configurations_with_acados_weights(
         build_dir=build_dir,
         demo_executable=demo_executable,
+        acados_gen_script=acados_gen_script,
         scenario_configs=configs,
-        mpc_weights=best_weights,
-        horizon=10,
+        acados_weights=best_weights,
+        horizon=20,
         verbose=False,
     )
     with open(out_file_bo, "w") as f:
         json.dump(best_results, f, indent=2)
+    
+    avg_time_best, success_rate_best, n_success_best, n_total_best = compute_metrics(best_results)
+    print(f"\nBest weights: avg={avg_time_best:.3f}s, success={n_success_best}/{n_total_best}")
     print(f"Saved BO best results to: {out_file_bo}")
 
     return 0

@@ -7632,7 +7632,7 @@ CMakeFiles/spg.dir/src/spg/subtarget/CheckCollisionFree.cpp.o: /home/robocup/Dow
   /home/robocup/Downloads/spg_cmake/include/spg/Init.hpp \
   /home/robocup/Downloads/spg_cmake/include/spg/setpoint/ConvertSegment.hpp \
   /home/robocup/Downloads/spg_cmake/include/spg/setpoint/GetSegments.hpp \
-  /home/robocup/Downloads/spg_cmake/include/spg/setpoint/HumanoidReferenceMPC.hpp \
+  /home/robocup/Downloads/spg_cmake/include/spg/setpoint/HumanoidReferencePredictedTrajMPC.hpp \
   /home/robocup/Downloads/spg_cmake/include/spg/setpoint/Segment.hpp \
   /home/robocup/Downloads/spg_cmake/include/spg/setpoint/TrajPredict.hpp \
   /home/robocup/Downloads/spg_cmake/include/spg/setpoint/Wrap.hpp \

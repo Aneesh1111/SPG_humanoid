@@ -1,0 +1,74 @@
+{
+  "vel0_target0": {
+    "simulation_time_s": 2.4,
+    "wall_time_s": 2.50252,
+    "total_steps": 16,
+    "mpc_call_count": 16,
+    "total_mpc_time_ms": 27.4561,
+    "avg_mpc_time_ms": 1.71601,
+    "min_mpc_time_ms": 0.68362,
+    "max_mpc_time_ms": 2.00931,
+    "mpc_frequency_hz": 582.749,
+    "final_position_error_m": 0.00119233,
+    "final_velocity_ms": 0.00895806,
+    "mpc_times_ms": [
+      1.55285,
+      1.62534,
+      1.6918,
+      1.66411,
+      1.63729,
+      1.65127,
+      2.0088,
+      1.98516,
+      1.68869,
+      0.68362,
+      2.00375,
+      2.00931,
+      1.9368,
+      1.96504,
+      1.94474,
+      1.40752
+    ],
+    "run_id": "vel0_target0",
+    "config": {
+      "start_pos": {
+        "x": 0.0,
+        "y": 0.0,
+        "theta": 0.0
+      },
+      "target_pos": {
+        "x": 1.0,
+        "y": 0.0,
+        "theta": 0.0
+      },
+      "initial_velocity": {
+        "vf": 0.0,
+        "vs": 0.0,
+        "omega": 0.0
+      },
+      "prediction_horizon": 20
+    }
+  },
+  "vel0_target1": {
+    "run_id": "vel0_target1",
+    "status": "no_timing_data",
+    "config": {
+      "start_pos": {
+        "x": 0.0,
+        "y": 0.0,
+        "theta": 0.0
+      },
+      "target_pos": {
+        "x": 4.0,
+        "y": 4.0,
+        "theta": 0.0
+      },
+      "initial_velocity": {
+        "vf": 0.0,
+        "vs": 0.0,
+        "omega": 0.0
+      },
+      "prediction_horizon": 20
+    }
+  }
+}

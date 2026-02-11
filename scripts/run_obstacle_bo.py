@@ -539,17 +539,27 @@ def main():
     
     # Define scenarios
     initial_velocities = [
-        (0.0, 0.0, 0.0),  # Starting from rest
-        (0.5, 0.0, 0.0),  # Moving forward
+        (0.0, 0.0, 0.0),      # Stationary
+        (1.0, 0.0, 0.0),      # 1 m/s forward
+        (1.0, 0.0, 1.0),      # 1 m/s forward + rotate
+        (0.0, 0.0, 1.0),      # 1 rad/s rotate
+        (0.5, -0.4, 0.0),     # Diagonal forward-left
     ]
-    
+
     target_positions = [
-        (0.0, 3.0, 0.0),    # Straight ahead
-        (2.0, 3.0, 0.0),    # Diagonal right
-        (-2.0, 3.0, 0.0),   # Diagonal left
+        (1.0, 0.0, 0.0),
+        (4.0, 4.0, 0.0),
+        (-4.0, 0.0, 0.0),
+        (-2.0, 0.0, math.pi / 2),
+        (0.0, -5.0, -math.pi),
+        (0.0, 5.0, math.pi / 2),
+        (-4.0, 6.0, 0.0),
+        (4.0, -6.0, -math.pi / 2),
     ]
+
+    start_pos = (0.0, 0.0, 0.0)
     
-    scenarios = generate_obstacle_scenarios(initial_velocities, target_positions)
+    scenarios = generate_obstacle_scenarios(initial_velocities, target_positions, start_pos)
     
     # Determine which weights to optimize
     opt_var = args.weights if args.weights else list(OBSTACLE_MPC_WEIGHT_SPEC.keys())

@@ -96,7 +96,7 @@
             -2.0
         ],
         "lbx": [
-            -0.8,
+            -0.1,
             -0.3,
             -1.2
         ],
@@ -934,7 +934,7 @@
         "robot_obstacle_mpc_constraints/robot_obstacle_mpc_constr_h_fun_jac_uxt_zt.c",
         "robot_obstacle_mpc_constraints/robot_obstacle_mpc_constr_h_fun.c"
     ],
-    "hash": "64d660ed6a0dceaec69cbea138d4e813",
+    "hash": "00e6523094674eebd7475bad71f8d6fd",
     "model": {
         "con_h_expr": "SX([((sq((px-p_0))+sq((py-p_1)))-sq(p_2)), ((sq((px-p_3))+sq((py-p_4)))-sq(p_5)), ((sq((px-p_6))+sq((py-p_7)))-sq(p_8)), ((sq((px-p_9))+sq((py-p_10)))-sq(p_11)), ((sq((px-p_12))+sq((py-p_13)))-sq(p_14)), ((sq((px-p_15))+sq((py-p_16)))-sq(p_17)), ((sq((px-p_18))+sq((py-p_19)))-sq(p_20)), ((sq((px-p_21))+sq((py-p_22)))-sq(p_23)), ((sq((px-p_24))+sq((py-p_25)))-sq(p_26)), ((sq((px-p_27))+sq((py-p_28)))-sq(p_29))])",
         "con_h_expr_0": [],

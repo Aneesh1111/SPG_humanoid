@@ -767,7 +767,7 @@ void robot_obstacle_mpc_acados_setup_nlp_in(robot_obstacle_mpc_solver_capsule* c
     double* lubx = calloc(2*NBX, sizeof(double));
     double* lbx = lubx;
     double* ubx = lubx + NBX;
-    lbx[0] = -0.8;
+    lbx[0] = -0.1;
     ubx[0] = 0.8;
     lbx[1] = -0.3;
     ubx[1] = 0.3;

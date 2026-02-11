@@ -165,10 +165,11 @@ def generate_solver():
     
     # Velocity limits (only constrain velocity states: vx, vy, omega)
     vx_max = 0.8
+    vx_min = -0.1
     vy_max = 0.3
     omega_max = 1.2
     
-    ocp.constraints.lbx = np.array([-vx_max, -vy_max, -omega_max])
+    ocp.constraints.lbx = np.array([vx_min, -vy_max, -omega_max])
     ocp.constraints.ubx = np.array([vx_max, vy_max, omega_max])
     ocp.constraints.idxbx = np.array([3, 4, 5])
     

@@ -250,7 +250,8 @@ def run_single_obstacle_simulation(
     demo_executable: Path,
     config: Dict,
     run_id: str,
-    verbose: bool = False
+    verbose: bool = False,
+    visualize: bool = False
 ) -> Dict:
     """Run a single obstacle avoidance simulation"""
     
@@ -273,8 +274,12 @@ def run_single_obstacle_simulation(
         if timing_file.exists():
             timing_file.unlink()
         
+        cmd = [str(demo_executable), "--config", str(config_file), "--max-steps", "1000"]
+        if not visualize:
+            cmd.append("--headless")
+        
         result = subprocess.run(
-            [str(demo_executable), "--config", str(config_file), "--headless", "--max-steps", "1000"],
+            cmd,
             cwd=build_dir,
             capture_output=True,
             text=True,
@@ -377,7 +382,8 @@ def run_obstacle_mpc_bo(
     opt_var: List[str],
     n_init: int = 5,
     n_iter: int = 20,
-    output_file: Path = None
+    output_file: Path = None,
+    visualize: bool = False
 ):
     """
     Run Bayesian Optimization for obstacle MPC weights.
@@ -429,7 +435,7 @@ def run_obstacle_mpc_bo(
         for run_id, scenario_config in scenarios:
             config_with_weights = with_mpc_weights(scenario_config, **weights)
             result = run_single_obstacle_simulation(
-                build_dir, demo_executable, config_with_weights, run_id, verbose=False
+                build_dir, demo_executable, config_with_weights, run_id, verbose=False, visualize=visualize
             )
             scenario_results.append(result)
         
@@ -513,6 +519,7 @@ def main():
     parser.add_argument("--iter", type=int, default=20, help="BO iterations")
     parser.add_argument("--output", type=str, default="obstacle_mpc_bo_results.json", help="Output file")
     parser.add_argument("--weights", nargs='+', help="Weights to optimize (default: all)")
+    parser.add_argument("--visualize", action="store_true", help="Enable visualization (default: headless)")
     args = parser.parse_args()
     
     # Setup paths
@@ -559,7 +566,8 @@ def main():
         opt_var=opt_var,
         n_init=args.init,
         n_iter=args.iter,
-        output_file=output_file
+        output_file=output_file,
+        visualize=args.visualize
     )
     
     return 0

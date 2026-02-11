@@ -98,10 +98,10 @@ def create_ocp_solver():
     ocp.solver_options.tf = N * dt
     
     # Cost
-    Q_pos = 30.930924690552136
+    Q_pos = 15.0
     Q_theta = 2.0
     Q_vel = 0.5
-    R_accel = 0.470769587896301
+    R_accel = 0.1
     
     Q = np.diag([Q_pos, Q_pos, Q_theta, Q_vel, Q_vel, Q_vel])
     R = np.diag([R_accel, R_accel, R_accel])
@@ -114,7 +114,7 @@ def create_ocp_solver():
     ocp.cost.yref = np.zeros(ny)
     
     ocp.cost.cost_type_e = 'LINEAR_LS'
-    Q_term = np.diag([81.91038650038539, 81.91038650038539, 10.0, 5.0, 5.0, 2.0])
+    Q_term = np.diag([100.0, 100.0, 10.0, 5.0, 5.0, 2.0])
     ocp.cost.W_e = Q_term
     ocp.cost.Vx_e = np.eye(nx)
     ocp.cost.yref_e = np.zeros(nx)

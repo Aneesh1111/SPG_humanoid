@@ -166,12 +166,20 @@ AcadosMPCReference HumanoidReferenceMPC::buildReference(
     ref.x_ref.resize(params_.horizon + 1);
     ref.u_ref.resize(params_.horizon);
     
-    // FIXED GOAL REFERENCE: Use same goal for all stages k=0,...,N
+    // DYNAMIC HEADING REFERENCE:
+    // When far from goal: track angle toward goal (encourages rotation+forward motion)
+    // When close to goal: track precise final heading
+    const double dx = x_goal.px - x0.px;
+    const double dy = x_goal.py - x0.py;
+    const double dist = std::hypot(dx, dy);
+    const double angle_to_goal = std::atan2(dy, dx);
+    const double ref_theta = (dist > 2.0) ? angle_to_goal : x_goal.theta;
+    
     // Goal is in WORLD FRAME with zero velocities
     std::array<double, 6> goal_state = {
         x_goal.px,     // Position x (world frame)
         x_goal.py,     // Position y (world frame)
-        x_goal.theta,  // Heading (world frame)
+        ref_theta,     // Heading: dynamic based on distance
         0.0,           // Forward velocity = 0 at goal
         0.0,           // Sideways velocity = 0 at goal
         0.0            // Angular velocity = 0 at goal
@@ -188,14 +196,13 @@ AcadosMPCReference HumanoidReferenceMPC::buildReference(
         ref.u_ref[k] = zero_control;
     }
     
-    // Debug: print goal in world frame
+    // Debug: print dynamic heading reference
     static int ref_debug = 0;
     if (ref_debug++ % 50 == 0) {
-        const double dx = x_goal.px - x0.px;
-        const double dy = x_goal.py - x0.py;
-        const double dist = std::hypot(dx, dy);
-        std::cout << "buildReference: goal_world=(" << x_goal.px << "," << x_goal.py 
-                  << "," << x_goal.theta << ") dist=" << dist << "m\n";
+        std::cout << "buildReference: goal=(" << x_goal.px << "," << x_goal.py 
+                  << "," << x_goal.theta << ") dist=" << dist << "m"
+                  << " ref_theta=" << ref_theta << " (tracking " 
+                  << (dist > 2.0 ? "angle_to_goal" : "goal_theta") << ")\n";
     }
     
     return ref;

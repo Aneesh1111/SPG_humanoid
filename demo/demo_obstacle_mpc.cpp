@@ -228,15 +228,38 @@ int main(int argc, char** argv) {
         mpc_params
     );
     
-    // Set obstacles
+    // Set obstacles (matching demo_humanoid_mpc.cpp logic)
     std::vector<Eigen::Vector2d> positions;
     std::vector<double> radii;
     std::vector<Eigen::Vector2d> velocities;
     
-    for (const auto& obs : config.obstacles) {
-        positions.push_back(obs.position);
-        radii.push_back(obs.radius);
-        velocities.push_back(obs.velocity);
+    // Generate obstacles in a line between start and goal (like demo_humanoid_mpc)
+    int nobstacles = 3;
+    Eigen::Vector2d start_2d = config.start_pos.head<2>();
+    Eigen::Vector2d target_2d = config.target_pos.head<2>();
+    
+    std::cout << "Generating obstacles between start and goal..." << std::endl;
+    for (int i = 0; i < nobstacles; ++i) {
+        // Place obstacles in a line between start and goal
+        double t = (i + 1.0) / (nobstacles + 1.0);
+        Eigen::Vector2d obs_pos = (1.0 - t) * start_2d + t * target_2d;
+        
+        // Add some offset to make path more interesting
+        double offset_angle = M_PI / 2.0;
+        double offset_mag = 1.5 * (i % 2 == 0 ? 1 : -1);
+        obs_pos += offset_mag * Eigen::Vector2d(std::cos(offset_angle), std::sin(offset_angle));
+        
+        positions.push_back(obs_pos);
+        radii.push_back(0.35);  // 35cm radius
+        
+        // Small random velocities
+        velocities.push_back(Eigen::Vector2d(
+            0.3 * std::cos(i * 1.5), 
+            0.3 * std::sin(i * 1.5)
+        ));
+        
+        std::cout << "  Obstacle " << i << ": (" << obs_pos.x() << ", " 
+                  << obs_pos.y() << ") r=0.35 m" << std::endl;
     }
     
     simulator.setObstacles(positions, radii, velocities);

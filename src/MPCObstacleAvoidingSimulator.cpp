@@ -17,6 +17,7 @@ MPCObstacleAvoidingSimulator::MPCObstacleAvoidingSimulator(
     , simulation_completed_(false)
     , total_mpc_time_ms_(0.0)
     , mpc_call_count_(0)
+    , mpc_failure_count_(0)
     , dt_(mpc_params.dt)
     , position_tolerance_(0.05)  // 5cm
     , velocity_tolerance_(0.05)  // 5cm/s
@@ -93,6 +94,7 @@ void MPCObstacleAvoidingSimulator::step() {
     
     if (!success) {
         std::cerr << "MPC failed at step " << step_count_ << std::endl;
+        mpc_failure_count_++;
     }
     
     // Get velocity command from MPC
@@ -217,6 +219,8 @@ void MPCObstacleAvoidingSimulator::printCompletionStats() {
             timing_file << "  \"min_mpc_time_ms\": " << min_mpc_ms << "," << std::endl;
             timing_file << "  \"max_mpc_time_ms\": " << max_mpc_ms << "," << std::endl;
             timing_file << "  \"mpc_frequency_hz\": " << (1000.0 / avg_mpc_ms) << "," << std::endl;
+            timing_file << "  \"mpc_failure_count\": " << mpc_failure_count_ << "," << std::endl;
+            timing_file << "  \"mpc_success_rate\": " << (mpc_call_count_ > 0 ? (1.0 - (double)mpc_failure_count_ / mpc_call_count_) : 0.0) << "," << std::endl;
             timing_file << "  \"final_position_error_m\": " << position_error << "," << std::endl;
             timing_file << "  \"final_velocity_ms\": " << velocity_norm << "," << std::endl;
             timing_file << "  \"mpc_times_ms\": [";

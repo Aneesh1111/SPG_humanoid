@@ -290,13 +290,19 @@ def run_single_obstacle_simulation(
             with open(timing_file, 'r') as f:
                 data = json.load(f)
             
+            # Check for MPC failures
+            mpc_failures = data.get('mpc_failure_count', 0)
+            mpc_success_rate = data.get('mpc_success_rate', 1.0)
+            
             if verbose:
                 print(f"\n✅ Completed:")
                 print(f"   Simulation time: {data['simulation_time_s']:.2f} s")
                 print(f"   Avg MPC time: {data['avg_mpc_time_ms']:.3f} ms")
+                print(f"   MPC failures: {mpc_failures}/{data.get('mpc_call_count', 0)} ({(1-mpc_success_rate)*100:.1f}%)")
                 print(f"   Position error: {data['final_position_error_m']:.6f} m")
             else:
-                print(f"✅ ({data['simulation_time_s']:.2f}s, {data['avg_mpc_time_ms']:.3f}ms)")
+                failure_indicator = f" ⚠️{mpc_failures}F" if mpc_failures > 0 else ""
+                print(f"✅ ({data['simulation_time_s']:.2f}s, {data['avg_mpc_time_ms']:.3f}ms{failure_indicator})")
             
             data['run_id'] = run_id
             data['config'] = config

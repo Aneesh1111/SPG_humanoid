@@ -130,6 +130,7 @@ private:
     bool simulation_completed_;
     double total_mpc_time_ms_;
     int mpc_call_count_;
+    int mpc_failure_count_;
     std::vector<double> mpc_times_ms_;
     std::chrono::high_resolution_clock::time_point start_time_;
     
